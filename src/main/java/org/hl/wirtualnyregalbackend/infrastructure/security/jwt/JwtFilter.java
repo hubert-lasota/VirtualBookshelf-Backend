@@ -18,11 +18,11 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtFacade jwtFacade;
+    private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-    public JwtFilter(JwtFacade jwtFacade, UserDetailsService userDetailsService) {
-        this.jwtFacade = jwtFacade;
+    public JwtFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+        this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
     }
 
@@ -32,18 +32,15 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        String token = null;
-        String username = null;
-
         if(header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        token = header.split(" ")[1].trim();
-        username = jwtFacade.extractUsername(token);
+        String token = header.split(" ")[1].trim();
+        String username = jwtService.extractUsername(token);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        if(!jwtFacade.isTokenValid(token, userDetails)) {
+        if(!jwtService.isTokenValid(token, userDetails)) {
             filterChain.doFilter(request, response);
             return;
         }

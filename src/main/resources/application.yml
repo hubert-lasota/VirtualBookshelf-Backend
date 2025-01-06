@@ -1,6 +1,10 @@
+server:
+  servlet:
+    context-path: /api
+
 spring:
   application:
-    name: SocialSphereBackend
+    name: WirtualnyRegalBackend
 
   datasource:
     url: jdbc:sqlserver://localhost:1433;database=WirtualnyRegal;trustServerCertificate=true;
@@ -14,3 +18,7 @@ spring:
 jwt:
   secret-key: b21a483517257c7ac0eb20b47a6fd8e6bdba832b7393edcdd73364d379eb7ad8
   expiration-days: 3
+
+book:
+  client:
+    id-prefix: OL
