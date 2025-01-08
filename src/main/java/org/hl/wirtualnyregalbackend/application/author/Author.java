@@ -1,12 +1,10 @@
 package org.hl.wirtualnyregalbackend.application.author;
 
 import jakarta.persistence.*;
-import org.hl.wirtualnyregalbackend.application.book.Book;
 import org.hl.wirtualnyregalbackend.infrastructure.jpa.UpdatableBaseEntity;
 import org.hl.wirtualnyregalbackend.infrastructure.security.User;
 
-import java.util.HashSet;
-import java.util.Set;
+import static org.hl.wirtualnyregalbackend.application.common.ValidationUtils.baseValidateString;
 
 @Entity
 @Table(name = "author")
@@ -25,26 +23,25 @@ public class Author extends UpdatableBaseEntity {
     @Column(name = "has_account")
     private Boolean hasAccount;
 
-    @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
-    private Set<Book> books = new HashSet<>();
-
     protected Author() { }
 
     public Author(String fullName) {
-        this.fullName = fullName;
-        this.hasAccount = false;
+        this(fullName, null, null, false);
     }
 
     public Author(String fullName, String externalApiId) {
-        this.fullName = fullName;
-        this.externalApiId = externalApiId;
-        this.hasAccount = false;
+        this(fullName, externalApiId, null, false);
     }
 
     public Author(String fullName, User user) {
-        this.fullName = fullName;
+        this(fullName, null, user, true);
+    }
+
+    private Author(String fullName, String externalApiId, User user, Boolean hasAccount) {
+        this.fullName = baseValidateString(fullName, "fullName");
+        this.externalApiId = externalApiId;
         this.user = user;
-        this.hasAccount = true;
+        this.hasAccount = hasAccount;
     }
 
     public String getFullName() {

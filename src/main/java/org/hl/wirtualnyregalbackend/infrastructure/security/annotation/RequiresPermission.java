@@ -12,8 +12,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RequiresPermission {
 
-    ActionType value();
+    String resourceIdParamName() default "none";
 
-    /// If ResourceType is equal to NONE PermissionChecker will fetch ResourceType from @PermissionAccessResource annotation
-    ResourceType resourceType() default ResourceType.NONE;
+    ActionType actionType() default ActionType.GET_FROM_REQUEST_MAPPING;
+
+    ResourceType resourceType() default ResourceType.GET_FROM_CLASS_NAME;
+
 }

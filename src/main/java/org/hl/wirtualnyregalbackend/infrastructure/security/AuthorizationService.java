@@ -49,7 +49,7 @@ class AuthorizationService {
         Authority userRole = new Authority("USER");
         String encodedPassword = passwordEncoder.encode(request.password());
         User user = new User(request.username(), encodedPassword, userRole);
-        userRole.setUser(user);
+        userRole.addUser(user);
         userRepository.save(user);
         userDefaultConfigurer.configure(user);
         String jwt = jwtService.generateToken(user);

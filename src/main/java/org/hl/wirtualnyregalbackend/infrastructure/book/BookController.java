@@ -2,12 +2,9 @@ package org.hl.wirtualnyregalbackend.infrastructure.book;
 
 import org.hl.wirtualnyregalbackend.application.book.BookService;
 import org.hl.wirtualnyregalbackend.infrastructure.book.dto.BookRatingRequest;
-import org.hl.wirtualnyregalbackend.infrastructure.security.ActionType;
 import org.hl.wirtualnyregalbackend.infrastructure.security.ResourceType;
 import org.hl.wirtualnyregalbackend.infrastructure.security.User;
-import org.hl.wirtualnyregalbackend.infrastructure.security.annotation.PermissionAccessResource;
 import org.hl.wirtualnyregalbackend.infrastructure.security.annotation.RequiresPermission;
-import org.hl.wirtualnyregalbackend.infrastructure.security.annotation.ResourceId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/book")
-@PermissionAccessResource(ResourceType.BOOK)
 public class BookController {
 
     private final BookService bookService;
@@ -35,8 +31,8 @@ public class BookController {
     }
 
     @DeleteMapping("/rating/{bookRatingId}")
-    @RequiresPermission(value = ActionType.DELETE, resourceType = ResourceType.BOOK_RATING)
-    public ResponseEntity<?> deleteBookRating(@PathVariable @ResourceId Long bookRatingId) {
+    @RequiresPermission(resourceIdParamName = "bookRatingId", resourceType = ResourceType.BOOK_RATING)
+    public ResponseEntity<?> deleteBookRating(@PathVariable Long bookRatingId) {
         bookService.deleteBookRating(bookRatingId);
         return ResponseEntity.ok().build();
     }
@@ -52,7 +48,7 @@ public class BookController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findBookById(@PathVariable String id,
-                                            @RequestParam(defaultValue = "true") boolean details) {
+                                          @RequestParam(defaultValue = "true") boolean details) {
         var response = details ? bookService.findBookResponseById(id) : bookService.findBookDetailsById(id);
         return ResponseEntity.ok(response);
     }

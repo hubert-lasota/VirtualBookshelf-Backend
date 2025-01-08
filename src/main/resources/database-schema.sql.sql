@@ -6,27 +6,37 @@ create table users (
     updated_at_timestamp datetimeoffset
 );
 
-create table user_profile_picture (
+create table user_profile (
     id bigint primary key identity(1, 1),
     user_id bigint not null foreign key references users(id),
-    profile_picture_img_id bigint not null foreign key references user_profile_picture_img(id),
-    profile_picture_url nvarchar(MAX),
+    profile_picture_id bigint foreign key references user_profile_picture(id),
+    first_name nvarchar(MAX),
+    last_name nvarchar(MAX),
+    description nvarchar(MAX),
     created_at_timestamp datetimeoffset not null,
     updated_at_timestamp datetimeoffset
-)
+);
+
+create table user_profile_picture (
+    id bigint primary key identity(1, 1),
+    profile_picture_img_id bigint foreign key references user_profile_picture_img(id),
+    profile_picture_url nvarchar(MAX) not null,
+    created_at_timestamp datetimeoffset not null,
+    updated_at_timestamp datetimeoffset
+);
 
 create table user_profile_picture_img (
     id bigint primary key identity(1, 1),
     img varbinary(MAX),
     img_type varchar(MAX),
     created_at_timestamp datetimeoffset not null,
-)
+);
 
-alter table users
-    add profile_picture_id bigint;
-alter table users
-    add constraint fk_users_user_profile_picture
-    foreign key (profile_picture_id) references user_profile_picture(id);
+create table user_book_genre_preferences (
+    user_profile_id bigint foreign key references user_profile(id),
+    book_genre_id bigint foreign key references book_genre(id),
+    primary key (user_profile_id, book_genre_id)
+);
 
 create table authority (
 	id bigint primary key identity(1, 1),

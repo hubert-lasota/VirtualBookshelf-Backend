@@ -10,6 +10,8 @@ import org.hl.wirtualnyregalbackend.infrastructure.jpa.UpdatableBaseEntity;
 import java.time.Instant;
 import java.util.*;
 
+import static org.hl.wirtualnyregalbackend.application.common.ValidationUtils.baseValidateString;
+
 @Entity
 @Table(name = "book")
 public class Book extends UpdatableBaseEntity {
@@ -72,17 +74,17 @@ public class Book extends UpdatableBaseEntity {
                 String languageTag) {
         this.externalApiId = externalApiId;
         this.isbn = new BookIsbn(isbn);
-        this.title = title;
+        this.title = baseValidateString(title, "title");
         this.publishedAt = publishedAt;
         this.publishedYear = publishedYear;
         this.description = description;
         this.numOfPages = numOfPages;
 
-        if(coverUrl != null) {
+        if(baseValidateString(coverUrl)) {
             this.bookCover = new BookCover(coverUrl, this);
         }
 
-        if(languageTag != null) {
+        if(baseValidateString(languageTag)) {
             this.language = Locale.forLanguageTag(languageTag);
         }
     }

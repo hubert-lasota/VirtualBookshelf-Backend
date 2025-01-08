@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.hl.wirtualnyregalbackend.application.common.ValidationUtils.baseValidateString;
+
 @Entity
 @Table(name = "book_genre")
 public class BookGenre {
@@ -14,6 +16,7 @@ public class BookGenre {
     private Long id;
 
     @Column(name = "name")
+    @Enumerated(EnumType.STRING)
     private String name;
 
     @ManyToMany(mappedBy = "bookGenres")
@@ -22,7 +25,7 @@ public class BookGenre {
     protected BookGenre() { }
 
     public BookGenre(String name) {
-        this.name = name;
+        this.name = baseValidateString(name, "name");
     }
 
     public Long getId() {

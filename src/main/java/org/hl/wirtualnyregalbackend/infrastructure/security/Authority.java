@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import org.hl.wirtualnyregalbackend.infrastructure.jpa.BaseEntity;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "authority")
 public class Authority extends BaseEntity implements GrantedAuthority {
@@ -23,12 +25,17 @@ public class Authority extends BaseEntity implements GrantedAuthority {
         this.authority = AuthorityType.valueOf(authority.toUpperCase());
     }
 
-    public User getUser() {
-        return user;
+    public void addUser(User user) {
+        Objects.requireNonNull(user, "User cannot be null.");
+        if(this.user == null) {
+            this.user = user;
+        } else {
+            throw new RuntimeException("User has already been added.");
+        }
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public User getUser() {
+        return user;
     }
 
     @Override

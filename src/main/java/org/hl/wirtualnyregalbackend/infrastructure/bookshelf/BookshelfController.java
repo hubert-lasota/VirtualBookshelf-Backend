@@ -4,12 +4,8 @@ import jakarta.validation.Valid;
 import org.hl.wirtualnyregalbackend.application.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.infrastructure.bookshelf.dto.BookshelfRequest;
 import org.hl.wirtualnyregalbackend.infrastructure.bookshelf.dto.BookshelfResponse;
-import org.hl.wirtualnyregalbackend.infrastructure.security.ActionType;
-import org.hl.wirtualnyregalbackend.infrastructure.security.ResourceType;
 import org.hl.wirtualnyregalbackend.infrastructure.security.User;
-import org.hl.wirtualnyregalbackend.infrastructure.security.annotation.PermissionAccessResource;
 import org.hl.wirtualnyregalbackend.infrastructure.security.annotation.RequiresPermission;
-import org.hl.wirtualnyregalbackend.infrastructure.security.annotation.ResourceId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +14,6 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/bookshelf")
-@PermissionAccessResource(ResourceType.BOOKSHELF)
 public class BookshelfController {
 
     private final BookshelfService bookshelfService;
@@ -35,8 +30,8 @@ public class BookshelfController {
     }
 
     @PostMapping("/addBook")
-    @RequiresPermission(ActionType.UPDATE)
-    public ResponseEntity<?> addBookToBookshelf(@RequestParam @ResourceId Long bookshelfId,
+    @RequiresPermission(resourceIdParamName = "bookshelfId")
+    public ResponseEntity<?> addBookToBookshelf(@RequestParam Long bookshelfId,
                                                 @RequestParam String bookId) {
         bookshelfService.addBookToBookshelf(bookshelfId, bookId);
         return ResponseEntity.ok().build();
@@ -44,8 +39,8 @@ public class BookshelfController {
 
 
     @DeleteMapping("/removeBook")
-    @RequiresPermission(ActionType.DELETE)
-    public ResponseEntity<?> removeBookFromBookshelf(@RequestParam @ResourceId Long bookshelfId,
+    @RequiresPermission(resourceIdParamName = "bookshelfId")
+    public ResponseEntity<?> removeBookFromBookshelf(@RequestParam Long bookshelfId,
                                                      @RequestParam Long bookId) {
         bookshelfService.removeBookFromBookshelf(bookshelfId, bookId);
         return ResponseEntity.ok().build();
