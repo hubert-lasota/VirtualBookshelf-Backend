@@ -50,4 +50,24 @@ public class UserProfile extends UpdatableBaseEntity {
         this.bookGenrePreferences = Objects.requireNonNull(bookGenrePreferences, "bookGenrePreferences cannot be null.");
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public UserProfilePicture getProfilePicture() {
+        return profilePicture;
+    }
+
 }

@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.infrastructure.author.dto;
 
-public record AuthorResponse(String id, String fullName) {
+public record AuthorResponse(String id, String fullName, String photoUrl, String description) {
 
     public AuthorResponse {
         if (id == null || id.isBlank()) {

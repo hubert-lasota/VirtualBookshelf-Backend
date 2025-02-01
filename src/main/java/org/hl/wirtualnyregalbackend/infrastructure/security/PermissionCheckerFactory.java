@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.infrastructure.security;
 
+import org.hl.wirtualnyregalbackend.infrastructure.common.ResourceType;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;

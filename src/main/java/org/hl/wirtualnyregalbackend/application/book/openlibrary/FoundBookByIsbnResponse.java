@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hl.wirtualnyregalbackend.application.book.exception.BookClientException;
 import org.hl.wirtualnyregalbackend.infrastructure.author.dto.AuthorResponse;
-import org.hl.wirtualnyregalbackend.infrastructure.book.dto.BookResponse;
+import org.hl.wirtualnyregalbackend.infrastructure.book.dto.response.BookResponse;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -91,6 +91,8 @@ class FoundBookByIsbnResponse {
                 isbn,
                 details.title,
                 authorsResponse,
+                details.publishers,
+                null,
                 details.description,
                 publishedAt,
                 publishedYear,
@@ -180,7 +182,7 @@ class FoundBookByIsbnResponse {
         private String name;
 
         public AuthorResponse toAuthorResponse() {
-            return new AuthorResponse(this.key, this.name);
+            return new AuthorResponse(this.key, this.name, null, null);
         }
     }
 

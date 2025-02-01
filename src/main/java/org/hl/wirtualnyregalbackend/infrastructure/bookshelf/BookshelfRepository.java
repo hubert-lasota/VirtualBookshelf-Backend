@@ -15,6 +15,8 @@ public interface BookshelfRepository {
 
     List<Bookshelf> findByUserId(Long userId);
 
+    List<Bookshelf> findUserBookshelvesByBookId(Long bookId, Long userId);
+
     boolean isUserBookshelfAuthor(Long bookshelfId, Long userId);
 
 }

@@ -1,5 +1,7 @@
 package org.hl.wirtualnyregalbackend.infrastructure.book;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import org.hl.wirtualnyregalbackend.application.book.Book;
 import org.hl.wirtualnyregalbackend.application.book.exception.BookNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,10 +14,20 @@ import java.util.Optional;
 @Repository
 class JpaBookRepository implements BookRepository {
 
-    private final SpringJpaBookRepository bookRepository;
+    private final String QUERY_FETCH_ALL_ASSOCIATIONS = """
+        select b 
+        from Book b 
+        left join fetch b.authors
+        left join fetch b.genres
+        left join fetch b.tags
+     """;
 
-    public JpaBookRepository(SpringJpaBookRepository bookRepository) {
+    private final SpringJpaBookRepository bookRepository;
+    private final EntityManager entityManager;
+
+    public JpaBookRepository(SpringJpaBookRepository bookRepository, EntityManager entityManager) {
         this.bookRepository = bookRepository;
+        this.entityManager = entityManager;
     }
 
 
@@ -48,18 +60,34 @@ class JpaBookRepository implements BookRepository {
 
     @Override
     public Book findWithAllAssociationsById(Long id) throws BookNotFoundException {
-        return bookRepository.findWithAllAssociationsById(id)
-                .orElseThrow(() -> new BookNotFoundException("Book with id %d not found.".formatted(id)));
+        String finalQuery = QUERY_FETCH_ALL_ASSOCIATIONS + " where b.id = :id";
+        try {
+            return entityManager.createQuery(finalQuery, Book.class).setParameter("id", id).getSingleResult();
+        } catch (NoResultException e) {
+            throw new BookNotFoundException("Book with id %s not found.".formatted(id));
+        }
     }
 
     @Override
-    public Optional<Book> findOptionalWithAllAssociationsById(Long id) throws BookNotFoundException {
-        return bookRepository.findWithAllAssociationsById(id);
+    public Optional<Book> findOptionalWithAllAssociationsById(Long id) {
+        try {
+            Book book = findWithAllAssociationsById(id);
+            return Optional.of(book);
+        } catch (BookNotFoundException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional<Book> findOptionalWithAllAssociationsByExternalApiId(String externalApiId) {
-        return bookRepository.findWithAllAssociationsByExternalApiId(externalApiId);
+        String finalQuery = QUERY_FETCH_ALL_ASSOCIATIONS + " where b.externalApiId = :externalApiId";
+        try {
+            Book book = entityManager.createQuery(finalQuery, Book.class)
+                    .setParameter("externalApiId", externalApiId).getSingleResult();
+            return Optional.of(book);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -77,29 +105,7 @@ class JpaBookRepository implements BookRepository {
 @Repository
 interface SpringJpaBookRepository extends JpaRepository<Book, Long> {
 
-    @Query("""
-        select b 
-        from Book b 
-        join fetch b.authors
-        left join fetch b.bookRatings 
-        left join fetch b.bookGenres
-        where b.id = :id  
-    """)
-    Optional<Book> findWithAllAssociationsById(Long id);
-
-    @Query("""
-        select b 
-        from Book b 
-        join fetch b.authors
-        left join fetch b.bookRatings 
-        left join fetch b.bookGenres
-        where b.externalApiId = :externalApiId  
-    """)
-    Optional<Book> findWithAllAssociationsByExternalApiId(String externalApiId);
-
     Optional<Book> findByExternalApiId(String externalApiId);
-
-    Optional<Book> findByIsbn(String isbn);
 
     @Query("select b.books from Bookshelf b where b.id = :bookshelfId")
     List<Book> findByBookshelfId(Long bookshelfId);

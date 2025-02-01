@@ -1,6 +1,7 @@
 package org.hl.wirtualnyregalbackend.infrastructure.security;
 
 import jakarta.persistence.*;
+import org.hl.wirtualnyregalbackend.application.user.UserProfile;
 import org.hl.wirtualnyregalbackend.infrastructure.jpa.UpdatableBaseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,9 @@ public class User extends UpdatableBaseEntity implements UserDetails {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @OneToOne(mappedBy = "user")
+    private UserProfile userProfile;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Authority> authorities = new ArrayList<>();
@@ -41,6 +45,10 @@ public class User extends UpdatableBaseEntity implements UserDetails {
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
     }
 
     @Override

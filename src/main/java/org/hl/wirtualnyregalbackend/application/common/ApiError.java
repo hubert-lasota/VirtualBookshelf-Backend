@@ -1,5 +1,5 @@
 package org.hl.wirtualnyregalbackend.application.common;
 
-public enum OperationType {
-    CREATE, ADD, REMOVE, UPDATE
+public record ApiError(String field, String message) {
+
 }

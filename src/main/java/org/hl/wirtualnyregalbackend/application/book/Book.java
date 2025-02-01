@@ -2,7 +2,11 @@ package org.hl.wirtualnyregalbackend.application.book;
 
 import jakarta.persistence.*;
 import org.hl.wirtualnyregalbackend.application.author.Author;
-import org.hl.wirtualnyregalbackend.application.book.exception.IllegalBookOperationException;
+import org.hl.wirtualnyregalbackend.application.book.exception.InvalidBookIsbnException;
+import org.hl.wirtualnyregalbackend.application.common.ActionResult;
+import org.hl.wirtualnyregalbackend.application.common.ApiError;
+import org.hl.wirtualnyregalbackend.application.publisher.Publisher;
+import org.hl.wirtualnyregalbackend.application.tag.Tag;
 import org.hl.wirtualnyregalbackend.infrastructure.jpa.BookIsbnConverter;
 import org.hl.wirtualnyregalbackend.infrastructure.jpa.LocaleToStringConverter;
 import org.hl.wirtualnyregalbackend.infrastructure.jpa.UpdatableBaseEntity;
@@ -11,6 +15,7 @@ import java.time.Instant;
 import java.util.*;
 
 import static org.hl.wirtualnyregalbackend.application.common.ValidationUtils.baseValidateString;
+import static org.hl.wirtualnyregalbackend.application.common.ValidationUtils.validateStringAndReturnResult;
 
 @Entity
 @Table(name = "book")
@@ -44,16 +49,13 @@ public class Book extends UpdatableBaseEntity {
 
 
     @OneToOne(mappedBy = "book", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private BookCover bookCover;
-
-    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookRating> bookRatings;
+    private BookCover cover;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "book_book_genre",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "book_genre_id"))
-    private Set<BookGenre> bookGenres;
+    private Set<BookGenre> genres;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "book_author",
@@ -61,7 +63,53 @@ public class Book extends UpdatableBaseEntity {
             inverseJoinColumns = @JoinColumn(name = "author_id"))
     private Set<Author> authors;
 
+    @ManyToMany
+    @JoinTable(name = "book_publisher",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "publisher_id"))
+    private Set<Publisher> publishers;
+
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "book_tag",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags = new HashSet<>();
+
     protected Book() { }
+
+    public Book(String externalApiId,
+                String isbn,
+                String title,
+                Set<Author> authors,
+                Set<Publisher> publishers,
+                String coverUrl,
+                Instant publishedAt,
+                Integer publishedYear,
+                String description,
+                Integer numOfPages,
+                String languageTag) {
+        this.externalApiId = externalApiId;
+        this.title = baseValidateString(title, "title");
+        this.authors = Objects.requireNonNull(authors, "authors cannot be null");
+        this.publishers = Objects.requireNonNull(publishers, "publishers cannot be null");
+        this.publishedAt = publishedAt;
+        this.publishedYear = publishedYear;
+        this.description = description;
+        this.numOfPages = numOfPages;
+
+        if(isbn != null) {
+            this.isbn = new BookIsbn(isbn);
+        }
+
+        if(baseValidateString(coverUrl)) {
+            this.cover = new BookCover(coverUrl, this);
+        }
+
+        if(baseValidateString(languageTag)) {
+            this.language = Locale.forLanguageTag(languageTag);
+        }
+    }
 
     public Book(String externalApiId,
                 String isbn,
@@ -72,42 +120,155 @@ public class Book extends UpdatableBaseEntity {
                 String description,
                 Integer numOfPages,
                 String languageTag) {
-        this.externalApiId = externalApiId;
-        this.isbn = new BookIsbn(isbn);
-        this.title = baseValidateString(title, "title");
+       this(externalApiId, isbn, title, Collections.emptySet(), Collections.emptySet(), coverUrl, publishedAt, publishedYear, description, numOfPages, languageTag);
+    }
+
+
+    public ActionResult updateIsbn(String isbn) {
+        try {
+            this.isbn = new BookIsbn(isbn);
+            return new ActionResult(true, null);
+        } catch (InvalidBookIsbnException e) {
+            ApiError error = new ApiError("isbn", e.getMessage());
+            return new ActionResult(false, error);
+        }
+
+    }
+
+    public ActionResult updateTitle(String title) {
+        ActionResult result = validateStringAndReturnResult(title, "title");
+        if(result.success()) {
+            this.title = title;
+        }
+        return result;
+    }
+
+    public ActionResult updateBookCover(String coverUrl) {
+        return cover.updateCoverUrl(coverUrl);
+    }
+
+    public ActionResult updatePublishedAt(Instant publishedAt) {
+        Objects.requireNonNull(publishedAt, "publishedAt cannot be null");
         this.publishedAt = publishedAt;
+        return new ActionResult(true, null);
+    }
+
+    public ActionResult updatePublishedYear(Integer publishedYear) {
+        Objects.requireNonNull(publishedYear, "publishedYear cannot be null");
         this.publishedYear = publishedYear;
-        this.description = description;
+        return new ActionResult(true, null);
+    }
+
+    public ActionResult updateDescription(String description) {
+        ActionResult result = validateStringAndReturnResult(description, "description");
+        if(result.success()) {
+            this.description = description;
+        }
+        return result;
+    }
+
+    public ActionResult updateNumOfPages(Integer numOfPages) {
         this.numOfPages = numOfPages;
+        return new ActionResult(true, null);
+    }
 
-        if(baseValidateString(coverUrl)) {
-            this.bookCover = new BookCover(coverUrl, this);
-        }
-
-        if(baseValidateString(languageTag)) {
-            this.language = Locale.forLanguageTag(languageTag);
+    public ActionResult updateLanguage(String languageTag) {
+        Locale locale = Locale.forLanguageTag(languageTag);
+        if(locale.getLanguage().isEmpty()) {
+            ApiError error = new ApiError("language", "This tag is invalid %s".formatted(languageTag));
+            return new ActionResult(false, error);
+        } else {
+            this.language = locale;
+            return new ActionResult(true, null);
         }
     }
 
-    public void updateBookCover(String coverUrl) {
-        bookCover.updateCoverUrl(coverUrl);
+    public ActionResult updateGenres(Set<BookGenre> genres) {
+        this.genres = Objects.requireNonNull(genres, "genres cannot be null");
+        return new ActionResult(true, null);
     }
 
-    public void addAuthor(Author author) {
-        Objects.requireNonNull(author);
+    public ActionResult addGenre(BookGenre genre) {
+        Objects.requireNonNull(genre, "genre cannot be null");
+        if(genres.contains(genre)) {
+            ApiError error = new ApiError("genres", "Book already contains genre %s".formatted(genre));
+            return new ActionResult(false, error);
+        }
+        genres.add(genre);
+        return new ActionResult(true, null);
+    }
+
+    public ActionResult removeGenre(Long bookGenreId) {
+        Objects.requireNonNull(bookGenreId, "bookGenreId cannot be null");
+        boolean isSuccess = this.genres.removeIf(genre -> genre.getId().equals(bookGenreId));
+        return isSuccess ? new ActionResult(true, null) :
+                new ActionResult(false, new ApiError("genres", "Book(id=%d) has no genre with id=%d".formatted(id, bookGenreId)));
+    }
+
+    public ActionResult updateAuthors(Set<Author> authors) {
+        this.authors = Objects.requireNonNull(authors, "authors cannot be null");
+        return new ActionResult(true, null);
+    }
+
+    public ActionResult addAuthor(Author author) {
+        Objects.requireNonNull(author, "author cannot be null");
         if(authors.contains(author)) {
-            throw new IllegalBookOperationException(id, "add", "Author with id %d is already in book author list."
-                    .formatted(author.getId()));
+            ApiError error = new ApiError("author", author.toString());
+            return new ActionResult(false, error);
         }
         this.authors.add(author);
+        return new ActionResult(true, null);
     }
 
-    public void removeAuthor(Long authorId) {
-        Objects.requireNonNull(authorId);
+    public ActionResult removeAuthor(Long authorId) {
+        Objects.requireNonNull(authorId, "authorId cannot be null");
         boolean isSuccess = authors.removeIf(author -> author.getId().equals(authorId));
-        if(!isSuccess) {
-            throw new IllegalBookOperationException(id, "remove", "Author with id %d is not in book author list.");
+        return isSuccess ? new ActionResult(true, null) :
+                new ActionResult(false, new ApiError("authors","Book(id=%d) has no author with id %d.".formatted(id, authorId)));
+    }
+
+    public ActionResult updatePublishers(Set<Publisher> publishers) {
+        this.publishers = Objects.requireNonNull(publishers, "publishers cannot be null");
+        return new ActionResult(true, null);
+    }
+
+    public ActionResult addPublisher(Publisher publisher) {
+        Objects.requireNonNull(publisher, "publisher cannot be null");
+        if(publishers.contains(publisher)) {
+            ApiError error = new ApiError("publisher", "Publisher: %s is already in book publisher.".formatted(publisher.getName()));
+            return new ActionResult(false, error);
         }
+        this.publishers.add(publisher);
+        return new ActionResult(true, null);
+    }
+
+    public ActionResult removePublisher(Long publisherId) {
+        Objects.requireNonNull(publisherId, "publisherId cannot be null");
+        boolean isSuccess = publishers.removeIf(publisher -> publisher.getId().equals(publisherId));
+        return isSuccess ? new ActionResult(true, null) :
+                new ActionResult(false, new ApiError("publishers", "Book(id=%d) has no publisher with id %d."));
+    }
+
+    public ActionResult updateTags(Set<Tag> tags) {
+        this.tags = Objects.requireNonNull(tags, "tags cannot be null");
+        return new ActionResult(true, null);
+    }
+
+    public ActionResult addTag(Tag tag) {
+        Objects.requireNonNull(tag, "tag cannot be null");
+        if(tags.contains(tag)) {
+            ApiError error = new ApiError("tag", tag.toString());
+            return new ActionResult(false, error);
+        }
+        this.tags.add(tag);
+        return new ActionResult(true, null);
+    }
+
+    public ActionResult removeTag(Long tagId) {
+        Objects.requireNonNull(tagId, "tagId cannot be null");
+        boolean isSuccess = tags.removeIf(tag -> tag.getId().equals(tagId));
+        return isSuccess ? new ActionResult(true, null) :
+                new ActionResult(false, new ApiError("tags","Book(id=%d) has no tag with id %d."));
     }
 
     public String getExternalApiId() {
@@ -138,12 +299,12 @@ public class Book extends UpdatableBaseEntity {
         return numOfPages;
     }
 
-    public BookCover getBookCover() {
-        return bookCover;
+    public BookCover getCover() {
+        return cover;
     }
 
-    public Set<BookGenre> getBookGenres() {
-        return Collections.unmodifiableSet(bookGenres);
+    public Set<BookGenre> getGenres() {
+        return Collections.unmodifiableSet(genres);
     }
 
     public Set<Author> getAuthors() {
@@ -154,8 +315,12 @@ public class Book extends UpdatableBaseEntity {
         return language;
     }
 
-    public List<BookRating> getBookRatings() {
-        return Collections.unmodifiableList(bookRatings);
+    public Set<Publisher> getPublishers() {
+        return Collections.unmodifiableSet(publishers);
+    }
+
+    public Set<Tag> getTags() {
+        return Collections.unmodifiableSet(tags);
     }
 
     @Override

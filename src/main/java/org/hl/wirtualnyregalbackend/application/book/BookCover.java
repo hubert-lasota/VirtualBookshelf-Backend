@@ -1,9 +1,12 @@
 package org.hl.wirtualnyregalbackend.application.book;
 
 import jakarta.persistence.*;
+import org.hl.wirtualnyregalbackend.application.common.ActionResult;
 import org.hl.wirtualnyregalbackend.infrastructure.jpa.UpdatableBaseEntity;
 
 import java.util.Objects;
+
+import static org.hl.wirtualnyregalbackend.application.common.ValidationUtils.validateStringAndReturnResult;
 
 @Entity
 @Table(name = "book_cover")
@@ -25,9 +28,12 @@ public class BookCover extends UpdatableBaseEntity {
         this.book = book;
     }
 
-    public void updateCoverUrl(String coverUrl) {
-        Objects.requireNonNull(coverUrl, "Cover url cannot be null");
-        this.coverUrl = coverUrl;
+    public ActionResult updateCoverUrl(String coverUrl) {
+        ActionResult result = validateStringAndReturnResult(coverUrl, "coverUrl");
+        if(result.success()) {
+            this.coverUrl = coverUrl;
+        }
+        return result;
     }
 
     public String getCoverUrl() {

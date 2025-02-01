@@ -7,6 +7,7 @@ import org.hl.wirtualnyregalbackend.infrastructure.bookshelf.BookshelfRepository
 import org.hl.wirtualnyregalbackend.infrastructure.bookshelf.dto.BookshelfRequest;
 import org.hl.wirtualnyregalbackend.infrastructure.bookshelf.dto.BookshelfResponse;
 import org.hl.wirtualnyregalbackend.infrastructure.security.User;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class BookshelfService {
     private final BookshelfRepository bookshelfRepository;
     private final BookService bookService;
 
-    public BookshelfService(BookshelfRepository bookshelfRepository, BookService bookService) {
+    public BookshelfService(BookshelfRepository bookshelfRepository, @Lazy BookService bookService) {
         this.bookshelfRepository = bookshelfRepository;
         this.bookService = bookService;
     }
@@ -37,9 +38,9 @@ public class BookshelfService {
         bookshelfRepository.saveAll(bookshelvesToSave);
     }
 
-    public void addBookToBookshelf(Long bookshelfId, String id) {
+    public void addBookToBookshelf(Long bookshelfId, String bookId) {
         Bookshelf bookshelf = bookshelfRepository.findWithBooksById(bookshelfId);
-        Book book = bookService.findBookById(id);
+        Book book = bookService.findBookById(bookId);
         bookshelf.addBook(book);
         bookshelfRepository.save(bookshelf);
     }
@@ -61,5 +62,8 @@ public class BookshelfService {
                 .toList();
     }
 
+    public List<Bookshelf> findUserBookshelvesByBookId(Long bookId, User user) {
+        return bookshelfRepository.findUserBookshelvesByBookId(bookId, user.getId());
+    }
 
 }

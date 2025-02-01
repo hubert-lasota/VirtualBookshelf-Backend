@@ -2,13 +2,14 @@ package org.hl.wirtualnyregalbackend.application.bookshelf;
 
 import jakarta.persistence.*;
 import org.hl.wirtualnyregalbackend.application.book.Book;
-import org.hl.wirtualnyregalbackend.application.bookshelf.exception.IllegalBookshelfOperationException;
 import org.hl.wirtualnyregalbackend.application.bookshelf.exception.InvalidBookshelfTypeException;
+import org.hl.wirtualnyregalbackend.application.common.ActionResult;
+import org.hl.wirtualnyregalbackend.application.common.ApiError;
 import org.hl.wirtualnyregalbackend.infrastructure.jpa.UpdatableBaseEntity;
 import org.hl.wirtualnyregalbackend.infrastructure.security.User;
 
+import java.util.Collections;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -44,30 +45,26 @@ public class Bookshelf extends UpdatableBaseEntity {
         } catch (IllegalArgumentException e) {
             throw new InvalidBookshelfTypeException(type);
         }
-        this.name = Objects.requireNonNull(name, "Name cannot be null");
+        this.name = Objects.requireNonNull(name, "name cannot be null");
         this.description = description;
-        this.user = Objects.requireNonNull(user, "User cannot be null");
+        this.user = Objects.requireNonNull(user, "user cannot be null");
     }
 
-    public void addBook(Book book) {
-        Objects.requireNonNull(book, "Book cannot be null");
+    public ActionResult addBook(Book book) {
+        Objects.requireNonNull(book, "book cannot be null");
         if(books.contains(book)) {
-            throw new IllegalBookshelfOperationException(id, "add",
-                    "Book with id = %d is already in the bookshelf.".formatted(book.getId()));
+            ApiError error = new ApiError("books", "Book is already in bookshelf");
+            return new ActionResult(false, error);
         }
         books.add(book);
+        return new ActionResult(true, null);
     }
 
-    public void removeBook(Long bookId) {
-        Objects.requireNonNull(bookId, "BookId cannot be null");
-        Optional<Book> bookOpt = books.stream()
-                .filter(book -> book.getId().equals(bookId))
-                .findFirst();
-        if(bookOpt.isEmpty()) {
-            throw new IllegalBookshelfOperationException(id, "remove",
-                    "Book with id = %d is not in the bookshelf.".formatted(bookId));
-        }
-        books.remove(bookOpt.get());
+    public ActionResult removeBook(Long bookId) {
+        Objects.requireNonNull(bookId, "bookId cannot be null");
+        boolean isSuccess = books.removeIf(book -> book.getId().equals(bookId));
+        return isSuccess ? new ActionResult(true, null) :
+                new ActionResult(false, new ApiError("books", "Book is not in bookshelf"));
     }
 
     public String getName() {
@@ -83,7 +80,7 @@ public class Bookshelf extends UpdatableBaseEntity {
     }
 
     public Set<Book> getBooks() {
-        return books;
+        return Collections.unmodifiableSet(books);
     }
 
 }

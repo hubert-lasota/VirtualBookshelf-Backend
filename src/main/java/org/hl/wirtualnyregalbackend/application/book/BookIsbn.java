@@ -16,18 +16,18 @@ public class BookIsbn {
 
 
     public BookIsbn(String isbn) {
-        if(isbn == null) throw new InvalidBookIsbnException("Isbn is null.");
+        if(isbn == null) throw new InvalidBookIsbnException("ISBN is null.");
         String tmpIsbn = removeHyphensFromIsbn(isbn);
         if(tmpIsbn.length() == 10) {
             isbnType = BookIsbnType.ISBN_10;
             standardizedIsbn = tmpIsbn;
         } else if (tmpIsbn.length() == 13) {
             Character c = isbn.charAt(isbn.length() - 1);
-            if(c.equals('X')) throw new InvalidBookIsbnException("Isbn13 contains X character.");
+            if(c.equals('X')) throw new InvalidBookIsbnException("ISBN13 contains X character.");
             isbnType = BookIsbnType.ISBN_13;
             standardizedIsbn = tmpIsbn;
         } else {
-            throw new InvalidBookIsbnException("This isbn: %s is not valid.".formatted(isbn));
+            throw new InvalidBookIsbnException("ISBN must contains 10 or 13 characters.");
         }
     }
 

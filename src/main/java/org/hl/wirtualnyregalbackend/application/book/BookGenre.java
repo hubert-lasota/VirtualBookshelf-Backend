@@ -16,10 +16,9 @@ public class BookGenre {
     private Long id;
 
     @Column(name = "name")
-    @Enumerated(EnumType.STRING)
     private String name;
 
-    @ManyToMany(mappedBy = "bookGenres")
+    @ManyToMany(mappedBy = "genres")
     private Set<Book> books = new HashSet<>();
 
     protected BookGenre() { }

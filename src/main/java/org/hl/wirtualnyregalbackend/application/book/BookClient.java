@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.application.book;
 
 import org.hl.wirtualnyregalbackend.application.book.exception.BookNotFoundException;
-import org.hl.wirtualnyregalbackend.infrastructure.book.dto.BookResponse;
+import org.hl.wirtualnyregalbackend.infrastructure.book.dto.response.BookResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -2,7 +2,11 @@ package org.hl.wirtualnyregalbackend.infrastructure.author;
 
 import org.hl.wirtualnyregalbackend.application.author.Author;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
+import java.util.List;
 
 @Repository
 class JpaAuthorRepository implements AuthorRepository {
@@ -19,6 +23,16 @@ class JpaAuthorRepository implements AuthorRepository {
     }
 
     @Override
+    public List<Author> saveAll(Collection<Author> authors) {
+        return authorRepository.saveAll(authors);
+    }
+
+    @Override
+    public List<Author> findByFullNamesIgnoreCase(Collection<String> fullNames) {
+        return authorRepository.findByFullNamesIgnoreCase(fullNames);
+    }
+
+    @Override
     public boolean exitsByExternalApiId(String externalApiId) {
         return authorRepository.existsByExternalApiId(externalApiId);
     }
@@ -31,6 +45,9 @@ class JpaAuthorRepository implements AuthorRepository {
 
 @Repository
 interface SpringJpaAuthorRepository extends JpaRepository<Author, Long> {
+
+    @Query("select a from Author a where lower(a.fullName) in :fullNames")
+    List<Author> findByFullNamesIgnoreCase(Collection<String> fullNames);
 
     boolean existsByExternalApiId(String externalApiId);
 

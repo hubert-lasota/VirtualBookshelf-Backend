@@ -6,6 +6,13 @@ create table users (
     updated_at_timestamp datetimeoffset
 );
 
+create table user_profile_picture_img (
+    id bigint primary key identity(1, 1),
+    img varbinary(MAX),
+    img_type varchar(MAX),
+    created_at_timestamp datetimeoffset not null,
+);
+
 create table user_profile (
     id bigint primary key identity(1, 1),
     user_id bigint not null foreign key references users(id),
@@ -23,13 +30,6 @@ create table user_profile_picture (
     profile_picture_url nvarchar(MAX) not null,
     created_at_timestamp datetimeoffset not null,
     updated_at_timestamp datetimeoffset
-);
-
-create table user_profile_picture_img (
-    id bigint primary key identity(1, 1),
-    img varbinary(MAX),
-    img_type varchar(MAX),
-    created_at_timestamp datetimeoffset not null,
 );
 
 create table user_book_genre_preferences (
@@ -62,7 +62,7 @@ create table book (
 
 create table book_genre (
     id bigint primary key identity(1, 1),
-    name varchar(max) not null,
+    name nvarchar(max) not null,
 );
 
 create table book_book_genre (
@@ -103,18 +103,58 @@ create table book_rating (
     id bigint primary key identity(1, 1),
     user_id bigint not null foreign key references users(id),
     book_id bigint not null foreign key references book(id),
-    rating tinyint not null,
+    rating float not null,
     rating_justification nvarchar(MAX),
     created_at_timestamp datetimeoffset not null,
     updated_at_timestamp datetimeoffset
+);
+
+create table publisher (
+    id bigint primary key identity(1, 1),
+    name nvarchar(MAX) not null,
+    created_at_timestamp datetimeoffset not null,
+    updated_at_timestamp datetimeoffset
+);
+
+create table book_publisher (
+    book_id bigint foreign key references book(id),
+    publisher_id bigint foreign key references publisher(id),
+    primary key (book_id, publisher_id)
 );
 
 create table author (
     id bigint primary key identity(1, 1),
     external_api_id nvarchar(MAX),
     user_id bigint foreign key references users(id),
-    full_name varchar(MAX),
+    full_name nvarchar(MAX),
+    description nvarchar(MAX),
     has_account bit not null,
+    created_at_timestamp datetimeoffset not null,
+    updated_at_timestamp datetimeoffset
+);
+
+create table author_photo_img (
+    id bigint primary key identity(1, 1),
+    img varbinary(MAX) not null,
+    img_type varchar(50) not null,
+    created_at_timestamp datetimeoffset not null,
+    updated_at_timestamp datetimeoffset
+);
+
+create table author_photo (
+    id bigint primary key identity(1, 1),
+    photo_img_id bigint foreign key references author_photo_img(id),
+    photo_url varchar(max) not null,
+    created_at_timestamp datetimeoffset not null,
+    updated_at_timestamp datetimeoffset
+)
+
+create table author_rating (
+    id bigint primary key identity(1, 1),
+    author_id bigint foreign key references author(id),
+    user_id bigint foreign key references users(id),
+    rating float not null,
+    rating_justification nvarchar(MAX),
     created_at_timestamp datetimeoffset not null,
     updated_at_timestamp datetimeoffset
 );
@@ -158,22 +198,6 @@ create table book_genre_recommendation (
     created_at_timestamp datetimeoffset not null
 );
 
-create table user_activity (
-    id bigint primary key identity(1, 1),
-    user_id bigint not null foreign key references users(id),
-    book_id bigint foreign key references book(id),
-    book_isbn nvarchar(20),
-    activity_type nvarchar(50) not null, -- view, read, wishlist, like
-    created_at_timestamp datetimeoffset not null,
-);
-
-create table user_reading_history (
-    id bigint primary key identity(1, 1),
-    user_id bigint not null foreign key references users(id),
-    book_id bigint not null foreign key references book(id),
-    finished_at_timestamp datetimeoffset,
-);
-
 create table tag (
     id bigint primary key identity(1, 1),
     name nvarchar(50) not null unique,
@@ -197,7 +221,7 @@ create table author_tag (
 
 create table challenge (
     id bigint primary key identity(1, 1),
-    user_id bigint not null foreign key references users(id),
+    user_id bigint foreign key references users(id),
     description nvarchar(MAX) not null,
     start_at_timestamp datetimeoffset not null,
     finish_at_timestamp datetimeoffset not null,
@@ -209,7 +233,9 @@ create table challenge_participant_details (
     id bigint primary key identity(1, 1),
     challenge_id bigint not null foreign key references challenge(id),
     user_id bigint not null foreign key references users(id),
-    status nvarchar(50), -- won, lost, started
+    status nvarchar(50),
+    started_at_timestamp datetimeoffset not null,
+    finished_at_at_timestamp datetimeoffset,
     created_at_timestamp datetimeoffset not null,
     updated_at_timestamp datetimeoffset
 );

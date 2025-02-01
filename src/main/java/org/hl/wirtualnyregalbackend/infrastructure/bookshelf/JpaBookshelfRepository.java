@@ -14,7 +14,7 @@ class JpaBookshelfRepository implements BookshelfRepository {
 
     private final SpringJpaBookshelfRepository bookshelfRepository;
 
-    public JpaBookshelfRepository(SpringJpaBookshelfRepository springJpaBookshelfRepository) {
+    JpaBookshelfRepository(SpringJpaBookshelfRepository springJpaBookshelfRepository) {
         this.bookshelfRepository = springJpaBookshelfRepository;
     }
 
@@ -43,6 +43,11 @@ class JpaBookshelfRepository implements BookshelfRepository {
     public boolean isUserBookshelfAuthor(Long bookshelfId, Long userId) {
         return bookshelfRepository.isUserBookshelfAuthor(bookshelfId, userId);
     }
+
+    @Override
+    public List<Bookshelf> findUserBookshelvesByBookId(Long bookId, Long userId) {
+        return bookshelfRepository.findUserBookshelvesByBookId(bookId, userId);
+    }
 }
 
 @Repository
@@ -56,5 +61,9 @@ interface SpringJpaBookshelfRepository extends JpaRepository<Bookshelf, Long> {
 
     @Query("select b from Bookshelf b left join fetch b.books where b.user.id = :userId")
     List<Bookshelf> findByUserId(Long userId);
+
+    @Query("select b from Bookshelf b join Book book where book.id = :bookId and b.user.id = :userId")
+    List<Bookshelf> findUserBookshelvesByBookId(Long bookId, Long userId);
+
 }
 

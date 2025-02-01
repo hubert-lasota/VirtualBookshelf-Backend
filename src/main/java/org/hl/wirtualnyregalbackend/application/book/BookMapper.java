@@ -1,22 +1,31 @@
 package org.hl.wirtualnyregalbackend.application.book;
 
 import org.hl.wirtualnyregalbackend.application.author.AuthorMapper;
+import org.hl.wirtualnyregalbackend.application.bookshelf.Bookshelf;
+import org.hl.wirtualnyregalbackend.application.bookshelf.BookshelfMapper;
+import org.hl.wirtualnyregalbackend.application.publisher.Publisher;
+import org.hl.wirtualnyregalbackend.application.tag.Tag;
+import org.hl.wirtualnyregalbackend.application.user.UserMapper;
 import org.hl.wirtualnyregalbackend.infrastructure.author.dto.AuthorResponse;
-import org.hl.wirtualnyregalbackend.infrastructure.book.dto.BookDetailsResponse;
-import org.hl.wirtualnyregalbackend.infrastructure.book.dto.BookRatingResponse;
-import org.hl.wirtualnyregalbackend.infrastructure.book.dto.BookResponse;
-import org.hl.wirtualnyregalbackend.infrastructure.book.dto.BookSearchResultResponse;
+import org.hl.wirtualnyregalbackend.infrastructure.book.dto.request.BookRatingRequest;
+import org.hl.wirtualnyregalbackend.infrastructure.book.dto.response.*;
+import org.hl.wirtualnyregalbackend.infrastructure.bookshelf.dto.BookshelfHeaderResponse;
+import org.hl.wirtualnyregalbackend.infrastructure.security.User;
+import org.hl.wirtualnyregalbackend.infrastructure.user.dto.UserHeaderResponse;
+import org.springframework.data.domain.Page;
 
+import java.util.Collection;
 import java.util.List;
+
 
 public class BookMapper {
 
     private BookMapper() { }
 
+
     public static Book toBook(BookResponse bookResponse) {
-        String externalApiId = bookResponse.id().startsWith("OL") ? bookResponse.id() : null;
         return new Book(
-                externalApiId,
+                bookResponse.id(),
                 bookResponse.isbn(),
                 bookResponse.title(),
                 bookResponse.coverUrl(),
@@ -44,35 +53,102 @@ public class BookMapper {
                 .map(AuthorMapper::toAuthorResponse)
                 .toList();
 
+
+        String id = book.getId() == null ? book.getExternalApiId() : book.getId().toString();
+
+        List<String> publishers = book.getPublishers()
+                .stream()
+                .map(Publisher::getName)
+                .toList();
+
+        List<BookGenreResponse> genres = book.getGenres()
+                .stream()
+                .map(BookMapper::toBookGenreResponse)
+                .toList();
+
         return new BookResponse(
-                book.getId().toString(),
+                id,
                 book.getIsbn().getStandardizedIsbn(),
                 book.getTitle(),
                 authors,
+                publishers,
+                genres,
                 book.getDescription(),
                 book.getPublishedAt(),
                 book.getPublishedYear(),
                 book.getLanguage().getLanguage(),
                 book.getNumOfPages(),
-                book.getBookCover().getCoverUrl()
+                book.getCover().getCoverUrl()
         );
     }
 
-    public static BookDetailsResponse toBookDetailsResponse(Book book) {
-        List<String> genres = book.getBookGenres()
+    public static BookDetailsResponse toBookDetailsResponse(Book book, Float ratingAverage,
+                                                            Page<BookRating> ratingPage,
+                                                            BookReadingDetails readingDetails,
+                                                            Collection<Bookshelf> bookshelves) {
+        Collection<String> tags = book.getTags()
                 .stream()
-                .map(BookGenre::getName)
+                .map(Tag::getName)
                 .toList();
 
-        List<BookRatingResponse> ratings = book.getBookRatings()
-                .stream()
-                .map(BookRatingMapper::toBookRatingResponse)
+        Long ratingTotal = ratingPage.getTotalElements();
+
+        List<BookshelfHeaderResponse> bookshelvesResponse = bookshelves.stream()
+                .map(BookshelfMapper::toBookshelfHeaderResponse)
                 .toList();
+
+        Page<BookRatingResponse> ratingPageResponse = ratingPage.map(BookMapper::toBookRatingResponse);
+
+
 
         return new BookDetailsResponse(
                 toBookResponse(book),
-                genres,
-                ratings
+                tags,
+                ratingAverage,
+                ratingTotal,
+                ratingPageResponse,
+                toBookReadingDetailsResponse(readingDetails),
+                bookshelvesResponse
         );
     }
+
+    public static BookRating toBookRating(BookRatingRequest bookRatingRequest, User user, Book book) {
+        return new BookRating(
+                bookRatingRequest.rating(),
+                bookRatingRequest.ratingJustification(),
+                user,
+                book
+        );
+    }
+
+    public static BookRatingResponse toBookRatingResponse(BookRating bookRating) {
+        UserHeaderResponse user = UserMapper.toUserHeaderResponse(bookRating.getUser());
+        return new BookRatingResponse(
+                bookRating.getId(),
+                user,
+                bookRating.getRating(),
+                bookRating.getRatingJustification(),
+                bookRating.getCreatedAt(),
+                bookRating.getUpdatedAt()
+        );
+    }
+
+    public static BookGenreResponse toBookGenreResponse(BookGenre bookGenre) {
+        return new BookGenreResponse(
+                bookGenre.getId(),
+                bookGenre.getName()
+        );
+    }
+
+    public static BookReadingDetailsResponse toBookReadingDetailsResponse(BookReadingDetails readingDetails) {
+        BookReadingStatus status = readingDetails.getFinishedAt() == null ? BookReadingStatus.READING : BookReadingStatus.FINISHED;
+        return new BookReadingDetailsResponse(
+                readingDetails.getCurrentPage(),
+                readingDetails.getProgressPercentage(),
+                status,
+                readingDetails.getStartedAt(),
+                readingDetails.getFinishedAt()
+        );
+    }
+
 }

@@ -8,7 +8,8 @@ public class AuthorMapper {
     private AuthorMapper() { }
 
     public static AuthorResponse toAuthorResponse(Author author) {
-        return new AuthorResponse(author.getId().toString(), author.getFullName());
+        String id = author.getId() == null ? author.getExternalApiId() : author.getId().toString();
+        return new AuthorResponse(id, author.getFullName(), null, null);
     }
 
     public static Author toAuthor(AuthorResponse authorResponse) {

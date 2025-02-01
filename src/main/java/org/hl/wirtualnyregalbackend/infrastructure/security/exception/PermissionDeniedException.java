@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.infrastructure.security.exception;
 
-import org.hl.wirtualnyregalbackend.infrastructure.security.ActionType;
-import org.hl.wirtualnyregalbackend.infrastructure.security.ResourceType;
+import org.hl.wirtualnyregalbackend.application.common.ActionType;
+import org.hl.wirtualnyregalbackend.infrastructure.common.ResourceType;
 
 public class PermissionDeniedException extends RuntimeException {
 

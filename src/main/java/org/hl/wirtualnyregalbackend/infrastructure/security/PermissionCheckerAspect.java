@@ -4,6 +4,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.hl.wirtualnyregalbackend.application.common.ActionType;
+import org.hl.wirtualnyregalbackend.infrastructure.common.ResourceType;
 import org.hl.wirtualnyregalbackend.infrastructure.security.annotation.RequiresPermission;
 import org.hl.wirtualnyregalbackend.infrastructure.security.exception.BadPermissionAccessConfiguration;
 import org.springframework.security.core.Authentication;
@@ -85,20 +87,7 @@ public class PermissionCheckerAspect {
         Class<?> clazz = joinPoint.getTarget().getClass();
         ResourceType resourceType = requiresPermission.resourceType();
         if(resourceType.equals(ResourceType.GET_FROM_CLASS_NAME)) {
-           String className = clazz.getSimpleName().toUpperCase();
-            if(className.contains("BOOKSHELF")) {
-                return ResourceType.BOOKSHELF;
-            } else if(className.contains("BOOK_RATING")) {
-                return ResourceType.BOOK_RATING;
-            } else if(className.contains("BOOK")) {
-                return ResourceType.BOOK;
-            } else if(className.contains("AUTHOR")) {
-                return ResourceType.AUTHOR;
-            } else if(className.contains("USER")) {
-                return ResourceType.USER;
-            } else {
-                throw new BadPermissionAccessConfiguration("Could not resolve class name=%s".formatted(className));
-            }
+            resourceType = resourceType.resolveResourceTypeFromClass(clazz);
         }
         return resourceType;
     }

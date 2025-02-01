@@ -1,14 +1,15 @@
 package org.hl.wirtualnyregalbackend.infrastructure.security;
 
+import org.hl.wirtualnyregalbackend.application.common.ActionType;
+import org.hl.wirtualnyregalbackend.application.common.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.infrastructure.security.dto.LoginRequest;
 import org.hl.wirtualnyregalbackend.infrastructure.security.dto.LoginResponse;
-import org.hl.wirtualnyregalbackend.infrastructure.security.exception.InvalidSignInCredentialsException;
-import org.hl.wirtualnyregalbackend.infrastructure.security.exception.UsernameAlreadyExistsException;
 import org.hl.wirtualnyregalbackend.infrastructure.security.jwt.JwtService;
 import org.hl.wirtualnyregalbackend.infrastructure.user.UserDefaultConfigurer;
 import org.hl.wirtualnyregalbackend.infrastructure.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,7 +43,7 @@ class AuthorizationService {
 
     public LoginResponse registerUser(LoginRequest request) {
         if(userRepository.existsByUsername(request.username())) {
-            throw new UsernameAlreadyExistsException("Username: %s is already in database"
+            throw new InvalidRequestException(null, ActionType.CREATE, "Username: %s is already in database"
                     .formatted(request.username()));
         }
 
@@ -64,7 +65,8 @@ class AuthorizationService {
         try {
             authResult = authenticationManager.authenticate(authToken);
         } catch (AuthenticationException exc) {
-            throw new InvalidSignInCredentialsException();
+            throw new InvalidRequestException(null, ActionType.SIGN_IN,
+                    "Login failed due to invalid credentials.", HttpStatus.UNAUTHORIZED);
         }
 
         User user = (User) authResult.getPrincipal();

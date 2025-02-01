@@ -6,8 +6,4 @@ public class BadPermissionAccessConfiguration extends RuntimeException {
         super(message);
     }
 
-    public BadPermissionAccessConfiguration(String message, Throwable cause) {
-        super(message, cause);
-    }
-
 }

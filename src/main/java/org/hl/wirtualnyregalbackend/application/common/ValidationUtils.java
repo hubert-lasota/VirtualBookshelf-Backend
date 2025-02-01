@@ -1,22 +1,33 @@
 package org.hl.wirtualnyregalbackend.application.common;
 
-import java.util.Objects;
-
 public class ValidationUtils {
 
-    protected ValidationUtils() { }
+    private ValidationUtils() { }
 
-    public static String baseValidateString(String strToValidate, String fieldName)
-            throws IllegalArgumentException, NullPointerException {
-        Objects.requireNonNull(strToValidate, "%s cannot be null".formatted(fieldName));
-        if(strToValidate.isBlank()) {
-            throw new IllegalArgumentException("%s cannot be blank".formatted(fieldName));
+    public static String baseValidateString(String strToValidate, String fieldName) throws IllegalArgumentException {
+        ActionResult result = validateStringAndReturnResult(strToValidate, fieldName);
+        if(result.success()) {
+            return strToValidate;
+        } else {
+            throw new IllegalArgumentException(result.error().message());
         }
-        return strToValidate;
     }
 
-    public static boolean baseValidateString(String str) {
-        return str != null && !str.isBlank();
+    public static boolean baseValidateString(String strToValidate) throws IllegalArgumentException {
+        ActionResult result = validateStringAndReturnResult(strToValidate, "unknown");
+        return result.success();
+    }
+
+    public static ActionResult validateStringAndReturnResult(String strToValidate, String fieldName) {
+        if(strToValidate == null) {
+            ApiError error = new ApiError(fieldName, "%s is null".formatted(fieldName));
+            return new ActionResult(false, error);
+        }
+        if(strToValidate.isBlank()) {
+            ApiError error = new ApiError(fieldName, "%s cannot be blank".formatted(fieldName));
+            return new ActionResult(false, error);
+        }
+        return new ActionResult(true, null);
     }
 
 }

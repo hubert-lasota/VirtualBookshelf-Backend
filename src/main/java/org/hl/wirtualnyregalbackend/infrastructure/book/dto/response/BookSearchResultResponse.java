@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.infrastructure.book.dto;
+package org.hl.wirtualnyregalbackend.infrastructure.book.dto.response;
 
 import org.hl.wirtualnyregalbackend.infrastructure.author.dto.AuthorResponse;
 

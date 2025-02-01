@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.application.book.openlibrary;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hl.wirtualnyregalbackend.infrastructure.author.dto.AuthorResponse;
-import org.hl.wirtualnyregalbackend.infrastructure.book.dto.BookResponse;
+import org.hl.wirtualnyregalbackend.infrastructure.book.dto.response.BookResponse;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -28,6 +28,10 @@ class FoundBookByIdResponse {
     @JsonProperty("publish_date")
     private String publishedDate;
 
+    @JsonProperty("publishers")
+    private List<Publisher> publishers;
+
+
     @JsonProperty("cover")
     private Cover cover;
 
@@ -42,7 +46,9 @@ class FoundBookByIdResponse {
         Integer publishedYear = localDate.getYear();
         Instant publishedAt = localDate.atStartOfDay(ZoneOffset.UTC).toInstant();
         String coverUrl = cover.mediumCoverUrl;
-
+        List<String> publisherNames = publishers.stream()
+                .map(publisher -> publisher.name)
+                .toList();
 
 
         return new BookResponse(
@@ -50,6 +56,8 @@ class FoundBookByIdResponse {
                 isbn,
                 title,
                 authorsResponse,
+                publisherNames,
+                null,
                 null,
                 publishedAt,
                 publishedYear,
@@ -71,9 +79,14 @@ class FoundBookByIdResponse {
         private AuthorResponse toAuthorResponse(String openLibraryBaseUrl) {
             String id = url.replace(openLibraryBaseUrl + "/authors/", "")
                     .split("/")[0];
-            return new AuthorResponse(id, fullName);
+            return new AuthorResponse(id, fullName, null, null);
         }
 
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class Publisher {
+        String name;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

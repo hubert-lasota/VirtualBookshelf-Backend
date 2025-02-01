@@ -2,6 +2,8 @@ package org.hl.wirtualnyregalbackend.infrastructure.book;
 
 import org.hl.wirtualnyregalbackend.application.book.BookRating;
 import org.hl.wirtualnyregalbackend.application.book.exception.BookRatingNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,7 +13,7 @@ class JpaBookRatingRepository implements BookRatingRepository {
 
     private final SpringJpaBookRatingRepository bookRatingRepository;
 
-    public JpaBookRatingRepository(SpringJpaBookRatingRepository bookRatingRepository) {
+    JpaBookRatingRepository(SpringJpaBookRatingRepository bookRatingRepository) {
         this.bookRatingRepository = bookRatingRepository;
     }
 
@@ -35,6 +37,22 @@ class JpaBookRatingRepository implements BookRatingRepository {
     public boolean isBookRatingAuthor(Long bookRatingId, Long userId) {
         return bookRatingRepository.isBookRatingAuthor(bookRatingId, userId);
     }
+
+    @Override
+    public Float getBookRatingAverage(Long bookId) {
+        return bookRatingRepository.getBookRatingAverage(bookId);
+    }
+
+    @Override
+    public Page<BookRating> findRatingPageByBookId(Long bookId, Pageable pageable) {
+        return bookRatingRepository.findRatingPageByBookId(bookId, pageable);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return bookRatingRepository.existsById(id);
+    }
+
 }
 
 @Repository
@@ -42,4 +60,12 @@ interface SpringJpaBookRatingRepository extends JpaRepository<BookRating, Long> 
 
     @Query("select count(br) > 0 from BookRating br where br.id = :bookRatingId and br.user.id = :userId")
     boolean isBookRatingAuthor(Long bookRatingId, Long userId);
+
+
+    @Query("select avg(br.rating) from BookRating br where br.book.id = :bookId")
+    Float getBookRatingAverage(Long bookId);
+
+    @Query("select br from BookRating br where br.book.id = :bookId")
+    Page<BookRating> findRatingPageByBookId(Long bookId, Pageable pageable);
+
 }

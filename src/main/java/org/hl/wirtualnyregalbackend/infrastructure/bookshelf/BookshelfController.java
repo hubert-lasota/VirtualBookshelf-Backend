@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.hl.wirtualnyregalbackend.application.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.infrastructure.bookshelf.dto.BookshelfRequest;
 import org.hl.wirtualnyregalbackend.infrastructure.bookshelf.dto.BookshelfResponse;
+import org.hl.wirtualnyregalbackend.infrastructure.recommendation.Recommendation;
 import org.hl.wirtualnyregalbackend.infrastructure.security.User;
 import org.hl.wirtualnyregalbackend.infrastructure.security.annotation.RequiresPermission;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/bookshelf")
@@ -31,6 +34,7 @@ public class BookshelfController {
 
     @PostMapping("/addBook")
     @RequiresPermission(resourceIdParamName = "bookshelfId")
+    @Recommendation(resourceIdParamName = "bookId")
     public ResponseEntity<?> addBookToBookshelf(@RequestParam Long bookshelfId,
                                                 @RequestParam String bookId) {
         bookshelfService.addBookToBookshelf(bookshelfId, bookId);
@@ -49,7 +53,9 @@ public class BookshelfController {
     @GetMapping
     public ResponseEntity<?> findCurrentUserBookshelves(@AuthenticationPrincipal User user) {
         Collection<BookshelfResponse> bookshelves = bookshelfService.findUserBookshelves(user.getId());
-        return ResponseEntity.ok(bookshelves);
+        Map<String, Object> response = new HashMap<>();
+        response.put("bookshelves", bookshelves);
+        return ResponseEntity.ok(response);
     }
 
 }

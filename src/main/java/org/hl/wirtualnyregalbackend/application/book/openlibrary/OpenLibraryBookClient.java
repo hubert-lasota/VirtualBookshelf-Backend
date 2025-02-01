@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hl.wirtualnyregalbackend.application.book.BookClient;
 import org.hl.wirtualnyregalbackend.application.book.exception.BookNotFoundException;
-import org.hl.wirtualnyregalbackend.infrastructure.book.dto.BookResponse;
+import org.hl.wirtualnyregalbackend.infrastructure.book.dto.response.BookResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ class OpenLibraryBookClient implements BookClient {
     @Value("${book.client.id-prefix}")
     private String OPEN_LIBRARY_ID_PREFIX;
 
-    private final String SEARCH_ENDPOINT = "/search.json?q={query}";
+    private final String SEARCH_ENDPOINT = "/search.json";
     private final String SEARCH_AUTHORS_ENDPOINT = "/search.json?author={author}";
     private final String FIND_AUTHOR_WORKS_ENDPOINT = "/authors/{authorId}/works.json";
     private final String FIND_BOOK_BY_ISBN_ENDPOINT = "/api/books?bibkeys=ISBN:{isbn}&jscmd=details&format=json";
@@ -56,7 +56,7 @@ class OpenLibraryBookClient implements BookClient {
         try {
             body = restClient.get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/search.json")
+                            .path(SEARCH_ENDPOINT)
                             .queryParam("q", query)
                             .queryParam("limit", size)
                             .queryParam("page", page)
@@ -96,14 +96,14 @@ class OpenLibraryBookClient implements BookClient {
             FoundBookByIsbnResponse body = mapper.treeToValue(bookNode, FoundBookByIsbnResponse.class);
             return body.toBook(OPEN_LIBRARY_COVERS_URL, this::resolveLanguage);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error in finding Book by ISBN: {}", e.getMessage());
             throw new BookNotFoundException("Book with isbn:%s not found.".formatted(isbn), e);
         }
     }
 
     @Override
     public BookResponse findBookById(String id) throws BookNotFoundException {
-        BookNotFoundException bookNotFoundException = new BookNotFoundException("Book with id:%s not found.".formatted(id));
+        BookNotFoundException bookNotFoundException = new BookNotFoundException("Book with id='%s' not found.".formatted(id));
         if (id == null || !id.startsWith(OPEN_LIBRARY_ID_PREFIX)) {
             throw bookNotFoundException;
         }
@@ -121,11 +121,13 @@ class OpenLibraryBookClient implements BookClient {
             FoundBookByIdResponse body = mapper.treeToValue(bookNode, FoundBookByIdResponse.class);
             return body.toBookResponse(id, OPEN_LIBRARY_BASE_URL);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error in finding Book by ID: {}", e.getMessage());
             throw bookNotFoundException;
         }
     }
 
+
+    // TODO check the standard of pol, eng and find library to convert it to pl-PL Locale Tags
     private Locale resolveLanguage(String language) {
         switch (language) {
             case LANGUAGE_PL:

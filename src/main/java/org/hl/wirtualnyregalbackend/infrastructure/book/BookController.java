@@ -1,13 +1,16 @@
 package org.hl.wirtualnyregalbackend.infrastructure.book;
 
+import org.hl.wirtualnyregalbackend.application.book.BookRating;
 import org.hl.wirtualnyregalbackend.application.book.BookService;
-import org.hl.wirtualnyregalbackend.infrastructure.book.dto.BookRatingRequest;
-import org.hl.wirtualnyregalbackend.infrastructure.security.ResourceType;
+import org.hl.wirtualnyregalbackend.infrastructure.book.dto.request.BookRatingRequest;
+import org.hl.wirtualnyregalbackend.infrastructure.common.ResourceType;
+import org.hl.wirtualnyregalbackend.infrastructure.recommendation.Recommendation;
 import org.hl.wirtualnyregalbackend.infrastructure.security.User;
 import org.hl.wirtualnyregalbackend.infrastructure.security.annotation.RequiresPermission;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +25,13 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @PostMapping("/rating")
-    public ResponseEntity<?> addBookRating(@RequestParam String isbn,
+    @PostMapping("/{bookId}/rating")
+    @Recommendation(resourceIdParamName = "bookId")
+    public ResponseEntity<?> addBookRating(@PathVariable String bookId,
                                            @RequestBody BookRatingRequest request,
                                            @AuthenticationPrincipal User user) {
-        Long response = bookService.addBookRating(isbn, user, request);
-        return ResponseEntity.ok(response);
+        BookRating bookRating = bookService.addBookRating(bookId, user, request);
+        return ResponseEntity.ok(bookRating.getId());
     }
 
     @DeleteMapping("/rating/{bookRatingId}")
@@ -39,19 +43,19 @@ public class BookController {
 
     @GetMapping
     public ResponseEntity<?> searchBooks(@RequestParam("q") String query,
-                                         @RequestParam(required = false, defaultValue = "0") int page,
-                                         @RequestParam(required = false, defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+                                         @PageableDefault Pageable pageable) {
         Page<?> response = bookService.searchBooks(query, pageable);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
+    @Recommendation(resourceIdParamName = "id")
     public ResponseEntity<?> findBookById(@PathVariable String id,
-                                          @RequestParam(defaultValue = "true") boolean details) {
-        var response = details ? bookService.findBookResponseById(id) : bookService.findBookDetailsById(id);
+                                          @RequestParam(defaultValue = "true") boolean details,
+                                          @PageableDefault(size = 20) @Qualifier("rating") Pageable pageable,
+                                          @AuthenticationPrincipal User user) {
+        var response = details ? bookService.findBookResponseById(id) : bookService.findBookDetailsById(id, user, pageable);
         return ResponseEntity.ok(response);
     }
-
 
 }
