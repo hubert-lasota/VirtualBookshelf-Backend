@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.application.book.openlibrary;
+package org.hl.wirtualnyregalbackend.application.book.open_library;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,6 +44,7 @@ class OpenLibraryBookClient implements BookClient {
     OpenLibraryBookClient() {
         restClient = RestClient.builder()
                 .baseUrl("https://openlibrary.org")
+                .defaultHeader("User-Agent", "Virtual Bookshelf (email@example.com)")
                 .build();
     }
 

@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.application.book.openlibrary;
+package org.hl.wirtualnyregalbackend.application.book.open_library;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
