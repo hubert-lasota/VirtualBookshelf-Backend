@@ -14,8 +14,8 @@ import org.hl.wirtualnyregalbackend.tag.Tag;
 import java.time.Instant;
 import java.util.*;
 
-import static org.hl.wirtualnyregalbackend.common.ValidationUtils.baseValidateString;
-import static org.hl.wirtualnyregalbackend.common.ValidationUtils.validateStringAndReturnResult;
+import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
+import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.validateStringAndReturnResult;
 
 @Entity
 @Table(name = "book")

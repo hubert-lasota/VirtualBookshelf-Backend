@@ -2,7 +2,8 @@ package org.hl.wirtualnyregalbackend.publisher;
 
 import org.hl.wirtualnyregalbackend.common.ActionType;
 import org.hl.wirtualnyregalbackend.common.ApiError;
-import org.hl.wirtualnyregalbackend.common.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.publisher.dao.PublisherRepository;
 import org.hl.wirtualnyregalbackend.publisher.model.Publisher;
 import org.springframework.stereotype.Service;
 

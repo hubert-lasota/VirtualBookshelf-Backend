@@ -4,7 +4,7 @@ import org.hl.wirtualnyregalbackend.author.AuthorService;
 import org.hl.wirtualnyregalbackend.author.model.dto.AuthorResponse;
 import org.hl.wirtualnyregalbackend.book.dao.BookRepository;
 import org.hl.wirtualnyregalbackend.book.model.Book;
-import org.hl.wirtualnyregalbackend.common.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.publisher.PublisherService;
 import org.hl.wirtualnyregalbackend.publisher.model.Publisher;
 import org.springframework.lang.Nullable;

@@ -2,6 +2,7 @@ package org.hl.wirtualnyregalbackend.bookshelf;
 
 import org.hl.wirtualnyregalbackend.book.BookService;
 import org.hl.wirtualnyregalbackend.book.model.Book;
+import org.hl.wirtualnyregalbackend.bookshelf.dao.BookshelfRepository;
 import org.hl.wirtualnyregalbackend.bookshelf.exception.BookshelfNotFoundException;
 import org.hl.wirtualnyregalbackend.bookshelf.model.Bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfRequest;

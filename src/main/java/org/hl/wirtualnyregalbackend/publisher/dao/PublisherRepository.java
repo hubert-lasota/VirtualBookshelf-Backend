@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.publisher;
+package org.hl.wirtualnyregalbackend.publisher.dao;
 
 import org.hl.wirtualnyregalbackend.publisher.model.Publisher;
 

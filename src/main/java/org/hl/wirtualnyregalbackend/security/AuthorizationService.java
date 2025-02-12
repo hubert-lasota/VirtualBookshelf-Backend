@@ -1,14 +1,14 @@
 package org.hl.wirtualnyregalbackend.security;
 
 import org.hl.wirtualnyregalbackend.common.ActionType;
-import org.hl.wirtualnyregalbackend.common.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.security.jwt.JwtService;
 import org.hl.wirtualnyregalbackend.security.model.Authority;
 import org.hl.wirtualnyregalbackend.security.model.User;
 import org.hl.wirtualnyregalbackend.security.model.dto.LoginRequest;
 import org.hl.wirtualnyregalbackend.security.model.dto.LoginResponse;
 import org.hl.wirtualnyregalbackend.user.UserDefaultConfigurer;
-import org.hl.wirtualnyregalbackend.user.UserRepository;
+import org.hl.wirtualnyregalbackend.user.dao.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

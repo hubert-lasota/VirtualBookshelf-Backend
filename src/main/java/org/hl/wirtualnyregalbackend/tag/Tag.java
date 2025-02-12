@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
 
-import static org.hl.wirtualnyregalbackend.common.ValidationUtils.baseValidateString;
+import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
 
 @Entity
 @Table(name = "tag")

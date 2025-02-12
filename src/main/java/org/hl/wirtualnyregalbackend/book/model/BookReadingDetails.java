@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.book.model;
 import jakarta.persistence.*;
 import org.hl.wirtualnyregalbackend.common.ActionType;
 import org.hl.wirtualnyregalbackend.common.ApiError;
-import org.hl.wirtualnyregalbackend.common.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.RangeDate;
 import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
 import org.hl.wirtualnyregalbackend.security.model.User;

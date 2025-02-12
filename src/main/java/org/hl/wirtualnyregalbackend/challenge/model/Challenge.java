@@ -7,7 +7,7 @@ import org.hl.wirtualnyregalbackend.security.model.User;
 
 import java.time.Instant;
 
-import static org.hl.wirtualnyregalbackend.common.ValidationUtils.baseValidateString;
+import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
 
 @Entity
 public class Challenge extends UpdatableBaseEntity {

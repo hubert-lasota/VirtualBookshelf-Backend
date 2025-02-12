@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.common;
 
+import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;

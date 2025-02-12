@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
-import static org.hl.wirtualnyregalbackend.common.ValidationUtils.baseValidateString;
+import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
 
 @Entity
 @Table(name = "users")

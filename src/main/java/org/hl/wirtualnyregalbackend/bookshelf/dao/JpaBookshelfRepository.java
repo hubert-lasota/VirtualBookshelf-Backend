@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.bookshelf;
+package org.hl.wirtualnyregalbackend.bookshelf.dao;
 
 import org.hl.wirtualnyregalbackend.bookshelf.exception.BookshelfNotFoundException;
 import org.hl.wirtualnyregalbackend.bookshelf.model.Bookshelf;

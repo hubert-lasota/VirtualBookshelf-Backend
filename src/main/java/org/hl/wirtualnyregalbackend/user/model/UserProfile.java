@@ -8,7 +8,7 @@ import org.hl.wirtualnyregalbackend.security.model.User;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.hl.wirtualnyregalbackend.common.ValidationUtils.baseValidateString;
+import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
 
 @Entity
 @Table(name = "user_profile")

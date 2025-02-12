@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.security;
+package org.hl.wirtualnyregalbackend.security.permission_checker;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;

@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.security;
+package org.hl.wirtualnyregalbackend.security.permission_checker;
 
 import org.hl.wirtualnyregalbackend.book.dao.BookRepository;
 import org.hl.wirtualnyregalbackend.common.ActionType;

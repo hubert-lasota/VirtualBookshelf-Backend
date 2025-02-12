@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.user;
 
+import org.hl.wirtualnyregalbackend.user.dao.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

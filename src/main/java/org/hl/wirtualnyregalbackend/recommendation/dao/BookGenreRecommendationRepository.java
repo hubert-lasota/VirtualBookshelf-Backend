@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.recommendation;
+package org.hl.wirtualnyregalbackend.recommendation.dao;
 
 import org.hl.wirtualnyregalbackend.recommendation.model.BookGenreRecommendation;
 

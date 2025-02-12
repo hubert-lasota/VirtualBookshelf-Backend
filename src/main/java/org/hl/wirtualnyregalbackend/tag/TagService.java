@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.tag;
 import org.hl.wirtualnyregalbackend.author.model.Author;
 import org.hl.wirtualnyregalbackend.book.model.Book;
 import org.hl.wirtualnyregalbackend.common.ActionType;
-import org.hl.wirtualnyregalbackend.common.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 
 import java.util.List;
 

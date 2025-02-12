@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
 import org.hl.wirtualnyregalbackend.security.model.User;
 
-import static org.hl.wirtualnyregalbackend.common.ValidationUtils.baseValidateString;
+import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
 
 @Entity
 @Table(name = "author")

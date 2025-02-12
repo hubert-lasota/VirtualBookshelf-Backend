@@ -1,4 +1,7 @@
-package org.hl.wirtualnyregalbackend.common;
+package org.hl.wirtualnyregalbackend.common.util;
+
+import org.hl.wirtualnyregalbackend.common.ActionResult;
+import org.hl.wirtualnyregalbackend.common.ApiError;
 
 public class ValidationUtils {
 

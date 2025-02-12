@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.author;
+package org.hl.wirtualnyregalbackend.author.dao;
 
 import org.hl.wirtualnyregalbackend.author.model.Author;
 

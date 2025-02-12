@@ -5,7 +5,7 @@ import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
 
 import java.util.Objects;
 
-import static org.hl.wirtualnyregalbackend.common.ValidationUtils.baseValidateString;
+import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
 
 @Entity
 @Table(name = "user_profile_picture")

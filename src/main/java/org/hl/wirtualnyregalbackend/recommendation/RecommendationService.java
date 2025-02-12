@@ -3,6 +3,8 @@ package org.hl.wirtualnyregalbackend.recommendation;
 import org.hl.wirtualnyregalbackend.book.BookService;
 import org.hl.wirtualnyregalbackend.book.model.Book;
 import org.hl.wirtualnyregalbackend.book.model.BookGenre;
+import org.hl.wirtualnyregalbackend.recommendation.dao.BookGenreRecommendationRepository;
+import org.hl.wirtualnyregalbackend.recommendation.dao.BookRecommendationRepository;
 import org.hl.wirtualnyregalbackend.security.model.User;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

@@ -1,10 +1,11 @@
 package org.hl.wirtualnyregalbackend.author;
 
+import org.hl.wirtualnyregalbackend.author.dao.AuthorRepository;
 import org.hl.wirtualnyregalbackend.author.model.Author;
 import org.hl.wirtualnyregalbackend.author.model.dto.AuthorRequest;
 import org.hl.wirtualnyregalbackend.author.model.dto.AuthorResponse;
 import org.hl.wirtualnyregalbackend.common.ActionType;
-import org.hl.wirtualnyregalbackend.common.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

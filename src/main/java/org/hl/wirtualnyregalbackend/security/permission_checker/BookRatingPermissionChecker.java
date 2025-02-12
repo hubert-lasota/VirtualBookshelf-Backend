@@ -1,21 +1,18 @@
-package org.hl.wirtualnyregalbackend.security;
+package org.hl.wirtualnyregalbackend.security.permission_checker;
 
-import org.hl.wirtualnyregalbackend.bookshelf.BookshelfRepository;
+import org.hl.wirtualnyregalbackend.book.dao.BookRatingRepository;
 import org.hl.wirtualnyregalbackend.common.ActionType;
 import org.hl.wirtualnyregalbackend.common.ResourceType;
 import org.hl.wirtualnyregalbackend.security.exception.PermissionDeniedException;
 import org.hl.wirtualnyregalbackend.security.model.AuthorityType;
 import org.hl.wirtualnyregalbackend.security.model.User;
-import org.springframework.stereotype.Component;
 
+public class BookRatingPermissionChecker implements PermissionChecker {
 
-@Component
-public class BookshelfPermissionChecker implements PermissionChecker {
+    private final BookRatingRepository bookRatingRepository;
 
-    private BookshelfRepository bookshelfRepository;
-
-    public BookshelfPermissionChecker(BookshelfRepository bookshelfRepository) {
-        this.bookshelfRepository = bookshelfRepository;
+    public BookRatingPermissionChecker(BookRatingRepository bookRatingRepository) {
+        this.bookRatingRepository = bookRatingRepository;
     }
 
     @Override
@@ -29,11 +26,10 @@ public class BookshelfPermissionChecker implements PermissionChecker {
             return;
         }
 
-        Long bookshelfId = (Long) resourceId;
-        boolean isAuthor = bookshelfRepository.isUserBookshelfAuthor(bookshelfId, user.getId());
+        Long bookRatingId = (Long) resourceId;
+        boolean isAuthor = bookRatingRepository.isBookRatingAuthor(bookRatingId, user.getId());
         if(!isAuthor) {
-            throw new PermissionDeniedException(ResourceType.BOOKSHELF, actionType);
+            throw new PermissionDeniedException(ResourceType.BOOK_RATING, actionType);
         }
     }
-
 }

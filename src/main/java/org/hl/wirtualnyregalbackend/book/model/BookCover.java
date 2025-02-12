@@ -6,7 +6,7 @@ import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
 
 import java.util.Objects;
 
-import static org.hl.wirtualnyregalbackend.common.ValidationUtils.validateStringAndReturnResult;
+import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.validateStringAndReturnResult;
 
 @Entity
 @Table(name = "book_cover")
