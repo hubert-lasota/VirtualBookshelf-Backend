@@ -1,10 +1,9 @@
 package org.hl.wirtualnyregalbackend.challenge.model;
 
 import jakarta.persistence.*;
-import org.hl.wirtualnyregalbackend.common.ActionResult;
-import org.hl.wirtualnyregalbackend.common.ApiError;
-import org.hl.wirtualnyregalbackend.common.RangeDate;
-import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
+import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
+import org.hl.wirtualnyregalbackend.common.jpa.RangeDate;
 import org.hl.wirtualnyregalbackend.security.model.User;
 
 import java.time.Instant;
@@ -12,16 +11,16 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "challenge_participant_details")
-public class ChallengeParticipantDetails extends UpdatableBaseEntity {
+public class ChallengeParticipantDetails extends BaseEntity {
 
-    @Column(name = "status")
+    @Column
     @Enumerated(EnumType.STRING)
     private ChallengeStatus status;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "startAt", column = @Column(name = "started_at_timestamp")),
-            @AttributeOverride(name = "finishAt", column = @Column(name = "finished_at_timestamp"))
+            @AttributeOverride(name = "startAt", column = @Column(name = "started_at")),
+            @AttributeOverride(name = "finishAt", column = @Column(name = "finished_at"))
     })
     private RangeDate rangeDate;
 
@@ -35,30 +34,28 @@ public class ChallengeParticipantDetails extends UpdatableBaseEntity {
 
     protected ChallengeParticipantDetails() { }
 
-    public ChallengeParticipantDetails(Challenge challenge, RangeDate rangeDate, User user) {
+    public ChallengeParticipantDetails(Challenge challenge, Instant startedAt, User user) {
         this.challenge = Objects.requireNonNull(challenge, "challenge cannot be null");
         this.user = Objects.requireNonNull(user, "user cannot be null");
         this.status = ChallengeStatus.STARTED;
+        this.rangeDate = new RangeDate(startedAt, null);
     }
 
-    public ActionResult changeStatusToWon(Instant finishedAt) {
-        return changeStatusToOtherThanStarted(ChallengeStatus.WON, finishedAt);
+    public void changeStatusToWon(Instant finishedAt) {
+        changeStatusToOtherThanStarted(ChallengeStatus.WON, finishedAt);
     }
 
-    public ActionResult changeStatusToLost(Instant finishedAt) {
-        return changeStatusToOtherThanStarted(ChallengeStatus.LOST, finishedAt);
+    public void changeStatusToLost(Instant finishedAt) {
+        changeStatusToOtherThanStarted(ChallengeStatus.LOST, finishedAt);
     }
 
-    private ActionResult changeStatusToOtherThanStarted(ChallengeStatus newStatus, Instant finishedAt) {
+    private void changeStatusToOtherThanStarted(ChallengeStatus newStatus, Instant finishedAt) {
         if(status == ChallengeStatus.STARTED) {
             this.status = newStatus;
             Instant startedAt = rangeDate.getStartAt();
             this.rangeDate = new RangeDate(startedAt, finishedAt);
-            return new  ActionResult(true, null);
         } else {
-            ApiError error = new ApiError("status","You can't change status to %s if status is not STARTED".formatted(newStatus.toString()));
-            return new ActionResult(false, error);
-
+            throw new InvalidRequestException("You can't change status to %s if status is not STARTED".formatted(newStatus.toString()));
         }
     }
 

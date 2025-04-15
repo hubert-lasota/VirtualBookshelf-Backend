@@ -1,15 +1,13 @@
 package org.hl.wirtualnyregalbackend.user.model;
 
 import jakarta.persistence.*;
-import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
+import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 import java.util.Objects;
 
-import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
-
 @Entity
 @Table(name = "user_profile_picture")
-public class UserProfilePicture extends UpdatableBaseEntity {
+public class UserProfilePicture extends BaseEntity {
 
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
@@ -22,16 +20,18 @@ public class UserProfilePicture extends UpdatableBaseEntity {
 
 
     public UserProfilePicture(String profilePictureUrl) {
-        this.profilePictureUrl = baseValidateString(profilePictureUrl, "profilePictureUrl");
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     public UserProfilePicture(String profilePictureUrl, UserProfilePictureImg profilePictureImg) {
-        this.profilePictureUrl = baseValidateString(profilePictureUrl, "profilePictureUrl");
+        this.profilePictureUrl = profilePictureUrl;
         this.profilePictureImg = Objects.requireNonNull(profilePictureImg, "profilePictureImg cannot be null.");
     }
 
     public void updateProfilePictureUrl(String profilePictureUrl) {
-        this.profilePictureUrl = baseValidateString(profilePictureUrl, "profilePictureUrl");
+        if(profilePictureUrl != null) {
+            this.profilePictureUrl = profilePictureUrl;
+        }
     }
 
     public String getProfilePictureUrl() {

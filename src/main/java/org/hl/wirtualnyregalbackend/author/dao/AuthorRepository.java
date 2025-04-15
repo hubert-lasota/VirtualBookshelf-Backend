@@ -13,7 +13,6 @@ public interface AuthorRepository {
 
     List<Author> findByFullNamesIgnoreCase(Collection<String> fullNames);
 
-    boolean exitsByExternalApiId(String externalApiId);
 
     boolean exitsByFullName(String fullName);
 }

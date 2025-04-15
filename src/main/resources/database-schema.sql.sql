@@ -1,250 +1,344 @@
-create table users (
-	id bigint primary key identity(1, 1),
-	username varchar(50) not null unique,
-	password varchar(MAX) not null,
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE users
+(
+    id         BIGSERIAL PRIMARY KEY,
+    username   VARCHAR(50) NOT NULL UNIQUE,
+    password   TEXT        NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
-create table user_profile_picture_img (
-    id bigint primary key identity(1, 1),
-    img varbinary(MAX),
-    img_type varchar(MAX),
-    created_at_timestamp datetimeoffset not null,
+CREATE TABLE authority
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT      NOT NULL REFERENCES users (id),
+    authority  VARCHAR(50) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
-create table user_profile (
-    id bigint primary key identity(1, 1),
-    user_id bigint not null foreign key references users(id),
-    profile_picture_id bigint foreign key references user_profile_picture(id),
-    first_name nvarchar(MAX),
-    last_name nvarchar(MAX),
-    description nvarchar(MAX),
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE user_profile_picture
+(
+    id                  BIGSERIAL PRIMARY KEY,
+    profile_picture_url TEXT        NOT NULL,
+    created_at          TIMESTAMPTZ NOT NULL,
+    updated_at          TIMESTAMPTZ
 );
 
-create table user_profile_picture (
-    id bigint primary key identity(1, 1),
-    profile_picture_img_id bigint foreign key references user_profile_picture_img(id),
-    profile_picture_url nvarchar(MAX) not null,
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE user_profile_picture_img
+(
+    id                      BIGSERIAL PRIMARY KEY,
+    user_profile_picture_id BIGINT REFERENCES user_profile_picture (id),
+    img                     BYTEA,
+    img_type                TEXT,
+    created_at              TIMESTAMPTZ NOT NULL,
+    updated_at              TIMESTAMPTZ
 );
 
-create table user_book_genre_preferences (
-    user_profile_id bigint foreign key references user_profile(id),
-    book_genre_id bigint foreign key references book_genre(id),
-    primary key (user_profile_id, book_genre_id)
+CREATE TABLE user_profile
+(
+    id                 BIGSERIAL PRIMARY KEY,
+    user_id            BIGINT      NOT NULL REFERENCES users (id),
+    profile_picture_id BIGINT REFERENCES user_profile_picture (id),
+    first_name         TEXT,
+    last_name          TEXT,
+    description        TEXT,
+    created_at         TIMESTAMPTZ NOT NULL,
+    updated_at         TIMESTAMPTZ
 );
 
-create table authority (
-	id bigint primary key identity(1, 1),
-	user_id bigint not null foreign key references users(id),
-	authority varchar(50) not null,
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE user_genre_preferences
+(
+    user_profile_id BIGINT REFERENCES user_profile (id),
+    genre_id        BIGINT REFERENCES genre (id),
+    PRIMARY KEY (user_profile_id, genre_id)
 );
 
-create table book (
-    id bigint primary key identity(1, 1),
-    external_api_id nvarchar(MAX),
-    isbn varchar(20) not null unique,
-    title nvarchar(MAX),
-    published_year int,
-    published_at_timestamp datetimeoffset,
-    description nvarchar(MAX),
-    language nvarchar(MAX),
-    num_of_pages int,
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE book
+(
+    id              BIGSERIAL PRIMARY KEY,
+    order_in_series INT,
+    created_at      TIMESTAMPTZ NOT NULL,
+    updated_at      TIMESTAMPTZ
 );
 
-create table book_genre (
-    id bigint primary key identity(1, 1),
-    name nvarchar(max) not null,
+CREATE TABLE book_series
+(
+    id         BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
-create table book_book_genre (
-    book_id bigint foreign key references book(id),
-    book_genre_id bigint foreign key references book_genre(id),
-    primary key (book_id, book_genre_id)
+CREATE TABLE book_series_names
+(
+    id           BIGSERIAL PRIMARY KEY,
+    name         TEXT        NOT NULL,
+    language_tag TEXT        NOT NULL,
+    created_at   TIMESTAMPTZ NOT NULL,
+    updated_at   TIMESTAMPTZ
 );
 
-create table book_cover (
-    id bigint primary key identity(1, 1),
-    book_id bigint not null foreign key references book(id),
-    cover_url varchar(MAX),
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE book_book_series
+(
+    book_id        BIGINT REFERENCES book (id),
+    book_series_id BIGINT REFERENCES book_series (id),
+    PRIMARY KEY (book_id, book_series_id)
 );
 
-create table book_cover_img (
-    id bigint primary key identity(1, 1),
-    book_cover_id bigint not null foreign key references book_cover(id),
-    cover_img varbinary(MAX),
-    img_type varchar(MAX),
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE book_format
+(
+    id         BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
-create table book_reading_details (
-    id bigint primary key identity(1, 1),
-    user_id bigint not null foreign key references users(id),
-    book_id bigint not null foreign key references book(id),
-    current_page int,
-    progress_percentage int,
-    finished_at_timestamp datetimeoffset,
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE book_format_name
+(
+    id             BIGSERIAL PRIMARY KEY,
+    book_format_id BIGINT REFERENCES book_format (id),
+    name           TEXT        NOT NULL,
+    language_tag   TEXT        NOT NULL,
+    created_at     TIMESTAMPTZ NOT NULL,
+    updated_at     TIMESTAMPTZ
 );
 
-create table book_rating (
-    id bigint primary key identity(1, 1),
-    user_id bigint not null foreign key references users(id),
-    book_id bigint not null foreign key references book(id),
-    rating float not null,
-    rating_justification nvarchar(MAX),
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE book_edition
+(
+    id               BIGSERIAL PRIMARY KEY,
+    book_id          BIGINT REFERENCES book (id),
+    book_format_id   BIGINT REFERENCES book_format (id),
+    isbn             VARCHAR(13),
+    title            TEXT        NOT NULL,
+    publication_year INT,
+    language_tag     TEXT,
+    created_at       TIMESTAMPTZ NOT NULL,
+    updated_at       TIMESTAMPTZ
 );
 
-create table publisher (
-    id bigint primary key identity(1, 1),
-    name nvarchar(MAX) not null,
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE genre
+(
+    id         BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
-create table book_publisher (
-    book_id bigint foreign key references book(id),
-    publisher_id bigint foreign key references publisher(id),
-    primary key (book_id, publisher_id)
+CREATE TABLE genre_name
+(
+    id            BIGSERIAL PRIMARY KEY,
+    book_genre_id BIGINT REFERENCES genre (id),
+    created_at    TIMESTAMPTZ NOT NULL,
+    updated_at    TIMESTAMPTZ
 );
 
-create table author (
-    id bigint primary key identity(1, 1),
-    external_api_id nvarchar(MAX),
-    user_id bigint foreign key references users(id),
-    full_name nvarchar(MAX),
-    description nvarchar(MAX),
-    has_account bit not null,
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE book_genre
+(
+    book_id  BIGINT REFERENCES book (id),
+    genre_id BIGINT REFERENCES genre (id),
+    PRIMARY KEY (book_id, genre_id)
 );
 
-create table author_photo_img (
-    id bigint primary key identity(1, 1),
-    img varbinary(MAX) not null,
-    img_type varchar(50) not null,
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE book_cover_img
+(
+    id         BIGSERIAL PRIMARY KEY,
+    cover_img  BYTEA,
+    img_type   TEXT,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
-create table author_photo (
-    id bigint primary key identity(1, 1),
-    photo_img_id bigint foreign key references author_photo_img(id),
-    photo_url varchar(max) not null,
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
-)
-
-create table author_rating (
-    id bigint primary key identity(1, 1),
-    author_id bigint foreign key references author(id),
-    user_id bigint foreign key references users(id),
-    rating float not null,
-    rating_justification nvarchar(MAX),
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE book_cover
+(
+    id                BIGSERIAL PRIMARY KEY,
+    book_id           BIGINT      NOT NULL REFERENCES book (id),
+    book_cover_img_id BIGINT REFERENCES book_cover_img (id),
+    cover_url         TEXT        NOT NULL,
+    created_at        TIMESTAMPTZ NOT NULL,
+    updated_at        TIMESTAMPTZ
 );
 
-create table book_author (
-    book_id bigint foreign key references book(id),
-    author_id bigint foreign key references author(id),
-    primary key (book_id, author_id)
+
+CREATE TABLE book_review
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT      NOT NULL REFERENCES users (id),
+    book_id    BIGINT      NOT NULL REFERENCES book (id),
+    rating     FLOAT       NOT NULL,
+    content    TEXT,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
-create table bookshelf (
-    id bigint primary key identity(1, 1),
-    user_id bigint not null foreign key references users(id),
-    name nvarchar(MAX) not null,
-    type nvarchar(MAX) not null,
-    description nvarchar(MAX),
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE publisher
+(
+    id         BIGSERIAL PRIMARY KEY,
+    name       TEXT        NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
-create table bookshelf_book (
-    bookshelf_id bigint foreign key references bookshelf(id),
-    book_id bigint foreign key references book(id),
-    primary key (bookshelf_id, book_id)
+CREATE TABLE book_edition_publisher
+(
+    book_edition_id BIGINT REFERENCES book_edition (id),
+    publisher_id    BIGINT REFERENCES publisher (id),
+    PRIMARY KEY (book_edition_id, publisher_id)
 );
 
-create table book_recommendation (
-    id bigint primary key identity(1, 1),
-    user_id bigint not null foreign key references users(id),
-    book_id bigint foreign key references book(id),
-    book_isbn nvarchar(20),
-    recommendation_reason nvarchar(MAX),
-    created_at_timestamp datetimeoffset not null,
+CREATE TABLE author
+(
+    id          BIGSERIAL PRIMARY KEY,
+    user_id     BIGINT REFERENCES users (id),
+    full_name   TEXT,
+    description TEXT,
+    created_at  TIMESTAMPTZ NOT NULL,
+    updated_at  TIMESTAMPTZ
 );
 
-create table book_genre_recommendation (
-    id bigint primary key identity(1, 1),
-    user_id bigint not null foreign key references users(id),
-    book_genre_id bigint not null foreign key references book_genre(id),
-    recommendation_reason nvarchar(MAX),
-    created_at_timestamp datetimeoffset not null
+CREATE TABLE author_photo_img
+(
+    id         BIGSERIAL PRIMARY KEY,
+    img        BYTEA       NOT NULL,
+    img_type   VARCHAR(50) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
-create table tag (
-    id bigint primary key identity(1, 1),
-    name nvarchar(50) not null unique,
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE author_photo
+(
+    id                  BIGSERIAL PRIMARY KEY,
+    author_photo_img_id BIGINT REFERENCES author_photo_img (id),
+    photo_url           TEXT        NOT NULL,
+    created_at          TIMESTAMPTZ NOT NULL,
+    updated_at          TIMESTAMPTZ
 );
 
-create table book_tag (
-    id bigint primary key identity(1, 1),
-    book_id bigint not null foreign key references book(id),
-    tag_id bigint not null foreign key references tag(id),
-    created_at_timestamp datetimeoffset not null
+CREATE TABLE book_author
+(
+    book_id   BIGINT REFERENCES book (id),
+    author_id BIGINT REFERENCES author (id),
+    PRIMARY KEY (book_id, author_id)
 );
 
-create table author_tag (
-    id bigint primary key identity(1, 1),
-    author_id bigint not null foreign key references author(id),
-    tag_id bigint not null foreign key references tag(id),
-    created_at_timestamp datetimeoffset not null
+CREATE TABLE author_review
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT      NOT NULL REFERENCES users (id),
+    author_id  BIGINT      NOT NULL REFERENCES author (id),
+    rating     FLOAT       NOT NULL,
+    content    TEXT,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
-create table challenge (
-    id bigint primary key identity(1, 1),
-    user_id bigint foreign key references users(id),
-    description nvarchar(MAX) not null,
-    start_at_timestamp datetimeoffset not null,
-    finish_at_timestamp datetimeoffset not null,
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+
+CREATE TABLE book_notes
+(
+    id              BIGSERIAL PRIMARY KEY,
+    book_edition_id BIGINT REFERENCES book_edition (id),
+    start_page      INT         NOT NULL,
+    end_page        INT         NOT NULL,
+    created_at      TIMESTAMPTZ NOT NULL,
+    updated_at      TIMESTAMPTZ
 );
 
-create table challenge_participant_details (
-    id bigint primary key identity(1, 1),
-    challenge_id bigint not null foreign key references challenge(id),
-    user_id bigint not null foreign key references users(id),
-    status nvarchar(50),
-    started_at_timestamp datetimeoffset not null,
-    finished_at_at_timestamp datetimeoffset,
-    created_at_timestamp datetimeoffset not null,
-    updated_at_timestamp datetimeoffset
+CREATE TABLE book_reading_details
+(
+    id                  BIGSERIAL PRIMARY KEY,
+    user_id             BIGINT      NOT NULL REFERENCES users (id),
+    book_id             BIGINT      NOT NULL REFERENCES book (id),
+    current_page        INT,
+    progress_percentage INT,
+    finished_at         TIMESTAMPTZ,
+    created_at          TIMESTAMPTZ NOT NULL,
+    updated_at          TIMESTAMPTZ
 );
 
-create table notification (
-    id bigint primary key identity(1, 1),
-    user_id bigint not null foreign key references users(id),
-    message nvarchar(MAX) not null,
-    is_read bit not null,
-    read_at_timestamp datetimeoffset,
-    created_at_timestamp datetimeoffset not null,
+CREATE TABLE bookshelf
+(
+    id          BIGSERIAL PRIMARY KEY,
+    user_id     BIGINT      NOT NULL REFERENCES users (id),
+    name        TEXT        NOT NULL,
+    type        TEXT        NOT NULL,
+    description TEXT,
+    created_at  TIMESTAMPTZ NOT NULL,
+    updated_at  TIMESTAMPTZ
+);
+
+CREATE TABLE bookshelf_book_edition
+(
+    bookshelf_id    BIGINT REFERENCES bookshelf (id),
+    book_edition_id BIGINT REFERENCES book_edition (id),
+    PRIMARY KEY (bookshelf_id, book_edition_id)
+);
+
+CREATE TABLE book_recommendation
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT      NOT NULL REFERENCES users (id),
+    book_id    BIGINT REFERENCES book (id),
+    created_at TIMESTAMPTZ NOT NULL
+);
+
+CREATE TABLE genre_recommendation
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT      NOT NULL REFERENCES users (id),
+    genre_id   BIGINT      NOT NULL REFERENCES genre (id),
+    created_at TIMESTAMPTZ NOT NULL
+);
+
+CREATE TABLE tag
+(
+    id         BIGSERIAL PRIMARY KEY,
+    name       VARCHAR(50) NOT NULL UNIQUE,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE book_tag
+(
+    id         BIGSERIAL PRIMARY KEY,
+    book_id    BIGINT      NOT NULL REFERENCES book (id),
+    tag_id     BIGINT      NOT NULL REFERENCES tag (id),
+    created_at TIMESTAMPTZ NOT NULL
+);
+
+CREATE TABLE author_tag
+(
+    id         BIGSERIAL PRIMARY KEY,
+    author_id  BIGINT      NOT NULL REFERENCES author (id),
+    tag_id     BIGINT      NOT NULL REFERENCES tag (id),
+    created_at TIMESTAMPTZ NOT NULL
+);
+
+CREATE TABLE challenge
+(
+    id          BIGSERIAL PRIMARY KEY,
+    user_id     BIGINT REFERENCES users (id),
+    description TEXT        NOT NULL,
+    start_at    TIMESTAMPTZ NOT NULL,
+    finish_at   TIMESTAMPTZ NOT NULL,
+    created_at  TIMESTAMPTZ NOT NULL,
+    updated_at  TIMESTAMPTZ
+);
+
+CREATE TABLE challenge_participant_details
+(
+    id           BIGSERIAL PRIMARY KEY,
+    challenge_id BIGINT      NOT NULL REFERENCES challenge (id),
+    user_id      BIGINT      NOT NULL REFERENCES users (id),
+    status       VARCHAR(50),
+    started_at   TIMESTAMPTZ NOT NULL,
+    finished_at  TIMESTAMPTZ,
+    created_at   TIMESTAMPTZ NOT NULL,
+    updated_at   TIMESTAMPTZ
+);
+
+CREATE TABLE notification
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT      NOT NULL REFERENCES users (id),
+    message    TEXT        NOT NULL,
+    is_read    BOOLEAN     NOT NULL,
+    read_at    TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );

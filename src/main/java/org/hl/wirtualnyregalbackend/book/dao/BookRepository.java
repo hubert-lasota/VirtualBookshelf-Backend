@@ -1,28 +1,20 @@
 package org.hl.wirtualnyregalbackend.book.dao;
 
-import org.hl.wirtualnyregalbackend.book.exception.BookNotFoundException;
-import org.hl.wirtualnyregalbackend.book.model.Book;
+import org.hl.wirtualnyregalbackend.book.model.dto.response.BookSearchResponseDto;
+import org.hl.wirtualnyregalbackend.book.model.entity.Book;
+import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface BookRepository {
 
     Book save(Book book);
 
-    Book findById(Long id) throws BookNotFoundException;
+    Book findById(Long id) throws EntityNotFoundException;
 
-    Optional<Book> findOptionalById(Long id);
-
-    Optional<Book> findOptionalByExternalApiId(String externalApiId);
-
-    Book findByExternalApiId(String externalApiId) throws BookNotFoundException;
-
-    Book findWithAllAssociationsById(Long id) throws BookNotFoundException;
-
-    Optional<Book> findOptionalWithAllAssociationsById(Long id);
-
-    Optional<Book> findOptionalWithAllAssociationsByExternalApiId(String externalApiId);
+    Page<BookSearchResponseDto> findByQuery(String query, Pageable pageable);
 
     List<Book> findByBookshelfId(Long bookshelfId);
 

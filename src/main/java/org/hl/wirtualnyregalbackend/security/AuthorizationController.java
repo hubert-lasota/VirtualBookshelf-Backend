@@ -1,9 +1,11 @@
 package org.hl.wirtualnyregalbackend.security;
 
-import org.hl.wirtualnyregalbackend.security.model.dto.LoginRequest;
-import org.hl.wirtualnyregalbackend.security.model.dto.LoginResponse;
+import org.hl.wirtualnyregalbackend.security.model.dto.UserCredentialsDto;
+import org.hl.wirtualnyregalbackend.security.model.dto.UserSignInResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -16,28 +18,22 @@ class AuthorizationController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<?> registerUser(@RequestBody LoginRequest request) {
-        LoginResponse response = authorizationService.registerUser(request);
-
-        return response != null ?
-                ResponseEntity.ok(response) :
-                ResponseEntity.badRequest().body(null);
+    public ResponseEntity<?> registerUser(@RequestBody UserCredentialsDto credentials) {
+        UserSignInResponseDto response = authorizationService.registerUser(credentials);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping(value = "/signIn")
-    public ResponseEntity<?> signIn(@RequestBody LoginRequest request) {
-        LoginResponse response = authorizationService.signIn(request);
-
-        return response != null ?
-                ResponseEntity.ok(response) :
-                ResponseEntity.badRequest().body(null);
+    public ResponseEntity<?> signIn(@RequestBody UserCredentialsDto credentials) {
+        UserSignInResponseDto response = authorizationService.signIn(credentials);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/isValid")
+    @GetMapping(value = "/isJwtValid")
     public ResponseEntity<?> isJwtValid(@RequestParam String jwt) {
         boolean isValid = authorizationService.isJwtValid(jwt);
-
-        return ResponseEntity.ok(isValid);
+        Map<String, Object> response = Map.of("isValid", isValid);
+        return ResponseEntity.ok(response);
     }
 
 }

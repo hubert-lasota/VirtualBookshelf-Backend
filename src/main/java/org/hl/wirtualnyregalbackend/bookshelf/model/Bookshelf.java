@@ -1,29 +1,26 @@
 package org.hl.wirtualnyregalbackend.bookshelf.model;
 
 import jakarta.persistence.*;
-import org.hl.wirtualnyregalbackend.book.model.Book;
-import org.hl.wirtualnyregalbackend.bookshelf.exception.InvalidBookshelfTypeException;
-import org.hl.wirtualnyregalbackend.common.ActionResult;
-import org.hl.wirtualnyregalbackend.common.ApiError;
-import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
+import org.hl.wirtualnyregalbackend.book.model.entity.Book;
+import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.security.model.User;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "bookshelf")
-public class Bookshelf extends UpdatableBaseEntity {
+public class Bookshelf extends BaseEntity {
 
-    @Column(name = "name", nullable = false)
+    @Column
     private String name;
 
-    @Column(name = "type", nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private BookshelfType type;
 
-    @Column(name = "description")
+    @Column
     private String description;
 
 
@@ -39,32 +36,25 @@ public class Bookshelf extends UpdatableBaseEntity {
 
     protected Bookshelf() { }
 
-    public Bookshelf(String name, String type, String description, User user) {
-        try {
-            this.type = BookshelfType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidBookshelfTypeException(type);
-        }
-        this.name = Objects.requireNonNull(name, "name cannot be null");
+    public Bookshelf(String name, BookshelfType type, String description, User user) {
+        this.name = name;
+        this.type = type;
         this.description = description;
-        this.user = Objects.requireNonNull(user, "user cannot be null");
+        this.user = user;
     }
 
-    public ActionResult addBook(Book book) {
-        Objects.requireNonNull(book, "book cannot be null");
+    public void addBook(Book book) {
         if(books.contains(book)) {
-            ApiError error = new ApiError("books", "Book is already in bookshelf");
-            return new ActionResult(false, error);
+            throw new InvalidRequestException("Book is already in bookshelf");
         }
         books.add(book);
-        return new ActionResult(true, null);
     }
 
-    public ActionResult removeBook(Long bookId) {
-        Objects.requireNonNull(bookId, "bookId cannot be null");
+    public void removeBook(Long bookId) {
         boolean isSuccess = books.removeIf(book -> book.getId().equals(bookId));
-        return isSuccess ? new ActionResult(true, null) :
-                new ActionResult(false, new ApiError("books", "Book is not in bookshelf"));
+        if(!isSuccess) {
+            throw new InvalidRequestException("Book is not in bookshelf");
+        }
     }
 
     public String getName() {

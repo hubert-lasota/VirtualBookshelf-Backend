@@ -1,15 +1,12 @@
 package org.hl.wirtualnyregalbackend.author.model;
 
 import jakarta.persistence.*;
-import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
+import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
-import java.util.Objects;
-
-import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
 
 @Entity
 @Table(name = "author_photo")
-public class AuthorPhoto extends UpdatableBaseEntity {
+public class AuthorPhoto extends BaseEntity {
 
     @Column
     private String photoUrl;
@@ -21,12 +18,12 @@ public class AuthorPhoto extends UpdatableBaseEntity {
     protected AuthorPhoto() { }
 
     public AuthorPhoto(String photoUrl) {
-        this.photoUrl = baseValidateString(photoUrl, "photoUrl");
+        this.photoUrl = photoUrl;
     }
 
     public AuthorPhoto(String photoUrl, AuthorPhotoImg photoImg) {
-        this.photoUrl = baseValidateString(photoUrl, "photoUrl");
-        this.photoImg = Objects.requireNonNull(photoImg, "photoImg cannot be null");
+        this.photoUrl = photoUrl;
+        this.photoImg = photoImg;
     }
 
     public String getPhotoUrl() {

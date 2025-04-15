@@ -1,12 +1,12 @@
 package org.hl.wirtualnyregalbackend.security;
 
-import org.hl.wirtualnyregalbackend.common.ActionType;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.security.jwt.JwtService;
 import org.hl.wirtualnyregalbackend.security.model.Authority;
+import org.hl.wirtualnyregalbackend.security.model.AuthorityName;
 import org.hl.wirtualnyregalbackend.security.model.User;
-import org.hl.wirtualnyregalbackend.security.model.dto.LoginRequest;
-import org.hl.wirtualnyregalbackend.security.model.dto.LoginResponse;
+import org.hl.wirtualnyregalbackend.security.model.dto.UserCredentialsDto;
+import org.hl.wirtualnyregalbackend.security.model.dto.UserSignInResponseDto;
 import org.hl.wirtualnyregalbackend.user.UserDefaultConfigurer;
 import org.hl.wirtualnyregalbackend.user.dao.UserRepository;
 import org.slf4j.Logger;
@@ -43,38 +43,36 @@ class AuthorizationService {
         this.userDefaultConfigurer = userDefaultConfigurer;
     }
 
-    public LoginResponse registerUser(LoginRequest request) {
-        if(userRepository.existsByUsername(request.username())) {
-            throw new InvalidRequestException(null, ActionType.CREATE, "Username: %s is already in database"
-                    .formatted(request.username()));
+    public UserSignInResponseDto registerUser(UserCredentialsDto credentials) {
+        if(userRepository.existsByUsername(credentials.username())) {
+            throw new InvalidRequestException("Username: %s is already in database".formatted(credentials.username()));
         }
 
-        Authority userRole = new Authority("USER");
-        String encodedPassword = passwordEncoder.encode(request.password());
-        User user = new User(request.username(), encodedPassword, userRole);
+        Authority userRole = new Authority(AuthorityName.USER);
+        String encodedPassword = passwordEncoder.encode(credentials.password());
+        User user = new User(credentials.username(), encodedPassword, userRole);
         userRole.addUser(user);
         userRepository.save(user);
         userDefaultConfigurer.configure(user);
         String jwt = jwtService.generateToken(user);
-        return new LoginResponse(user.getId(), user.getUsername(), jwt);
+        return new UserSignInResponseDto(user.getId(), user.getUsername(), jwt);
     }
 
-    public LoginResponse signIn(LoginRequest request) {
+    public UserSignInResponseDto signIn(UserCredentialsDto credentials) {
         UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(request.username(), request.password());
+                new UsernamePasswordAuthenticationToken(credentials.username(), credentials.password());
 
         Authentication authResult;
         try {
             authResult = authenticationManager.authenticate(authToken);
         } catch (AuthenticationException exc) {
-            throw new InvalidRequestException(null, ActionType.SIGN_IN,
-                    "Login failed due to invalid credentials.", HttpStatus.UNAUTHORIZED);
+            throw new InvalidRequestException("Login failed due to invalid credentials.", HttpStatus.UNAUTHORIZED);
         }
 
         User user = (User) authResult.getPrincipal();
 
         String jwt = jwtService.generateToken(user);
-        return new LoginResponse(user.getId(), user.getUsername(), jwt);
+        return new UserSignInResponseDto(user.getId(), user.getUsername(), jwt);
     }
 
     public boolean isJwtValid(String jwt) {

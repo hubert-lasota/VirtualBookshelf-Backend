@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.recommendation.model;
 
 import jakarta.persistence.*;
-import org.hl.wirtualnyregalbackend.book.model.Book;
+import org.hl.wirtualnyregalbackend.book.model.entity.Book;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.security.model.User;
 

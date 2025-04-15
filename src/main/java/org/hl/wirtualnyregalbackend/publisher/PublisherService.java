@@ -1,10 +1,9 @@
 package org.hl.wirtualnyregalbackend.publisher;
 
-import org.hl.wirtualnyregalbackend.common.ActionType;
-import org.hl.wirtualnyregalbackend.common.ApiError;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.publisher.dao.PublisherRepository;
 import org.hl.wirtualnyregalbackend.publisher.model.Publisher;
+import org.hl.wirtualnyregalbackend.publisher.model.dto.PublisherDto;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -22,15 +21,14 @@ public class PublisherService {
     }
 
 
-    public Publisher createPublisher(String publisherName) {
-        publisherName = publisherName.strip();
-        boolean exists = publisherRepository.existsByNameIgnoreCase(publisherName);
+    public PublisherDto createPublisher(PublisherDto publisherDto) {
+        boolean exists = publisherRepository.existsByNameIgnoreCase(publisherDto.name());
         if (exists) {
-            ApiError error = new ApiError("name", "Publisher with name='%s' already exists".formatted(publisherName));
-            throw new InvalidRequestException(List.of(error), ActionType.CREATE, "Publisher with %s name already exists".formatted(publisherName));
+            throw new InvalidRequestException( "Publisher with %s name already exists".formatted(publisherDto.name()));
         }
-        Publisher publisher = new Publisher(publisherName);
-        return publisherRepository.save(publisher);
+        Publisher publisher = PublisherMapper.toPublisher(publisherDto);
+        publisherRepository.save(publisher);
+        return PublisherMapper.toPublisherDto(publisher);
     }
 
     public Set<Publisher> findAndCreatePublishers(Collection<String> publisherNames) {

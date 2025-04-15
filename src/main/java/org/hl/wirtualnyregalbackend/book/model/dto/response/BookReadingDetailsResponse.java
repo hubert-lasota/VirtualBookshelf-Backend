@@ -7,6 +7,6 @@ import java.time.Instant;
 public record BookReadingDetailsResponse(Integer currentPage,
                                          Integer progressPercentage,
                                          BookReadingStatus status,
-                                         Instant startedAtTimestamp,
-                                         Instant finishedAtTimestamp) {
+                                         Instant startedAt,
+                                         Instant finishedAt) {
 }

@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.book.dao;
 
-import org.hl.wirtualnyregalbackend.book.model.BookReadingDetails;
+import org.hl.wirtualnyregalbackend.book_reading.model.BookReadingDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

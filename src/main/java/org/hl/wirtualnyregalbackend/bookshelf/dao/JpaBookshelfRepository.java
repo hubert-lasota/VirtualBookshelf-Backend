@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.bookshelf.dao;
 
-import org.hl.wirtualnyregalbackend.bookshelf.exception.BookshelfNotFoundException;
 import org.hl.wirtualnyregalbackend.bookshelf.model.Bookshelf;
+import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -31,7 +31,7 @@ class JpaBookshelfRepository implements BookshelfRepository {
     @Override
     public Bookshelf findWithBooksById(Long id) {
         return bookshelfRepository.findWithBooksById(id)
-                .orElseThrow(() -> new BookshelfNotFoundException("Bookshelf with id %d not found.".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException("Bookshelf with id %d not found.".formatted(id)));
     }
 
     @Override

@@ -33,11 +33,6 @@ class JpaAuthorRepository implements AuthorRepository {
     }
 
     @Override
-    public boolean exitsByExternalApiId(String externalApiId) {
-        return authorRepository.existsByExternalApiId(externalApiId);
-    }
-
-    @Override
     public boolean exitsByFullName(String fullName) {
         return authorRepository.existsByFullName(fullName);
     }
@@ -48,8 +43,6 @@ interface SpringJpaAuthorRepository extends JpaRepository<Author, Long> {
 
     @Query("select a from Author a where lower(a.fullName) in :fullNames")
     List<Author> findByFullNamesIgnoreCase(Collection<String> fullNames);
-
-    boolean existsByExternalApiId(String externalApiId);
 
     boolean existsByFullName(String fullName);
 

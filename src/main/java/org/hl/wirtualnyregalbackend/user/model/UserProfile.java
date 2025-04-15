@@ -1,18 +1,18 @@
 package org.hl.wirtualnyregalbackend.user.model;
 
 import jakarta.persistence.*;
-import org.hl.wirtualnyregalbackend.book.model.BookGenre;
-import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
+import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
+import org.hl.wirtualnyregalbackend.genre.model.Genre;
 import org.hl.wirtualnyregalbackend.security.model.User;
 
-import java.util.Objects;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
-import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
 
 @Entity
 @Table(name = "user_profile")
-public class UserProfile extends UpdatableBaseEntity {
+public class UserProfile extends BaseEntity {
 
     @Column(name = "first_name")
     private String firstName;
@@ -20,7 +20,7 @@ public class UserProfile extends UpdatableBaseEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "description")
+    @Column
     private String description;
 
     @OneToOne
@@ -37,17 +37,17 @@ public class UserProfile extends UpdatableBaseEntity {
             joinColumns = @JoinColumn(name = "user_profile_id"),
             inverseJoinColumns = @JoinColumn(name = "book_genre_id")
     )
-    private Set<BookGenre> bookGenrePreferences;
+    private Set<Genre> genrePreferences = new HashSet<>();
 
 
     protected UserProfile() { }
 
-    public UserProfile(String firstName, String lastName, String description, Set<BookGenre> bookGenrePreferences, User user) {
-        this.firstName = baseValidateString(firstName, "firstName");
-        this.lastName = baseValidateString(lastName, "lastName");
+    public UserProfile(String firstName, String lastName, String description, Set<Genre> genrePreferences, User user) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.description = description;
-        this.user = Objects.requireNonNull(user, "user cannot be null.");
-        this.bookGenrePreferences = Objects.requireNonNull(bookGenrePreferences, "bookGenrePreferences cannot be null.");
+        this.user = user;
+        this.genrePreferences = genrePreferences;
     }
 
     public String getFirstName() {
@@ -68,6 +68,10 @@ public class UserProfile extends UpdatableBaseEntity {
 
     public UserProfilePicture getProfilePicture() {
         return profilePicture;
+    }
+
+    public Set<Genre> getGenrePreferences() {
+        return Collections.unmodifiableSet(genrePreferences);
     }
 
 }

@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 class JpaBookRecommendationRepository implements BookRecommendationRepository {
 
-    private final SpringJpaBookGenreRecommendationRepository recommendationRepository;
+    private final SpringJpaGenreRecommendationRepository recommendationRepository;
 
-    public JpaBookRecommendationRepository(SpringJpaBookGenreRecommendationRepository recommendationRepository) {
+    public JpaBookRecommendationRepository(SpringJpaGenreRecommendationRepository recommendationRepository) {
         this.recommendationRepository = recommendationRepository;
     }
 

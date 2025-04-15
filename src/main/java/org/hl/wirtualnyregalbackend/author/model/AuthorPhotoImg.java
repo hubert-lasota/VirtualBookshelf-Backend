@@ -3,11 +3,11 @@ package org.hl.wirtualnyregalbackend.author.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
+import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 @Entity
 @Table(name = "author_photo_img")
-public class AuthorPhotoImg extends UpdatableBaseEntity {
+public class AuthorPhotoImg extends BaseEntity {
 
     @Column(name = "img")
     private byte[] img;

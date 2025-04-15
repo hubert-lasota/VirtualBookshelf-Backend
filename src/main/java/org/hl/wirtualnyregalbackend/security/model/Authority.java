@@ -12,17 +12,17 @@ import java.util.Objects;
 public class Authority extends BaseEntity implements GrantedAuthority {
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @Column(name = "authority")
+    @Column
     @Enumerated(EnumType.STRING)
-    private AuthorityType authority;
+    private AuthorityName name;
 
     protected Authority() { }
 
-    public Authority(String authority) {
-        this.authority = AuthorityType.valueOf(authority.toUpperCase());
+    public Authority(AuthorityName name) {
+        this.name = name;
     }
 
     public void addUser(User user) {
@@ -40,11 +40,11 @@ public class Authority extends BaseEntity implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return authority.toString();
+        return name.toString();
     }
 
-    public AuthorityType getAuthorityType() {
-        return authority;
+    public AuthorityName getName() {
+        return name;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Authority extends BaseEntity implements GrantedAuthority {
         return "Authority{" +
                 "id=" + id +
                 ", user=" + user +
-                ", authority='" + authority + '\'' +
+                ", authority='" + name + '\'' +
                 '}';
     }
 

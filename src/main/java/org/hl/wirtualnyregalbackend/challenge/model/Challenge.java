@@ -1,18 +1,17 @@
 package org.hl.wirtualnyregalbackend.challenge.model;
 
 import jakarta.persistence.*;
-import org.hl.wirtualnyregalbackend.common.RangeDate;
-import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
+import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
+import org.hl.wirtualnyregalbackend.common.jpa.RangeDate;
 import org.hl.wirtualnyregalbackend.security.model.User;
 
 import java.time.Instant;
 
-import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
 
 @Entity
-public class Challenge extends UpdatableBaseEntity {
+public class Challenge extends BaseEntity {
 
-    @Column(name = "description")
+    @Column
     private String description;
 
     @Embedded
@@ -30,23 +29,29 @@ public class Challenge extends UpdatableBaseEntity {
     protected Challenge() { }
 
     public Challenge(String description, Instant startAt, Instant finishAt, User user) {
-        this.description = baseValidateString(description, "description");
+        this.description = description;
         this.rangeDate = new RangeDate(startAt, finishAt);
         this.user = user;
     }
 
     public void updateDescription(String description) {
-        this.description = baseValidateString(description, "description");
+        if(description != null) {
+            this.description = description;
+        }
     }
 
     public void updateStartAt(Instant startAt) {
-        Instant finishAt = rangeDate.getEndAt();
-        this.rangeDate = new RangeDate(startAt, finishAt);
+        if(startAt != null) {
+            Instant finishAt = rangeDate.getEndAt();
+            this.rangeDate = new RangeDate(startAt, finishAt);
+        }
     }
 
     public void updateFinishAt(Instant finishAt) {
-        Instant startAt = rangeDate.getStartAt();
-        this.rangeDate = new RangeDate(startAt, finishAt);
+        if(finishAt != null) {
+            Instant startAt = rangeDate.getStartAt();
+            this.rangeDate = new RangeDate(startAt, finishAt);
+        }
     }
 
     public String getDescription() {

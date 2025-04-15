@@ -2,20 +2,18 @@ package org.hl.wirtualnyregalbackend.publisher.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
-
-import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
+import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 @Entity
 @Table(name = "publisher")
-public class Publisher extends UpdatableBaseEntity {
+public class Publisher extends BaseEntity {
 
     private String name;
 
     protected Publisher() { }
 
     public Publisher(String name) {
-        this.name = baseValidateString(name, "name");
+        this.name = name;
     }
 
 

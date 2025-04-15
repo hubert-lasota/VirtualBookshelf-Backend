@@ -1,23 +1,21 @@
 package org.hl.wirtualnyregalbackend.security.model;
 
 import jakarta.persistence.*;
-import org.hl.wirtualnyregalbackend.common.jpa.UpdatableBaseEntity;
+import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.user.model.UserProfile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
-import static org.hl.wirtualnyregalbackend.common.util.ValidationUtils.baseValidateString;
-
 @Entity
 @Table(name = "users")
-public class User extends UpdatableBaseEntity implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Column
     private String password;
 
     @OneToOne(mappedBy = "user")
@@ -30,10 +28,9 @@ public class User extends UpdatableBaseEntity implements UserDetails {
     protected User() { }
 
     public User(String username, String password, Authority... authorities) {
-        Objects.requireNonNull(authorities, "Authorities cannot be null.");
-        this.authorities.addAll(List.of(authorities));
-        this.username = baseValidateString(username, "username");
-        this.password = baseValidateString(password, "password");
+        this.username = username;
+        this.password = password;
+        this.authorities = Arrays.asList(authorities);
     }
 
 
