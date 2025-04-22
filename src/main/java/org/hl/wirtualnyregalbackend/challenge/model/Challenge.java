@@ -16,8 +16,8 @@ public class Challenge extends BaseEntity {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "startAt", column = @Column(name = "start_at_timestamp")),
-            @AttributeOverride(name = "endAt", column = @Column(name = "finish_at_timestamp"))
+        @AttributeOverride(name = "startAt", column = @Column(name = "start_at_timestamp")),
+        @AttributeOverride(name = "endAt", column = @Column(name = "finish_at_timestamp"))
     })
     private RangeDate rangeDate;
 
@@ -26,7 +26,8 @@ public class Challenge extends BaseEntity {
     private User user;
 
 
-    protected Challenge() { }
+    protected Challenge() {
+    }
 
     public Challenge(String description, Instant startAt, Instant finishAt, User user) {
         this.description = description;
@@ -35,20 +36,20 @@ public class Challenge extends BaseEntity {
     }
 
     public void updateDescription(String description) {
-        if(description != null) {
+        if (description != null) {
             this.description = description;
         }
     }
 
     public void updateStartAt(Instant startAt) {
-        if(startAt != null) {
+        if (startAt != null) {
             Instant finishAt = rangeDate.getEndAt();
             this.rangeDate = new RangeDate(startAt, finishAt);
         }
     }
 
     public void updateFinishAt(Instant finishAt) {
-        if(finishAt != null) {
+        if (finishAt != null) {
             Instant startAt = rangeDate.getStartAt();
             this.rangeDate = new RangeDate(startAt, finishAt);
         }

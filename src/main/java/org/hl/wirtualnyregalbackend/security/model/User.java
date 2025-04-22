@@ -25,7 +25,8 @@ public class User extends BaseEntity implements UserDetails {
     private List<Authority> authorities = new ArrayList<>();
 
 
-    protected User() { }
+    protected User() {
+    }
 
     public User(String username, String password, Authority... authorities) {
         this.username = username;
@@ -76,7 +77,7 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id + '}';
+            "id=" + id + '}';
     }
 
 }

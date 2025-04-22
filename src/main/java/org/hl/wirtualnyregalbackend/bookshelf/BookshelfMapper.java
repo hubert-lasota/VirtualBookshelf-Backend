@@ -1,7 +1,6 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
 import org.hl.wirtualnyregalbackend.book.BookMapper;
-import org.hl.wirtualnyregalbackend.book.model.dto.response.BookResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf.model.Bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfDto;
 import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfHeaderResponse;

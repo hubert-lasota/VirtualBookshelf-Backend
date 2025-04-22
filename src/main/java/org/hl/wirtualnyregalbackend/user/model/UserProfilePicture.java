@@ -16,7 +16,8 @@ public class UserProfilePicture extends BaseEntity {
     @JoinColumn(name = "profile_picture_img_id")
     private UserProfilePictureImg profilePictureImg;
 
-    protected UserProfilePicture() { }
+    protected UserProfilePicture() {
+    }
 
 
     public UserProfilePicture(String profilePictureUrl) {
@@ -29,7 +30,7 @@ public class UserProfilePicture extends BaseEntity {
     }
 
     public void updateProfilePictureUrl(String profilePictureUrl) {
-        if(profilePictureUrl != null) {
+        if (profilePictureUrl != null) {
             this.profilePictureUrl = profilePictureUrl;
         }
     }

@@ -31,7 +31,7 @@ class JpaBookshelfRepository implements BookshelfRepository {
     @Override
     public Bookshelf findWithBooksById(Long id) {
         return bookshelfRepository.findWithBooksById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Bookshelf with id %d not found.".formatted(id)));
+            .orElseThrow(() -> new EntityNotFoundException("Bookshelf with id %d not found.".formatted(id)));
     }
 
     @Override

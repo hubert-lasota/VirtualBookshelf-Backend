@@ -1,4 +1,5 @@
 package org.hl.wirtualnyregalbackend.common.validation;
+
 import jakarta.validation.Constraint;
 
 import java.lang.annotation.ElementType;
@@ -12,11 +13,15 @@ import java.lang.annotation.Target;
 public @interface StringConstraints {
 
     boolean allowBlank() default false;
+
     boolean allowNotTrimmed() default false;
+
     boolean allowWhitespace() default true;
+
     boolean allowMultipleSpacesBetweenWords() default false;
 
     String message() default "Invalid string";
+
     Class<?>[] groups() default {};
 
 }

@@ -15,7 +15,8 @@ public class AuthorPhotoImg extends BaseEntity {
     @Column(name = "img_type")
     private String imgType;
 
-    protected AuthorPhotoImg() { }
+    protected AuthorPhotoImg() {
+    }
 
     public AuthorPhotoImg(byte[] img, String imgType) {
         this.img = img;

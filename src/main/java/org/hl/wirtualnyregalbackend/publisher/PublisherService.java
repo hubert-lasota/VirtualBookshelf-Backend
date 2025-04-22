@@ -24,7 +24,7 @@ public class PublisherService {
     public PublisherDto createPublisher(PublisherDto publisherDto) {
         boolean exists = publisherRepository.existsByNameIgnoreCase(publisherDto.name());
         if (exists) {
-            throw new InvalidRequestException( "Publisher with %s name already exists".formatted(publisherDto.name()));
+            throw new InvalidRequestException("Publisher with %s name already exists".formatted(publisherDto.name()));
         }
         Publisher publisher = PublisherMapper.toPublisher(publisherDto);
         publisherRepository.save(publisher);
@@ -34,13 +34,13 @@ public class PublisherService {
     public Set<Publisher> findAndCreatePublishers(Collection<String> publisherNames) {
         List<Publisher> existingPublishers = publisherRepository.findByNamesIgnoreCase(publisherNames);
         List<String> existingNames = existingPublishers
-                .stream().map(Publisher::getName)
-                .toList();
+            .stream().map(Publisher::getName)
+            .toList();
 
         List<Publisher> newPublishers = publisherNames.stream()
-                .filter(name -> !existingNames.contains(name))
-                .map(Publisher::new)
-                .toList();
+            .filter(name -> !existingNames.contains(name))
+            .map(Publisher::new)
+            .toList();
 
         newPublishers = publisherRepository.saveAll(newPublishers);
 

@@ -6,7 +6,8 @@ import org.hl.wirtualnyregalbackend.author.model.dto.AuthorDto;
 
 public class AuthorMapper {
 
-    private AuthorMapper() { }
+    private AuthorMapper() {
+    }
 
     public static AuthorDto toAuthorDto(Author author) {
         return new AuthorDto(

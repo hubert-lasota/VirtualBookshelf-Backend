@@ -17,7 +17,7 @@ public class LocaleDeserializer extends JsonDeserializer<Locale> {
         try {
             return Locale.forLanguageTag(p.getText());
         } catch (IllegalArgumentException e) {
-            ApiError error = new ApiError(p.currentName(),e.getMessage());
+            ApiError error = new ApiError(p.currentName(), e.getMessage());
             throw new InvalidFieldsException(List.of(error));
         }
 

@@ -24,7 +24,7 @@ public class BookshelfBookController {
 
 
     @DeleteMapping
-    @PreAuthorize("has")
+    @PreAuthorize("hasPermission(#bookshelfId, 'BOOKSHELF', 'DELETE')")
     public ResponseEntity<?> removeBookFromBookshelf(@RequestParam Long bookshelfId,
                                                      @RequestParam Long bookId) {
         bookshelfService.removeBookFromBookshelf(bookshelfId, bookId);

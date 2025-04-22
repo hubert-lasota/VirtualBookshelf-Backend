@@ -14,7 +14,8 @@ public class LocalizedName {
     @Column(name = "language_tag")
     private Locale language;
 
-    protected LocalizedName() { }
+    protected LocalizedName() {
+    }
 
     public LocalizedName(String name, Locale language) {
         this.name = name;

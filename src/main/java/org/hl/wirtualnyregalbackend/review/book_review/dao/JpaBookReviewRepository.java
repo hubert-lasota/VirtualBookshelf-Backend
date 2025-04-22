@@ -25,7 +25,7 @@ class JpaBookReviewRepository implements BookReviewRepository {
     @Override
     public BookReview findById(Long id) {
         return bookReviewRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book Rating with id: %d not found".formatted(id)));
+            .orElseThrow(() -> new EntityNotFoundException("Book Rating with id: %d not found".formatted(id)));
     }
 
     @Override

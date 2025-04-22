@@ -33,14 +33,15 @@ public class UserProfile extends BaseEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "user_book_genre_preferences",
-            joinColumns = @JoinColumn(name = "user_profile_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_genre_id")
+        name = "user_book_genre_preferences",
+        joinColumns = @JoinColumn(name = "user_profile_id"),
+        inverseJoinColumns = @JoinColumn(name = "book_genre_id")
     )
     private Set<Genre> genrePreferences = new HashSet<>();
 
 
-    protected UserProfile() { }
+    protected UserProfile() {
+    }
 
     public UserProfile(String firstName, String lastName, String description, Set<Genre> genrePreferences, User user) {
         this.firstName = firstName;

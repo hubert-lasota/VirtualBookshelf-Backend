@@ -19,7 +19,8 @@ public class Authority extends BaseEntity implements GrantedAuthority {
     @Enumerated(EnumType.STRING)
     private AuthorityName name;
 
-    protected Authority() { }
+    protected Authority() {
+    }
 
     public Authority(AuthorityName name) {
         this.name = name;
@@ -27,7 +28,7 @@ public class Authority extends BaseEntity implements GrantedAuthority {
 
     public void addUser(User user) {
         Objects.requireNonNull(user, "User cannot be null.");
-        if(this.user == null) {
+        if (this.user == null) {
             this.user = user;
         } else {
             throw new RuntimeException("User has already been added.");
@@ -50,10 +51,10 @@ public class Authority extends BaseEntity implements GrantedAuthority {
     @Override
     public String toString() {
         return "Authority{" +
-                "id=" + id +
-                ", user=" + user +
-                ", authority='" + name + '\'' +
-                '}';
+            "id=" + id +
+            ", user=" + user +
+            ", authority='" + name + '\'' +
+            '}';
     }
 
 }

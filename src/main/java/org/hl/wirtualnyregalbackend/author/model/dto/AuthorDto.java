@@ -19,4 +19,5 @@ public record AuthorDto(
 
     @StringConstraints
     String description
-) { }
+) {
+}

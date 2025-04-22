@@ -1,8 +1,9 @@
 package org.hl.wirtualnyregalbackend.tag.dao;
 
 import org.hl.wirtualnyregalbackend.tag.model.Tag;
-
-import java.util.List;
+import org.hl.wirtualnyregalbackend.tag.model.TagFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface TagRepository {
 
@@ -10,19 +11,9 @@ public interface TagRepository {
 
     void saveBookTag(String tagName, Long bookId);
 
-    void saveBookTag(String tagName, String bookExternalApiId);
-
     void saveAuthorTag(String tagName, Long authorId);
 
-    void saveAuthorTag(String tagName, String authorExternalApiId);
-
-    List<Tag> findBookTags(Long bookId);
-
-    List<Tag> findBookTags(String bookExternalApiId);
-
-    List<Tag> findAuthorTags(Long authorId);
-
-    List<Tag> findAuthorTags(String authorExternalApiId);
+    Page<Tag> findByTagFilter(TagFilter tagFilter, Pageable pageable);
 
     boolean existsByNameIgnoreCase(String name);
 

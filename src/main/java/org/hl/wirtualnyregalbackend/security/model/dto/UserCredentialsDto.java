@@ -7,10 +7,10 @@ import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 
 @NotAllFieldsNull(groups = UpdateGroup.class)
 public record UserCredentialsDto(
-        @StringConstraints(groups = {CreateGroup.class, SignInGroup.class}, allowWhitespace = false)
-        String username,
+    @StringConstraints(groups = {CreateGroup.class, SignInGroup.class}, allowWhitespace = false)
+    String username,
 
-        @StringConstraints(groups = {CreateGroup.class, SignInGroup.class}, allowWhitespace = false)
-        String password
+    @StringConstraints(groups = {CreateGroup.class, SignInGroup.class}, allowWhitespace = false)
+    String password
 ) {
 }

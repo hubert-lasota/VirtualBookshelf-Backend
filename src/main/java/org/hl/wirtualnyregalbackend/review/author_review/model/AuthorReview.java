@@ -23,7 +23,8 @@ public class AuthorReview extends Review {
     @JoinColumn(name = "author_id")
     private Author author;
 
-    protected AuthorReview() { }
+    protected AuthorReview() {
+    }
 
     public AuthorReview(Float rating, String content, User user, Author author) {
         super(rating, content);

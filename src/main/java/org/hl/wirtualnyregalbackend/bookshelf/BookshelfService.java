@@ -40,7 +40,7 @@ public class BookshelfService {
         String toReadName;
         String readingName;
         String readName;
-        if(locale.toLanguageTag().equals("pl-PL")) {
+        if (locale.toLanguageTag().equals("pl-PL")) {
             toReadName = "Do przeczytania";
             readingName = "W trakcie czytania";
             readName = "Przeczytane";
@@ -72,8 +72,8 @@ public class BookshelfService {
         List<Bookshelf> bookshelves = bookshelfRepository.findByUserId(userId);
         Locale locale = LocaleContextHolder.getLocale();
         return bookshelves.stream()
-                .map(bookshelf -> BookshelfMapper.toBookshelfResponse(bookshelf, locale))
-                .toList();
+            .map(bookshelf -> BookshelfMapper.toBookshelfResponse(bookshelf, locale))
+            .toList();
     }
 
     public List<Bookshelf> findUserBookshelvesByBookId(Long bookId, User user) {

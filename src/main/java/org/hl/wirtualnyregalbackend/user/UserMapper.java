@@ -5,7 +5,8 @@ import org.hl.wirtualnyregalbackend.user.model.dto.UserHeaderResponseDto;
 
 public class UserMapper {
 
-    private UserMapper() { }
+    private UserMapper() {
+    }
 
     public static UserHeaderResponseDto toUserHeaderResponse(User user) {
         String profilePictureUrl = user.getUserProfile().getProfilePicture().getProfilePictureUrl();

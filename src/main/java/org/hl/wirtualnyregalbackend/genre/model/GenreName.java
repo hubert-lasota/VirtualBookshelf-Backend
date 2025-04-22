@@ -18,7 +18,8 @@ public class GenreName extends BaseEntity implements LocalizedNamedEntity {
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    protected GenreName() { }
+    protected GenreName() {
+    }
 
     public GenreName(LocalizedName localizedName, Genre genre) {
         this.localizedName = localizedName;

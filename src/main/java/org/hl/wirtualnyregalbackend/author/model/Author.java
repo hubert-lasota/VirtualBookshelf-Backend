@@ -23,7 +23,8 @@ public class Author extends BaseEntity {
     @JoinColumn(name = "photo_id")
     private AuthorPhoto photo;
 
-    protected Author() { }
+    protected Author() {
+    }
 
     public Author(String fullName, String description, AuthorPhoto authorPhoto, User user) {
         this.fullName = fullName;

@@ -28,6 +28,9 @@ public class BookEdition extends BaseEntity {
     @Column(name = "number_of_pages")
     private Integer numberOfPages;
 
+    @Column
+    private String description;
+
     @ManyToMany
     private Set<Publisher> publishers = new HashSet<>();
 
@@ -39,7 +42,8 @@ public class BookEdition extends BaseEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    protected BookEdition() { }
+    protected BookEdition() {
+    }
 
 
     public BookEdition(String isbn,
@@ -62,7 +66,7 @@ public class BookEdition extends BaseEntity {
 
 
     public void addPublisher(Publisher publisher) {
-        if(publishers.contains(publisher)) {
+        if (publishers.contains(publisher)) {
             throw new InvalidRequestException("Publisher: %s is already in book publisher.".formatted(publisher.getName()));
         }
         this.publishers.add(publisher);
@@ -70,9 +74,53 @@ public class BookEdition extends BaseEntity {
 
     public void removePublisher(Long publisherId) {
         boolean isSuccess = publishers.removeIf(publisher -> publisher.getId().equals(publisherId));
-        if(!isSuccess) {
+        if (!isSuccess) {
             throw new InvalidRequestException("Book has no publisher with id %d.".formatted(publisherId));
         }
+    }
+
+    public void updateIsbn(String isbn) {
+        if (isbn != null) {
+            this.isbn = isbn;
+        }
+    }
+
+    public void updateTitle(String title) {
+        if (title != null) {
+            this.title = title;
+        }
+    }
+
+    public void updatePublicationYear(Integer publicationYear) {
+        if (publicationYear != null) {
+            this.publicationYear = publicationYear;
+        }
+    }
+
+    public void updateLanguage(Locale language) {
+        if (language != null) {
+            this.language = language;
+        }
+    }
+
+    public void updateNumberOfPages(Integer numberOfPages) {
+        if (numberOfPages != null) {
+            this.numberOfPages = numberOfPages;
+        }
+    }
+
+    public void updateDescription(String description) {
+        if (description != null) {
+            this.description = description;
+        }
+    }
+
+    public void setFormat(BookFormat format) {
+        this.format = format;
+    }
+
+    public void setPublishers(Set<Publisher> publishers) {
+        this.publishers = publishers;
     }
 
     public String getTitle() {
@@ -101,6 +149,14 @@ public class BookEdition extends BaseEntity {
 
     public BookFormat getFormat() {
         return format;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
 }

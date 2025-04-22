@@ -15,7 +15,8 @@ public class AuthorPhoto extends BaseEntity {
     @JoinColumn(name = "photo_img_id")
     private AuthorPhotoImg photoImg;
 
-    protected AuthorPhoto() { }
+    protected AuthorPhoto() {
+    }
 
     public AuthorPhoto(String photoUrl) {
         this.photoUrl = photoUrl;

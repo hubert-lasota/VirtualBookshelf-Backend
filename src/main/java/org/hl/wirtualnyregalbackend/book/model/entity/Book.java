@@ -13,31 +13,29 @@ import java.util.*;
 @Table(name = "book")
 public class Book extends BaseEntity {
 
-    @Column(name = "order_in_series")
-    private Integer orderInSeries;
-
     @OneToOne(mappedBy = "book", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private BookCover cover;
 
     @OneToMany(mappedBy = "book", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookEdition> editions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "book")
+    private List<BookSeriesBookAssociation> series = new ArrayList<>();
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "book_book_genre",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_genre_id"))
+        joinColumns = @JoinColumn(name = "book_id"),
+        inverseJoinColumns = @JoinColumn(name = "book_genre_id"))
     private Set<Genre> genres = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "book_author",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "author_id"))
+        joinColumns = @JoinColumn(name = "book_id"),
+        inverseJoinColumns = @JoinColumn(name = "author_id"))
     private Set<Author> authors = new HashSet<>();
 
-    @ManyToMany(mappedBy = "books", fetch = FetchType.LAZY)
-    private Set<BookSeries> series = new HashSet<>();
-
-    protected Book() { }
+    protected Book() {
+    }
 
     public Book(String isbn,
                 String title,
@@ -61,7 +59,7 @@ public class Book extends BaseEntity {
 
     public void addGenre(Genre genre) {
         Objects.requireNonNull(genre, "genre cannot be null");
-        if(genres.contains(genre)) {
+        if (genres.contains(genre)) {
             throw new InvalidRequestException("Genre is already assigned to this Book");
         }
         genres.add(genre);
@@ -70,20 +68,20 @@ public class Book extends BaseEntity {
     public void removeGenre(Long bookGenreId) {
         Objects.requireNonNull(bookGenreId, "bookGenreId cannot be null");
         boolean isSuccess = this.genres.removeIf(genre -> genre.getId().equals(bookGenreId));
-        if(!isSuccess) {
+        if (!isSuccess) {
             throw new InvalidRequestException("Genre is not assigned to this book");
         }
     }
 
     public void updateAuthors(Set<Author> authors) {
-        if(authors != null) {
+        if (authors != null) {
             this.authors = authors;
         }
     }
 
     public void addAuthor(Author author) {
         Objects.requireNonNull(author, "author cannot be null");
-        if(authors.contains(author)) {
+        if (authors.contains(author)) {
             throw new InvalidRequestException("Author is already assigned to this book");
         }
         this.authors.add(author);
@@ -92,7 +90,7 @@ public class Book extends BaseEntity {
     public void removeAuthor(Long authorId) {
         Objects.requireNonNull(authorId, "authorId cannot be null");
         boolean isSuccess = authors.removeIf(author -> author.getId().equals(authorId));
-        if(!isSuccess) {
+        if (!isSuccess) {
             throw new InvalidRequestException("Author is not assigned to this book");
         }
     }
@@ -109,16 +107,12 @@ public class Book extends BaseEntity {
         return Collections.unmodifiableSet(authors);
     }
 
-    public Integer getOrderInSeries() {
-        return orderInSeries;
-    }
-
     public List<BookEdition> getEditions() {
         return Collections.unmodifiableList(editions);
     }
 
-    public Set<BookSeries> getSeries() {
-        return Collections.unmodifiableSet(series);
+    public List<BookSeriesBookAssociation> getSeries() {
+        return Collections.unmodifiableList(series);
     }
 
 }

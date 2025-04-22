@@ -22,7 +22,8 @@ public class GenreRecommendation extends BaseEntity {
     @JoinColumn(name = "book_genre_id")
     private Genre genre;
 
-    protected GenreRecommendation() { }
+    protected GenreRecommendation() {
+    }
 
     public GenreRecommendation(User user, Genre genre) {
         this.user = Objects.requireNonNull(user, "user cannot be null");

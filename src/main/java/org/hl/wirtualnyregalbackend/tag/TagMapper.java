@@ -5,7 +5,8 @@ import org.hl.wirtualnyregalbackend.tag.model.dto.TagDto;
 
 public class TagMapper {
 
-    private TagMapper() { }
+    private TagMapper() {
+    }
 
     public static TagDto toTagDto(Tag tag) {
         return new TagDto(tag.getId(), tag.getName());

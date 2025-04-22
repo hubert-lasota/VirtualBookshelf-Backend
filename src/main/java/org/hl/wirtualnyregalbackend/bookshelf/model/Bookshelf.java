@@ -30,11 +30,12 @@ public class Bookshelf extends BaseEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "bookshelf_book",
-            joinColumns = @JoinColumn(name = "bookshelf_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id"))
+        joinColumns = @JoinColumn(name = "bookshelf_id"),
+        inverseJoinColumns = @JoinColumn(name = "book_id"))
     private Set<Book> books;
 
-    protected Bookshelf() { }
+    protected Bookshelf() {
+    }
 
     public Bookshelf(String name, BookshelfType type, String description, User user) {
         this.name = name;
@@ -44,7 +45,7 @@ public class Bookshelf extends BaseEntity {
     }
 
     public void addBook(Book book) {
-        if(books.contains(book)) {
+        if (books.contains(book)) {
             throw new InvalidRequestException("Book is already in bookshelf");
         }
         books.add(book);
@@ -52,7 +53,7 @@ public class Bookshelf extends BaseEntity {
 
     public void removeBook(Long bookId) {
         boolean isSuccess = books.removeIf(book -> book.getId().equals(bookId));
-        if(!isSuccess) {
+        if (!isSuccess) {
             throw new InvalidRequestException("Book is not in bookshelf");
         }
     }

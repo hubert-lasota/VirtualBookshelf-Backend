@@ -33,7 +33,7 @@ class JpaGenreRepository implements GenreRepository {
 @Repository
 interface SpringJpaGenreRepository extends JpaRepository<Genre, Long> {
 
-    @Query("select bg from Genre bg where lower(bg.name) in :names")
+    @Query("select g from Genre g join g.names name where name in (:names)")
     List<Genre> findByNamesIgnoreCase(Collection<String> names);
 
 }

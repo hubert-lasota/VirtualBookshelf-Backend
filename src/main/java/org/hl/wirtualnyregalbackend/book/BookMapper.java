@@ -3,15 +3,13 @@ package org.hl.wirtualnyregalbackend.book;
 import org.hl.wirtualnyregalbackend.author.AuthorMapper;
 import org.hl.wirtualnyregalbackend.author.model.dto.AuthorDto;
 import org.hl.wirtualnyregalbackend.book.model.BookReadingStatus;
+import org.hl.wirtualnyregalbackend.book.model.dto.BookDto;
+import org.hl.wirtualnyregalbackend.book.model.dto.BookEditionDto;
 import org.hl.wirtualnyregalbackend.book.model.dto.BookFormatDto;
 import org.hl.wirtualnyregalbackend.book.model.dto.BookSeriesDto;
-import org.hl.wirtualnyregalbackend.book.model.dto.response.BookEditionResponseDto;
 import org.hl.wirtualnyregalbackend.book.model.dto.response.BookReadingDetailsResponse;
-import org.hl.wirtualnyregalbackend.book.model.dto.response.BookResponseDto;
-import org.hl.wirtualnyregalbackend.book.model.entity.Book;
-import org.hl.wirtualnyregalbackend.book.model.entity.BookEdition;
-import org.hl.wirtualnyregalbackend.book.model.entity.BookFormat;
-import org.hl.wirtualnyregalbackend.book.model.entity.BookSeries;
+import org.hl.wirtualnyregalbackend.book.model.dto.response.BookSearchResponseDto;
+import org.hl.wirtualnyregalbackend.book.model.entity.*;
 import org.hl.wirtualnyregalbackend.book_reading.model.BookReadingDetails;
 import org.hl.wirtualnyregalbackend.common.localization.LocalizationUtils;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
@@ -19,19 +17,21 @@ import org.hl.wirtualnyregalbackend.genre.model.dto.GenreDto;
 import org.hl.wirtualnyregalbackend.publisher.PublisherMapper;
 import org.hl.wirtualnyregalbackend.publisher.model.dto.PublisherDto;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
 
 public class BookMapper {
 
-    private BookMapper() { }
+    private BookMapper() {
+    }
 
 
-    public static BookResponseDto toBookResponseDto(Book book, Locale locale) {
-        List<BookEditionResponseDto> editions = book.getEditions()
+    public static BookDto toBookDto(Book book, Locale locale) {
+        List<BookEditionDto> editions = book.getEditions()
             .stream()
-            .map((edition) -> toBookEditionResponseDto(edition, locale))
+            .map((edition) -> toBookEditionDto(edition, locale))
             .toList();
 
         List<AuthorDto> authors = book.getAuthors()
@@ -50,19 +50,18 @@ public class BookMapper {
             .toList();
 
 
-        return new BookResponseDto(
+        return new BookDto(
             book.getId(),
             editions,
             authors,
             genres,
             series,
-            book.getOrderInSeries(),
             book.getCover().getCoverUrl()
         );
     }
 
 
-    public static BookEditionResponseDto toBookEditionResponseDto(BookEdition bookEdition, Locale locale) {
+    public static BookEditionDto toBookEditionDto(BookEdition bookEdition, Locale locale) {
         List<PublisherDto> publishers = bookEdition.getPublishers()
             .stream()
             .map(PublisherMapper::toPublisherDto)
@@ -70,14 +69,16 @@ public class BookMapper {
 
         BookFormatDto format = toBookFormatDto(bookEdition.getFormat(), locale);
 
-        return new BookEditionResponseDto(
+        return new BookEditionDto(
             bookEdition.getId(),
             bookEdition.getIsbn(),
             bookEdition.getTitle(),
             bookEdition.getPublicationYear(),
             bookEdition.getNumberOfPages(),
             publishers,
-            format
+            format,
+            bookEdition.getLanguage(),
+            bookEdition.getDescription()
         );
     }
 
@@ -87,9 +88,25 @@ public class BookMapper {
     }
 
 
-    public static BookSeriesDto toBookSeriesDto(BookSeries bookSeries, Locale locale) {
+    public static BookSeriesDto toBookSeriesDto(BookSeriesBookAssociation bookSeriesAssociation, Locale locale) {
+        BookSeries bookSeries = bookSeriesAssociation.getBookSeries();
         String localizedName = LocalizationUtils.getLocalizedName(bookSeries.getNames(), locale);
-        return new BookSeriesDto(bookSeries.getId(), localizedName);
+        return new BookSeriesDto(bookSeries.getId(), localizedName, bookSeriesAssociation.getBookOrder());
+    }
+
+    public static BookSearchResponseDto toBookSearchResponseDto(BookEdition bookEdition) {
+        Book book = bookEdition.getBook();
+        Collection<AuthorDto> authors = book.getAuthors()
+            .stream()
+            .map(AuthorMapper::toAuthorDto)
+            .toList();
+
+        return new BookSearchResponseDto(
+            book.getId(),
+            bookEdition.getTitle(),
+            authors,
+            book.getCover().getCoverUrl()
+        );
     }
 
 //    public static BookDetailsResponseDto toBookDetailsResponse(Book book,
@@ -126,11 +143,11 @@ public class BookMapper {
     public static BookReadingDetailsResponse toBookReadingDetailsResponse(BookReadingDetails readingDetails) {
         BookReadingStatus status = readingDetails.getFinishedAt() == null ? BookReadingStatus.READING : BookReadingStatus.FINISHED;
         return new BookReadingDetailsResponse(
-                readingDetails.getCurrentPage(),
-                readingDetails.getProgressPercentage(),
-                status,
-                readingDetails.getStartedAt(),
-                readingDetails.getFinishedAt()
+            readingDetails.getCurrentPage(),
+            readingDetails.getProgressPercentage(),
+            status,
+            readingDetails.getStartedAt(),
+            readingDetails.getFinishedAt()
         );
     }
 

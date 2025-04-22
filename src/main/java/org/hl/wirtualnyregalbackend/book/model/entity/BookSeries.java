@@ -13,9 +13,9 @@ public class BookSeries extends BaseEntity {
     private List<BookSeriesName> names;
 
     @ManyToMany()
-    @JoinTable(name="book_book_series",
-            joinColumns = @JoinColumn(name = "book_series_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id"))
+    @JoinTable(name = "book_book_series",
+        joinColumns = @JoinColumn(name = "book_series_id"),
+        inverseJoinColumns = @JoinColumn(name = "book_id"))
     private Set<Book> books;
 
 

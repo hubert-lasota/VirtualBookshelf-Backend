@@ -13,7 +13,8 @@ public class Tag extends BaseEntity {
     @Column
     private String name;
 
-    protected Tag() { }
+    protected Tag() {
+    }
 
     public Tag(String name) {
         this.name = name;

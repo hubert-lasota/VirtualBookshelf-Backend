@@ -22,7 +22,8 @@ public class BookReview extends Review {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    protected BookReview() { }
+    protected BookReview() {
+    }
 
     public BookReview(Float rating, String content, User user, Book book) {
         super(rating, content);

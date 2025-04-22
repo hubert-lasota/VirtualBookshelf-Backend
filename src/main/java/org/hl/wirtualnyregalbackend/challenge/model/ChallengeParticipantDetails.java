@@ -19,8 +19,8 @@ public class ChallengeParticipantDetails extends BaseEntity {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "startAt", column = @Column(name = "started_at")),
-            @AttributeOverride(name = "finishAt", column = @Column(name = "finished_at"))
+        @AttributeOverride(name = "startAt", column = @Column(name = "started_at")),
+        @AttributeOverride(name = "finishAt", column = @Column(name = "finished_at"))
     })
     private RangeDate rangeDate;
 
@@ -32,7 +32,8 @@ public class ChallengeParticipantDetails extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    protected ChallengeParticipantDetails() { }
+    protected ChallengeParticipantDetails() {
+    }
 
     public ChallengeParticipantDetails(Challenge challenge, Instant startedAt, User user) {
         this.challenge = Objects.requireNonNull(challenge, "challenge cannot be null");
@@ -50,7 +51,7 @@ public class ChallengeParticipantDetails extends BaseEntity {
     }
 
     private void changeStatusToOtherThanStarted(ChallengeStatus newStatus, Instant finishedAt) {
-        if(status == ChallengeStatus.STARTED) {
+        if (status == ChallengeStatus.STARTED) {
             this.status = newStatus;
             Instant startedAt = rangeDate.getStartAt();
             this.rangeDate = new RangeDate(startedAt, finishedAt);

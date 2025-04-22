@@ -6,8 +6,6 @@ import org.hl.wirtualnyregalbackend.tag.model.Tag;
 import org.hl.wirtualnyregalbackend.tag.model.dto.TagDto;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class TagService {
 
@@ -17,7 +15,7 @@ public class TagService {
         this.tagRepository = tagRepository;
     }
 
-//    public String createBookTag(String name, Book book) {
+    //    public String createBookTag(String name, Book book) {
 //        if(!tagRepository.existsByNameIgnoreCase(name)) {
 //            Tag tag = new Tag(name);
 //            tagRepository.save(tag);
@@ -44,28 +42,12 @@ public class TagService {
 //    }
 //
     public TagDto createTag(TagDto tagDto) {
-        if(tagRepository.existsByNameIgnoreCase(tagDto.name())) {
+        if (tagRepository.existsByNameIgnoreCase(tagDto.name())) {
             throw new InvalidRequestException("Tag with name=%s already exists.".formatted(tagDto.name()));
         }
         Tag tag = TagMapper.toTag(tagDto);
         tagRepository.save(tag);
         return TagMapper.toTagDto(tag);
-    }
-
-    public List<Tag> findBookTags(Long bookId) {
-        return tagRepository.findBookTags(bookId);
-    }
-
-    public List<Tag> findBookTags(String bookExternalApiId) {
-        return tagRepository.findBookTags(bookExternalApiId);
-    }
-
-    public List<Tag> findAuthorTags(Long authorId) {
-        return tagRepository.findAuthorTags(authorId);
-    }
-
-    public List<Tag> findAuthorTags(String authorExternalApiId) {
-        return tagRepository.findAuthorTags(authorExternalApiId);
     }
 
 }

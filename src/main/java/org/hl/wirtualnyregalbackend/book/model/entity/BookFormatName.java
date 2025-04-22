@@ -17,7 +17,8 @@ public class BookFormatName extends BaseEntity implements LocalizedNamedEntity {
     private BookFormat format;
 
 
-    protected BookFormatName() { }
+    protected BookFormatName() {
+    }
 
     public BookFormatName(LocalizedName localizedName, BookFormat format) {
         this.localizedName = localizedName;
@@ -25,7 +26,7 @@ public class BookFormatName extends BaseEntity implements LocalizedNamedEntity {
     }
 
     public void updateName(String name) {
-        if(name != null) {
+        if (name != null) {
             this.localizedName = new LocalizedName(name, localizedName.getLanguage());
         }
     }

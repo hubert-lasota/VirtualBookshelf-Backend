@@ -5,7 +5,8 @@ import org.hl.wirtualnyregalbackend.publisher.model.dto.PublisherDto;
 
 public class PublisherMapper {
 
-    private PublisherMapper() { }
+    private PublisherMapper() {
+    }
 
     public static PublisherDto toPublisherDto(Publisher publisher) {
         return new PublisherDto(publisher.getId(), publisher.getName());

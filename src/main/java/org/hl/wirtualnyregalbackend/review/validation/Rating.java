@@ -13,6 +13,7 @@ import java.lang.annotation.Target;
 public @interface Rating {
 
     String message() default "Invalid rating";
+
     Class<?>[] groups() default {};
 
 }

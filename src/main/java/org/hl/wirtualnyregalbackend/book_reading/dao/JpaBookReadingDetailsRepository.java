@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.book.dao;
+package org.hl.wirtualnyregalbackend.book_reading.dao;
 
 import org.hl.wirtualnyregalbackend.book_reading.model.BookReadingDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,7 +24,7 @@ class JpaBookReadingDetailsRepository implements BookReadingDetailsRepository {
 @Repository
 interface SpringJpaBookReadingDetailsRepository extends JpaRepository<BookReadingDetails, Long> {
 
-    @Query("select b from BookReadingDetails b where b.book.id = :bookId and b.user.id =:userId")
+    @Query("select b from BookReadingDetails b where b.bookEdition.id = :bookId and b.user.id =:userId")
     BookReadingDetails findByBookIdAndUserId(Long bookId, Long userId);
 
 }

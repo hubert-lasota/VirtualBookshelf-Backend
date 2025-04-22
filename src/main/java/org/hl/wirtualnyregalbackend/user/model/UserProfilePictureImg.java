@@ -15,7 +15,8 @@ public class UserProfilePictureImg extends BaseEntity {
     @Column(name = "img_type")
     private String imgType;
 
-    protected UserProfilePictureImg() { }
+    protected UserProfilePictureImg() {
+    }
 
     public UserProfilePictureImg(byte[] img, String imgType) {
         this.img = img;

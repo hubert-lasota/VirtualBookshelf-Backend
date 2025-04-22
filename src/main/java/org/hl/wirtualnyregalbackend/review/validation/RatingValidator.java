@@ -11,7 +11,7 @@ public class RatingValidator implements ConstraintValidator<Rating, Float> {
 
     @Override
     public boolean isValid(Float value, ConstraintValidatorContext context) {
-        if(value == null) return true;
+        if (value == null) return true;
 
         context.disableDefaultConstraintViolation();
         context.buildConstraintViolationWithTemplate("Rating must be one of %s".formatted(VALID_RATINGS))

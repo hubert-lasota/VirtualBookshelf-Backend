@@ -19,7 +19,8 @@ public class BookSeriesName extends BaseEntity implements LocalizedNamedEntity {
     @JoinColumn(name = "book_series_id")
     private BookSeries series;
 
-    protected BookSeriesName() { }
+    protected BookSeriesName() {
+    }
 
     public BookSeriesName(LocalizedName localizedName) {
         this.localizedName = localizedName;

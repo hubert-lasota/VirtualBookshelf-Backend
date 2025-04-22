@@ -30,12 +30,13 @@ public class BookReadingDetails extends BaseEntity {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "startAt", column = @Column(name = "started_at")),
-            @AttributeOverride(name = "endAt", column = @Column(name = "finished_at"))
+        @AttributeOverride(name = "startAt", column = @Column(name = "started_at")),
+        @AttributeOverride(name = "endAt", column = @Column(name = "finished_at"))
     })
     private RangeDate rangeDate;
 
-    protected BookReadingDetails() { }
+    protected BookReadingDetails() {
+    }
 
     public BookReadingDetails(Integer currentPage,
                               User user,
@@ -83,7 +84,7 @@ public class BookReadingDetails extends BaseEntity {
 
     private Integer validateCurrentPage(Integer currentPage) {
         int bookPages = bookEdition.getNumberOfPages();
-        if(currentPage > bookPages) {
+        if (currentPage > bookPages) {
             throw new InvalidRequestException("Current page is higher than book number of pages");
         }
         return currentPage;

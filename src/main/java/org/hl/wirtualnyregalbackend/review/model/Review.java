@@ -13,7 +13,8 @@ public abstract class Review extends BaseEntity {
     @Column
     private String content;
 
-    protected Review() { }
+    protected Review() {
+    }
 
     public Review(Float rating, String content) {
         this.rating = rating;
@@ -22,13 +23,13 @@ public abstract class Review extends BaseEntity {
 
 
     public void updateRating(Float rating) {
-        if(rating != null) {
+        if (rating != null) {
             this.rating = rating;
         }
     }
 
     public void updateContent(String content) {
-        if(content != null) {
+        if (content != null) {
             this.content = content;
         }
     }

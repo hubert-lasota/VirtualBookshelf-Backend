@@ -35,18 +35,18 @@ class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> {
-                    authorize
-                            .requestMatchers("/auth/**").permitAll()
-                            .anyRequest().authenticated();
-                })
-                .sessionManagement(session -> {
-                    session
-                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                })
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(authorize -> {
+                authorize
+                    .requestMatchers("/auth/**").permitAll()
+                    .anyRequest().authenticated();
+            })
+            .sessionManagement(session -> {
+                session
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            })
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
     }
 
     @Bean
@@ -56,8 +56,8 @@ class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder) {
+        UserDetailsService userDetailsService,
+        PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);

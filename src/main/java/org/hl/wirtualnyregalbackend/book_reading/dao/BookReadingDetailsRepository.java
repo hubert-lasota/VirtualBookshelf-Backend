@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.book.dao;
+package org.hl.wirtualnyregalbackend.book_reading.dao;
 
 import org.hl.wirtualnyregalbackend.book_reading.model.BookReadingDetails;
 

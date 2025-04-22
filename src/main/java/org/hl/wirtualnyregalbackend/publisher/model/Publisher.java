@@ -10,7 +10,8 @@ public class Publisher extends BaseEntity {
 
     private String name;
 
-    protected Publisher() { }
+    protected Publisher() {
+    }
 
     public Publisher(String name) {
         this.name = name;

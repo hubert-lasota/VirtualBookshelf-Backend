@@ -18,7 +18,8 @@ public class BookCover extends BaseEntity {
     @JoinColumn(name = "book_cover_img_id")
     private BookCoverImg coverImg;
 
-    protected BookCover() { }
+    protected BookCover() {
+    }
 
     public BookCover(String coverUrl, Book book, BookCoverImg coverImg) {
         this.coverUrl = coverUrl;
@@ -27,7 +28,7 @@ public class BookCover extends BaseEntity {
     }
 
     public void updateCoverUrl(String coverUrl) {
-        if(coverUrl != null) this.coverUrl = coverUrl;
+        if (coverUrl != null) this.coverUrl = coverUrl;
     }
 
     public String getCoverUrl() {

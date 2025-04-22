@@ -55,10 +55,9 @@ CREATE TABLE user_genre_preferences
 
 CREATE TABLE book
 (
-    id              BIGSERIAL PRIMARY KEY,
-    order_in_series INT,
-    created_at      TIMESTAMPTZ NOT NULL,
-    updated_at      TIMESTAMPTZ
+    id         BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
 CREATE TABLE book_series
@@ -79,9 +78,12 @@ CREATE TABLE book_series_names
 
 CREATE TABLE book_book_series
 (
+    id             BIGSERIAL PRIMARY KEY,
     book_id        BIGINT REFERENCES book (id),
     book_series_id BIGINT REFERENCES book_series (id),
-    PRIMARY KEY (book_id, book_series_id)
+    book_order     INT,
+    created_at     TIMESTAMPTZ NOT NULL,
+    updated_at     TIMESTAMPTZ
 );
 
 CREATE TABLE book_format
@@ -274,7 +276,8 @@ CREATE TABLE book_recommendation
     id         BIGSERIAL PRIMARY KEY,
     user_id    BIGINT      NOT NULL REFERENCES users (id),
     book_id    BIGINT REFERENCES book (id),
-    created_at TIMESTAMPTZ NOT NULL
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
 CREATE TABLE genre_recommendation
@@ -282,7 +285,8 @@ CREATE TABLE genre_recommendation
     id         BIGSERIAL PRIMARY KEY,
     user_id    BIGINT      NOT NULL REFERENCES users (id),
     genre_id   BIGINT      NOT NULL REFERENCES genre (id),
-    created_at TIMESTAMPTZ NOT NULL
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
 CREATE TABLE tag
@@ -298,7 +302,8 @@ CREATE TABLE book_tag
     id         BIGSERIAL PRIMARY KEY,
     book_id    BIGINT      NOT NULL REFERENCES book (id),
     tag_id     BIGINT      NOT NULL REFERENCES tag (id),
-    created_at TIMESTAMPTZ NOT NULL
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
 CREATE TABLE author_tag
@@ -306,7 +311,8 @@ CREATE TABLE author_tag
     id         BIGSERIAL PRIMARY KEY,
     author_id  BIGINT      NOT NULL REFERENCES author (id),
     tag_id     BIGINT      NOT NULL REFERENCES tag (id),
-    created_at TIMESTAMPTZ NOT NULL
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
 CREATE TABLE challenge

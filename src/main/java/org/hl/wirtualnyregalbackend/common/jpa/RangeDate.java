@@ -11,11 +11,12 @@ public class RangeDate {
     private Instant startAt;
     private Instant endAt;
 
-    protected RangeDate() { }
+    protected RangeDate() {
+    }
 
     public RangeDate(Instant startAt, Instant endAt) {
         this.startAt = Objects.requireNonNull(startAt, "startAt cannot be null");
-        if(endAt != null && (endAt.isBefore(startAt) || endAt.equals(startAt))) {
+        if (endAt != null && (endAt.isBefore(startAt) || endAt.equals(startAt))) {
             throw new IllegalArgumentException("finishAt must be after startAt");
         }
         this.endAt = endAt;

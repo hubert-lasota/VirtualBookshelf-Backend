@@ -44,7 +44,7 @@ class AuthorizationService {
     }
 
     public UserSignInResponseDto registerUser(UserCredentialsDto credentials) {
-        if(userRepository.existsByUsername(credentials.username())) {
+        if (userRepository.existsByUsername(credentials.username())) {
             throw new InvalidRequestException("Username: %s is already in database".formatted(credentials.username()));
         }
 
@@ -60,7 +60,7 @@ class AuthorizationService {
 
     public UserSignInResponseDto signIn(UserCredentialsDto credentials) {
         UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(credentials.username(), credentials.password());
+            new UsernamePasswordAuthenticationToken(credentials.username(), credentials.password());
 
         Authentication authResult;
         try {

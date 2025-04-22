@@ -1,8 +1,7 @@
 package org.hl.wirtualnyregalbackend.book;
 
-import org.hl.wirtualnyregalbackend.book.model.dto.response.BookResponseDto;
+import org.hl.wirtualnyregalbackend.common.PageResponseDto;
 import org.hl.wirtualnyregalbackend.security.model.User;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,7 @@ public class BookController {
     @GetMapping
     public ResponseEntity<?> searchBooks(@RequestParam String query,
                                          @PageableDefault Pageable pageable) {
-        Page<?> response = bookService.searchBooks(query, pageable);
+        PageResponseDto<?> response = bookService.searchBooks(query, pageable);
         return ResponseEntity.ok(response);
     }
 

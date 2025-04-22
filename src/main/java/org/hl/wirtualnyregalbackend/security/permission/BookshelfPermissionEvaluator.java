@@ -17,7 +17,7 @@ public class BookshelfPermissionEvaluator implements ResourcePermissionEvaluator
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetId, ActionType actionType) {
-        if(PermissionUtils.isAdmin(authentication)) {
+        if (PermissionUtils.isAdmin(authentication)) {
             return true;
         }
         Long bookshelfId = (Long) targetId;

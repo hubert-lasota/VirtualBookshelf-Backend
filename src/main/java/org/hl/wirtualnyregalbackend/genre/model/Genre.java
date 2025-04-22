@@ -17,7 +17,8 @@ public class Genre extends BaseEntity {
     @OneToMany
     private List<GenreName> names = new ArrayList<>();
 
-    protected Genre() { }
+    protected Genre() {
+    }
 
     public Genre(LocalizedName localizedName) {
         GenreName genreName = new GenreName(localizedName, this);

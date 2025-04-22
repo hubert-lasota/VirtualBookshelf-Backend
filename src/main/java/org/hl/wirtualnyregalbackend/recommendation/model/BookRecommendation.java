@@ -20,7 +20,8 @@ public class BookRecommendation extends BaseEntity {
     @Column(name = "recommendation_reason")
     private String reason;
 
-    protected BookRecommendation() { }
+    protected BookRecommendation() {
+    }
 
     public BookRecommendation(User user, Book book, String reason) {
         this.user = user;

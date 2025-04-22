@@ -18,7 +18,8 @@ public abstract class BaseEntity {
     @Column(name = "updated_at")
     protected Instant updatedAt;
 
-    protected BaseEntity() { }
+    protected BaseEntity() {
+    }
 
 
     @PrePersist

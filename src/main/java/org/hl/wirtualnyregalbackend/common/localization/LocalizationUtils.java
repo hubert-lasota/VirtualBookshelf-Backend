@@ -5,9 +5,10 @@ import java.util.Locale;
 
 public class LocalizationUtils {
 
-    private LocalizationUtils() { }
+    private LocalizationUtils() {
+    }
 
-    public static String getLocalizedName(Collection<? extends  LocalizedNamedEntity> localizedNamedEntities,
+    public static String getLocalizedName(Collection<? extends LocalizedNamedEntity> localizedNamedEntities,
                                           Locale locale) {
         return localizedNamedEntities.stream()
             .filter((name) -> name.getLocalizedName().getLanguage().equals(locale))

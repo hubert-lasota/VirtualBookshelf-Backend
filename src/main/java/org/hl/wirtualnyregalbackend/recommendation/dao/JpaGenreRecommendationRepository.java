@@ -30,10 +30,10 @@ class JpaGenreRecommendationRepository implements GenreRecommendationRepository 
 interface SpringJpaGenreRecommendationRepository extends JpaRepository<GenreRecommendation, Long> {
 
     @Query("""
-        select g.id 
-        from GenreRecommendation gr 
-        join Genre g 
-        where gr.user.id=:userId and g.id not in :genreIds
-    """)
+            select g.id 
+            from GenreRecommendation gr 
+            join Genre g 
+            where gr.user.id=:userId and g.id not in :genreIds
+        """)
     List<Long> findNonExistingGenreIds(List<Long> genreIds, Long userId);
 }
