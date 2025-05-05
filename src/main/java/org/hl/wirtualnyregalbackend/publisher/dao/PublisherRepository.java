@@ -2,17 +2,18 @@ package org.hl.wirtualnyregalbackend.publisher.dao;
 
 import org.hl.wirtualnyregalbackend.publisher.model.Publisher;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public interface PublisherRepository {
 
     Publisher save(Publisher publisher);
 
-    List<Publisher> saveAll(List<Publisher> publishers);
-
     boolean existsByNameIgnoreCase(String name);
 
-    List<Publisher> findByNamesIgnoreCase(Collection<String> names);
+    Optional<Publisher> findById(Long id);
+
+    Set<Publisher> findByIds(List<Long> ids);
 
 }

@@ -2,11 +2,11 @@ package org.hl.wirtualnyregalbackend.publisher.dao;
 
 import org.hl.wirtualnyregalbackend.publisher.model.Publisher;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Repository
 class JpaPublisherRepository implements PublisherRepository {
@@ -24,13 +24,13 @@ class JpaPublisherRepository implements PublisherRepository {
     }
 
     @Override
-    public List<Publisher> saveAll(List<Publisher> publishers) {
-        return publisherRepository.saveAll(publishers);
+    public Optional<Publisher> findById(Long id) {
+        return publisherRepository.findById(id);
     }
 
     @Override
-    public List<Publisher> findByNamesIgnoreCase(Collection<String> names) {
-        return publisherRepository.findByNamesIgnoreCase(names);
+    public Set<Publisher> findByIds(List<Long> ids) {
+        return publisherRepository.findByIds(ids);
     }
 
     @Override
@@ -43,8 +43,7 @@ class JpaPublisherRepository implements PublisherRepository {
 @Repository
 interface SpringJpaPublisherRepository extends JpaRepository<Publisher, Long> {
 
-    @Query("select p from Publisher p where lower(p.name) in :names")
-    List<Publisher> findByNamesIgnoreCase(Collection<String> names);
+    Set<Publisher> findByIds(List<Long> ids);
 
     boolean existsByNameIgnoreCase(String name);
 

@@ -1,4 +1,4 @@
 package org.hl.wirtualnyregalbackend.publisher.model.dto;
 
-public interface CreatePublisherGroup {
+public interface PublisherCreateGroup {
 }

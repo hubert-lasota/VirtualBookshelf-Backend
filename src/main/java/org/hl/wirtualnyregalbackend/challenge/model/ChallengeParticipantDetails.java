@@ -53,7 +53,7 @@ public class ChallengeParticipantDetails extends BaseEntity {
     private void changeStatusToOtherThanStarted(ChallengeStatus newStatus, Instant finishedAt) {
         if (status == ChallengeStatus.STARTED) {
             this.status = newStatus;
-            Instant startedAt = rangeDate.getStartAt();
+            Instant startedAt = rangeDate.getStartedAt();
             this.rangeDate = new RangeDate(startedAt, finishedAt);
         } else {
             throw new InvalidRequestException("You can't change status to %s if status is not STARTED".formatted(newStatus.toString()));

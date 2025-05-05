@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.book.model.dto;
+package org.hl.wirtualnyregalbackend.book_series.model.dto;
 
 import jakarta.validation.constraints.Min;
 import org.hl.wirtualnyregalbackend.common.validation.StringConstraints;

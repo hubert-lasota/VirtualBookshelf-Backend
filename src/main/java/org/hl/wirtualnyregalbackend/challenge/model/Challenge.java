@@ -43,14 +43,14 @@ public class Challenge extends BaseEntity {
 
     public void updateStartAt(Instant startAt) {
         if (startAt != null) {
-            Instant finishAt = rangeDate.getEndAt();
+            Instant finishAt = rangeDate.getEndedAt();
             this.rangeDate = new RangeDate(startAt, finishAt);
         }
     }
 
     public void updateFinishAt(Instant finishAt) {
         if (finishAt != null) {
-            Instant startAt = rangeDate.getStartAt();
+            Instant startAt = rangeDate.getStartedAt();
             this.rangeDate = new RangeDate(startAt, finishAt);
         }
     }
@@ -61,11 +61,11 @@ public class Challenge extends BaseEntity {
 
 
     public Instant getStartAt() {
-        return rangeDate.getStartAt();
+        return rangeDate.getStartedAt();
     }
 
     public Instant getFinishAt() {
-        return rangeDate.getEndAt();
+        return rangeDate.getEndedAt();
     }
 
     public User getUser() {

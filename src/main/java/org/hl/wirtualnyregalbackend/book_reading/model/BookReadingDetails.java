@@ -28,11 +28,11 @@ public class BookReadingDetails extends BaseEntity {
     @Column(name = "progress_percentage")
     private Integer progressPercentage;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private BookReadingStatus status;
+
     @Embedded
-    @AttributeOverrides({
-        @AttributeOverride(name = "startAt", column = @Column(name = "started_at")),
-        @AttributeOverride(name = "endAt", column = @Column(name = "finished_at"))
-    })
     private RangeDate rangeDate;
 
     protected BookReadingDetails() {
@@ -41,13 +41,14 @@ public class BookReadingDetails extends BaseEntity {
     public BookReadingDetails(Integer currentPage,
                               User user,
                               BookEdition bookEdition,
-                              Instant startedAt,
-                              Instant finishedAt) {
+                              RangeDate rangeDate,
+                              BookReadingStatus status) {
         this.user = Objects.requireNonNull(user, "user cannot be null.");
         this.bookEdition = Objects.requireNonNull(bookEdition, "book cannot be null.");
-        this.rangeDate = new RangeDate(startedAt, finishedAt);
+        this.rangeDate = rangeDate;
         this.currentPage = validateCurrentPage(currentPage);
         this.progressPercentage = calculateProgressPercentage(currentPage);
+        this.status = status;
     }
 
     public void updateCurrentPage(Integer currentPage) {
@@ -55,14 +56,10 @@ public class BookReadingDetails extends BaseEntity {
         this.progressPercentage = calculateProgressPercentage(currentPage);
     }
 
-    public void updateStartedAt(Instant startedAt) {
-        Instant finishedAt = rangeDate.getEndAt();
-        this.rangeDate = new RangeDate(startedAt, finishedAt);
-    }
-
-    public void updateFinishedAt(Instant finishedAt) {
-        Instant startedAt = rangeDate.getStartAt();
-        this.rangeDate = new RangeDate(startedAt, finishedAt);
+    public void setRangeDateIfNotNull(RangeDate rangeDate) {
+        if (rangeDate != null) {
+            this.rangeDate = rangeDate;
+        }
     }
 
     public Integer getProgressPercentage() {
@@ -74,13 +71,16 @@ public class BookReadingDetails extends BaseEntity {
     }
 
     public Instant getStartedAt() {
-        return rangeDate.getStartAt();
+        return rangeDate.getStartedAt();
     }
 
     public Instant getFinishedAt() {
-        return rangeDate.getEndAt();
+        return rangeDate.getEndedAt();
     }
 
+    public BookReadingStatus getStatus() {
+        return status;
+    }
 
     private Integer validateCurrentPage(Integer currentPage) {
         int bookPages = bookEdition.getNumberOfPages();

@@ -23,13 +23,13 @@ class AuthorizationController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(value = "/signIn")
+    @PostMapping(value = "/sign-in")
     public ResponseEntity<?> signIn(@RequestBody UserCredentialsDto credentials) {
         UserSignInResponseDto response = authorizationService.signIn(credentials);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/isJwtValid")
+    @GetMapping(value = "/verify-token-validity")
     public ResponseEntity<?> isJwtValid(@RequestParam String jwt) {
         boolean isValid = authorizationService.isJwtValid(jwt);
         Map<String, Object> response = Map.of("isValid", isValid);

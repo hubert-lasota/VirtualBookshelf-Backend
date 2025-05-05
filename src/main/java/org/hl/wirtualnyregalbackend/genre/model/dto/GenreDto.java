@@ -8,7 +8,7 @@ import org.hl.wirtualnyregalbackend.common.validation.StringConstraints;
 public record GenreDto(
     Long id,
 
-    @NotNull(groups = CreateGenreGroup.class)
+    @NotNull(groups = GenreCreateGroup.class)
     @StringConstraints
     String name
 ) {

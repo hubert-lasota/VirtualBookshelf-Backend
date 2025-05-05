@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.book.model.dto;
 
 import jakarta.validation.constraints.NotNull;
-import org.hl.wirtualnyregalbackend.book.model.dto.group.CreateBookFormatGroup;
+import org.hl.wirtualnyregalbackend.book.model.dto.group.BookFormatCreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.NotAllFieldsNull;
 import org.hl.wirtualnyregalbackend.common.validation.StringConstraints;
 
@@ -9,7 +9,7 @@ import org.hl.wirtualnyregalbackend.common.validation.StringConstraints;
 public record BookFormatDto(
     Long id,
 
-    @NotNull(groups = CreateBookFormatGroup.class)
+    @NotNull(groups = BookFormatCreateGroup.class)
     @StringConstraints
     String name) {
 }

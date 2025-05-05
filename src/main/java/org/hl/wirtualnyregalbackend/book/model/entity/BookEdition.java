@@ -52,8 +52,7 @@ public class BookEdition extends BaseEntity {
                        Locale language,
                        Integer numberOfPages,
                        Set<Publisher> publishers,
-                       BookFormat format,
-                       Book book) {
+                       BookFormat format) {
         this.title = title;
         this.isbn = isbn;
         this.publicationYear = publicationYear;
@@ -61,9 +60,12 @@ public class BookEdition extends BaseEntity {
         this.numberOfPages = numberOfPages;
         this.publishers = publishers;
         this.format = format;
-        this.book = book;
     }
 
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
 
     public void addPublisher(Publisher publisher) {
         if (publishers.contains(publisher)) {
@@ -79,48 +81,52 @@ public class BookEdition extends BaseEntity {
         }
     }
 
-    public void updateIsbn(String isbn) {
+    public void setIsbnIfNotNull(String isbn) {
         if (isbn != null) {
             this.isbn = isbn;
         }
     }
 
-    public void updateTitle(String title) {
+    public void setTitleIfNotNull(String title) {
         if (title != null) {
             this.title = title;
         }
     }
 
-    public void updatePublicationYear(Integer publicationYear) {
+    public void setPublicationYearIfNotNull(Integer publicationYear) {
         if (publicationYear != null) {
             this.publicationYear = publicationYear;
         }
     }
 
-    public void updateLanguage(Locale language) {
+    public void setLanguageIfNotNull(Locale language) {
         if (language != null) {
             this.language = language;
         }
     }
 
-    public void updateNumberOfPages(Integer numberOfPages) {
+    public void setNumberOfPagesIfNotNull(Integer numberOfPages) {
         if (numberOfPages != null) {
             this.numberOfPages = numberOfPages;
         }
     }
 
-    public void updateDescription(String description) {
+    public void setDescriptionIfNotNull(String description) {
         if (description != null) {
             this.description = description;
         }
     }
 
-    public void setFormat(BookFormat format) {
-        this.format = format;
+    public void setFormatIfNotNull(BookFormat format) {
+        if (format != null) {
+            this.format = format;
+        }
     }
 
-    public void setPublishers(Set<Publisher> publishers) {
-        this.publishers = publishers;
+    public void setPublishersIfNotNull(Set<Publisher> publishers) {
+        if (publishers != null) {
+            this.publishers = publishers;
+        }
     }
 
     public String getTitle() {

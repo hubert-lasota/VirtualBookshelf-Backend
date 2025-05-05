@@ -1,6 +1,6 @@
-package org.hl.wirtualnyregalbackend.book.model.dto.response;
+package org.hl.wirtualnyregalbackend.book_reading.model.dto;
 
-import org.hl.wirtualnyregalbackend.book.model.BookReadingStatus;
+import org.hl.wirtualnyregalbackend.book_reading.model.BookReadingStatus;
 
 import java.time.Instant;
 

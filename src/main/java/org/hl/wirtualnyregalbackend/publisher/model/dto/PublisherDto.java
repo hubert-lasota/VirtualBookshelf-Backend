@@ -8,7 +8,7 @@ import org.hl.wirtualnyregalbackend.common.validation.StringConstraints;
 public record PublisherDto(
     Long id,
 
-    @NotNull(groups = CreatePublisherGroup.class)
+    @NotNull(groups = PublisherCreateGroup.class)
     @StringConstraints
     String name) {
 

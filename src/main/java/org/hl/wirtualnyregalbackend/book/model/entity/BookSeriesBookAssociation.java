@@ -1,6 +1,7 @@
 package org.hl.wirtualnyregalbackend.book.model.entity;
 
 import jakarta.persistence.*;
+import org.hl.wirtualnyregalbackend.book_series.model.BookSeries;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 @Entity
@@ -15,14 +16,19 @@ public class BookSeriesBookAssociation extends BaseEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @Column
+    @Column(name = "book_order")
     private Integer bookOrder;
 
+    protected BookSeriesBookAssociation() {
+    }
 
-    public BookSeriesBookAssociation(BookSeries bookSeries, Book book, Integer bookOrder) {
+    public BookSeriesBookAssociation(BookSeries bookSeries, Integer bookOrder) {
         this.bookSeries = bookSeries;
-        this.book = book;
         this.bookOrder = bookOrder;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     public BookSeries getBookSeries() {

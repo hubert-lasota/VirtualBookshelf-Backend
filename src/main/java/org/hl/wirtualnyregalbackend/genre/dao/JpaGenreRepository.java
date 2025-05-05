@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 class JpaGenreRepository implements GenreRepository {
@@ -17,23 +17,17 @@ class JpaGenreRepository implements GenreRepository {
         this.bookGenreRepository = bookGenreRepository;
     }
 
-    @Override
-    public List<Genre> saveAll(List<Genre> genres) {
-        return bookGenreRepository.saveAll(genres);
-    }
 
     @Override
-    public List<Genre> findByNamesIgnoreCase(Collection<String> names) {
-        return bookGenreRepository.findByNamesIgnoreCase(names);
+    public Set<Genre> findByIds(List<Long> ids) {
+        return bookGenreRepository.findByIds(ids);
     }
-
-
 }
 
 @Repository
 interface SpringJpaGenreRepository extends JpaRepository<Genre, Long> {
 
-    @Query("select g from Genre g join g.names name where name in (:names)")
-    List<Genre> findByNamesIgnoreCase(Collection<String> names);
+    @Query("select g from Genre g where g.id in (:ids)")
+    Set<Genre> findByIds(List<Long> ids);
 
 }

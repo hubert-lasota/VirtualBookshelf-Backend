@@ -7,7 +7,7 @@ import java.util.List;
 
 public class RatingValidator implements ConstraintValidator<Rating, Float> {
 
-    public static final List<Float> VALID_RATINGS = List.of(1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f, 4.5f, 5f);
+    private final List<Float> VALID_RATINGS = List.of(1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f, 4.5f, 5f);
 
     @Override
     public boolean isValid(Float value, ConstraintValidatorContext context) {

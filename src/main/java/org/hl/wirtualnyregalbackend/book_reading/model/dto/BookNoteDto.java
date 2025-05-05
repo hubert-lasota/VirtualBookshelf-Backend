@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.book.model.dto.request;
+package org.hl.wirtualnyregalbackend.book_reading.model.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -7,7 +7,7 @@ import org.hl.wirtualnyregalbackend.common.validation.NotAllFieldsNull;
 import org.hl.wirtualnyregalbackend.common.validation.StringConstraints;
 
 @NotAllFieldsNull
-public record BookNoteMutationDto(
+public record BookNoteDto(
     @NotNull(groups = CreateGroup.class)
     @StringConstraints(allowNotTrimmed = true)
     String content,

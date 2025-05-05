@@ -21,14 +21,19 @@ public class BookCover extends BaseEntity {
     protected BookCover() {
     }
 
-    public BookCover(String coverUrl, Book book, BookCoverImg coverImg) {
+    public BookCover(String coverUrl, BookCoverImg coverImg) {
         this.coverUrl = coverUrl;
-        this.book = book;
         this.coverImg = coverImg;
     }
 
-    public void updateCoverUrl(String coverUrl) {
-        if (coverUrl != null) this.coverUrl = coverUrl;
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public void setCoverUrlIfNotNull(String coverUrl) {
+        if (coverUrl != null) {
+            this.coverUrl = coverUrl;
+        }
     }
 
     public String getCoverUrl() {

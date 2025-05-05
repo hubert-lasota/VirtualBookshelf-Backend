@@ -5,8 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Repository
 class JpaAuthorRepository implements AuthorRepository {
@@ -23,26 +24,27 @@ class JpaAuthorRepository implements AuthorRepository {
     }
 
     @Override
-    public List<Author> saveAll(Collection<Author> authors) {
-        return authorRepository.saveAll(authors);
-    }
-
-    @Override
-    public List<Author> findByFullNamesIgnoreCase(Collection<String> fullNames) {
-        return authorRepository.findByFullNamesIgnoreCase(fullNames);
-    }
-
-    @Override
     public boolean exitsByFullName(String fullName) {
         return authorRepository.existsByFullName(fullName);
     }
+
+    @Override
+    public Optional<Author> findById(Long id) {
+        return authorRepository.findById(id);
+    }
+
+    @Override
+    public Set<Author> findByIds(List<Long> ids) {
+        return authorRepository.findByIds(ids);
+    }
+
 }
 
 @Repository
 interface SpringJpaAuthorRepository extends JpaRepository<Author, Long> {
 
-    @Query("select a from Author a where lower(a.fullName) in :fullNames")
-    List<Author> findByFullNamesIgnoreCase(Collection<String> fullNames);
+    @Query("select a from Author a where a.id in (:ids)")
+    Set<Author> findByIds(List<Long> ids);
 
     boolean existsByFullName(String fullName);
 

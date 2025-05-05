@@ -248,7 +248,8 @@ CREATE TABLE book_reading_details
     book_id             BIGINT      NOT NULL REFERENCES book (id),
     current_page        INT,
     progress_percentage INT,
-    finished_at         TIMESTAMPTZ,
+    started_at          TIMESTAMPTZ,
+    ended_at            TIMESTAMPTZ,
     created_at          TIMESTAMPTZ NOT NULL,
     updated_at          TIMESTAMPTZ
 );
@@ -320,8 +321,8 @@ CREATE TABLE challenge
     id          BIGSERIAL PRIMARY KEY,
     user_id     BIGINT REFERENCES users (id),
     description TEXT        NOT NULL,
-    start_at    TIMESTAMPTZ NOT NULL,
-    finish_at   TIMESTAMPTZ NOT NULL,
+    started_at  TIMESTAMPTZ NOT NULL,
+    ended_at    TIMESTAMPTZ NOT NULL,
     created_at  TIMESTAMPTZ NOT NULL,
     updated_at  TIMESTAMPTZ
 );
@@ -333,11 +334,12 @@ CREATE TABLE challenge_participant_details
     user_id      BIGINT      NOT NULL REFERENCES users (id),
     status       VARCHAR(50),
     started_at   TIMESTAMPTZ NOT NULL,
-    finished_at  TIMESTAMPTZ,
+    ended_at     TIMESTAMPTZ,
     created_at   TIMESTAMPTZ NOT NULL,
     updated_at   TIMESTAMPTZ
 );
 
+-- TODO create notification types -> comment_notification etc
 CREATE TABLE notification
 (
     id         BIGSERIAL PRIMARY KEY,

@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.bookshelf.model.dto;
+package org.hl.wirtualnyregalbackend.bookshelf.model.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import org.hl.wirtualnyregalbackend.bookshelf.model.BookshelfType;
@@ -8,7 +8,7 @@ import org.hl.wirtualnyregalbackend.common.validation.StringConstraints;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 
 @NotAllFieldsNull(groups = UpdateGroup.class)
-public record BookshelfDto(
+public record BookshelfMutationDto(
     @NotNull(groups = CreateGroup.class)
     @StringConstraints
     String name,

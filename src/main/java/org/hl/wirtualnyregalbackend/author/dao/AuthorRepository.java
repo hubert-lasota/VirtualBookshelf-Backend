@@ -2,17 +2,18 @@ package org.hl.wirtualnyregalbackend.author.dao;
 
 import org.hl.wirtualnyregalbackend.author.model.Author;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public interface AuthorRepository {
 
     Author save(Author author);
 
-    List<Author> saveAll(Collection<Author> authors);
+    Optional<Author> findById(Long id);
 
-    List<Author> findByFullNamesIgnoreCase(Collection<String> fullNames);
-
+    Set<Author> findByIds(List<Long> ids);
 
     boolean exitsByFullName(String fullName);
+
 }

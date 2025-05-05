@@ -1,13 +1,12 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
-import org.hl.wirtualnyregalbackend.book.dao.BookRepository;
-import org.hl.wirtualnyregalbackend.book.model.entity.Book;
+import org.hl.wirtualnyregalbackend.book.BookService;
+import org.hl.wirtualnyregalbackend.book.model.entity.BookEdition;
 import org.hl.wirtualnyregalbackend.bookshelf.dao.BookshelfRepository;
 import org.hl.wirtualnyregalbackend.bookshelf.model.Bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf.model.BookshelfType;
-import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfDto;
-import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfResponse;
-import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfResponseDto;
+import org.hl.wirtualnyregalbackend.bookshelf.model.dto.request.BookshelfMutationDto;
+import org.hl.wirtualnyregalbackend.bookshelf.model.dto.response.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.security.model.User;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,18 +19,19 @@ import java.util.Locale;
 public class BookshelfService {
 
     private final BookshelfRepository bookshelfRepository;
-    private final BookRepository bookRepository;
+    private final BookService bookService;
 
-    public BookshelfService(BookshelfRepository bookshelfRepository, BookRepository bookRepository) {
+    public BookshelfService(BookshelfRepository bookshelfRepository, BookService bookService) {
         this.bookshelfRepository = bookshelfRepository;
-        this.bookRepository = bookRepository;
+        this.bookService = bookService;
     }
 
 
-    public BookshelfResponseDto createBookshelf(BookshelfDto bookshelfDto, User user) {
-        Bookshelf bookshelf = BookshelfMapper.toBookshelf(bookshelfDto, user);
+    public BookshelfResponseDto createBookshelf(BookshelfMutationDto bookshelfMutationDto, User user) {
+        Bookshelf bookshelf = BookshelfMapper.toBookshelf(bookshelfMutationDto, user);
         bookshelfRepository.save(bookshelf);
-        return BookshelfMapper.toBookshelfResponseDto(bookshelf);
+        Locale locale = LocaleContextHolder.getLocale();
+        return BookshelfMapper.toBookshelfResponseDto(bookshelf, locale);
     }
 
     public void addDefaultBookshelvesToUser(User user) {
@@ -55,24 +55,27 @@ public class BookshelfService {
         bookshelfRepository.saveAll(bookshelvesToSave);
     }
 
-    public void addBookToBookshelf(Long bookshelfId, Long bookId) {
-        Bookshelf bookshelf = bookshelfRepository.findWithBooksById(bookshelfId);
-        Book book = bookRepository.findById(bookId);
-        bookshelf.addBook(book);
+    public void addBookToBookshelf(Long bookshelfId, Long bookEditionId) {
+        Bookshelf bookshelf = bookshelfRepository.findById(bookshelfId);
+        BookEdition edition = bookService.findBookEditionEntityById(bookEditionId);
+        // TOdo add event
+        bookshelf.addBookEdition(edition);
         bookshelfRepository.save(bookshelf);
     }
 
-    public void removeBookFromBookshelf(Long bookshelfId, Long bookId) {
-        Bookshelf bookshelf = bookshelfRepository.findWithBooksById(bookshelfId);
-        bookshelf.removeBook(bookId);
+    public void removeBookFromBookshelf(Long bookshelfId, Long bookEditionId) {
+        Bookshelf bookshelf = bookshelfRepository.findById(bookshelfId);
+        BookEdition edition = bookService.findBookEditionEntityById(bookEditionId);
+        // TOdo add event
+        bookshelf.removeBookEdition(edition);
         bookshelfRepository.save(bookshelf);
     }
 
-    public List<BookshelfResponse> findUserBookshelves(Long userId) {
+    public List<BookshelfResponseDto> findUserBookshelves(Long userId) {
         List<Bookshelf> bookshelves = bookshelfRepository.findByUserId(userId);
         Locale locale = LocaleContextHolder.getLocale();
         return bookshelves.stream()
-            .map(bookshelf -> BookshelfMapper.toBookshelfResponse(bookshelf, locale))
+            .map(bookshelf -> BookshelfMapper.toBookshelfResponseDto(bookshelf, locale))
             .toList();
     }
 

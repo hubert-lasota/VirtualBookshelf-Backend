@@ -5,7 +5,6 @@ import org.hl.wirtualnyregalbackend.author.model.Author;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.genre.model.Genre;
-import org.hl.wirtualnyregalbackend.publisher.model.Publisher;
 
 import java.util.*;
 
@@ -37,24 +36,31 @@ public class Book extends BaseEntity {
     protected Book() {
     }
 
-    public Book(String isbn,
-                String title,
-                Set<Author> authors,
+    public Book(BookCover cover,
+                List<BookEdition> editions,
+                List<BookSeriesBookAssociation> series,
                 Set<Genre> genres,
-                Set<Publisher> publishers,
-                Locale language,
-                Integer numberOfPages,
-                Integer publicationYear,
-                BookFormat format) {
-        BookEdition edition = new BookEdition(isbn, title, publicationYear, language, numberOfPages, publishers, format, this);
-        editions.add(edition);
-        this.authors = authors;
+                Set<Author> authors) {
+        cover.setBook(this);
+        editions.forEach(e -> e.setBook(this));
+        series.forEach(s -> s.setBook(this));
+
+        this.cover = cover;
+        this.editions = editions;
+        this.series = series;
         this.genres = genres;
+        this.authors = authors;
     }
 
 
-    public void updateBookCover(String coverUrl) {
-        cover.updateCoverUrl(coverUrl);
+    public void setCoverIfNotNull(String coverUrl) {
+        cover.setCoverUrlIfNotNull(coverUrl);
+    }
+
+    public void setGenresIfNotNull(Set<Genre> genres) {
+        if (genres != null) {
+            this.genres = genres;
+        }
     }
 
     public void addGenre(Genre genre) {
@@ -73,7 +79,7 @@ public class Book extends BaseEntity {
         }
     }
 
-    public void updateAuthors(Set<Author> authors) {
+    public void setAuthorsIfNotNull(Set<Author> authors) {
         if (authors != null) {
             this.authors = authors;
         }
@@ -92,6 +98,20 @@ public class Book extends BaseEntity {
         boolean isSuccess = authors.removeIf(author -> author.getId().equals(authorId));
         if (!isSuccess) {
             throw new InvalidRequestException("Author is not assigned to this book");
+        }
+    }
+
+    public void setEditionsIfNotNull(List<BookEdition> editions) {
+        if (editions != null) {
+            editions.forEach(e -> e.setBook(this));
+            this.editions = editions;
+        }
+    }
+
+    public void setSeriesIfNotNull(List<BookSeriesBookAssociation> series) {
+        if (series != null) {
+            series.forEach(e -> e.setBook(this));
+            this.series = series;
         }
     }
 

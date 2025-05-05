@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.book.model.dto.response;
+package org.hl.wirtualnyregalbackend.book_reading.model.dto;
 
 import java.time.Instant;
 

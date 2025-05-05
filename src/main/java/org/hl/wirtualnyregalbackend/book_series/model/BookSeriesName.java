@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.book.model.entity;
+package org.hl.wirtualnyregalbackend.book_series.model;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

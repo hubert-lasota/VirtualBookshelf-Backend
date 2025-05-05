@@ -11,7 +11,7 @@ public interface BookshelfRepository {
 
     void saveAll(List<Bookshelf> entities);
 
-    Bookshelf findWithBooksById(Long id);
+    Bookshelf findById(Long id);
 
     List<Bookshelf> findByUserId(Long userId);
 
