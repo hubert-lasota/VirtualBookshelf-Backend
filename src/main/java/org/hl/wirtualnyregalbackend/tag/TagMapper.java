@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.tag;
 import org.hl.wirtualnyregalbackend.tag.model.Tag;
 import org.hl.wirtualnyregalbackend.tag.model.dto.TagDto;
 
-public class TagMapper {
+class TagMapper {
 
     private TagMapper() {
     }

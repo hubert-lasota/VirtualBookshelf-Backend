@@ -9,6 +9,14 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
+interface SpringJpaGenreRepository extends JpaRepository<Genre, Long> {
+
+    @Query("select g from Genre g where g.id in (:ids)")
+    Set<Genre> findByIds(List<Long> ids);
+
+}
+
+@Repository
 class JpaGenreRepository implements GenreRepository {
 
     private final SpringJpaGenreRepository bookGenreRepository;
@@ -22,12 +30,4 @@ class JpaGenreRepository implements GenreRepository {
     public Set<Genre> findByIds(List<Long> ids) {
         return bookGenreRepository.findByIds(ids);
     }
-}
-
-@Repository
-interface SpringJpaGenreRepository extends JpaRepository<Genre, Long> {
-
-    @Query("select g from Genre g where g.id in (:ids)")
-    Set<Genre> findByIds(List<Long> ids);
-
 }

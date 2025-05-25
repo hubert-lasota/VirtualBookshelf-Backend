@@ -21,7 +21,7 @@ public class Tag extends BaseEntity {
     }
 
 
-    public void updateName(String name) {
+    public void setNameIfNotNull(String name) {
         if (name != null) {
             this.name = name;
         }

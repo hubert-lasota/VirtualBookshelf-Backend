@@ -5,6 +5,7 @@ import org.hl.wirtualnyregalbackend.author.model.Author;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.genre.model.Genre;
+import org.hl.wirtualnyregalbackend.publisher.model.Publisher;
 
 import java.util.*;
 
@@ -12,14 +13,37 @@ import java.util.*;
 @Table(name = "book")
 public class Book extends BaseEntity {
 
+    @Column
+    private String isbn;
+
+    @Column
+    private String title;
+
+    @Column(name = "publication_year")
+    private Integer publicationYear;
+
+    @Column(name = "language_tag")
+    private Locale language;
+
+    @Column(name = "page_count")
+    private Integer pageCount;
+
+    @Column
+    private String description;
+
     @OneToOne(mappedBy = "book", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private BookCover cover;
 
-    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookEdition> editions = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "book_format_id")
+    private BookFormat format;
+
+    @ManyToOne
+    @JoinColumn(name = "publisher_id")
+    private Publisher publisher;
 
     @OneToMany(mappedBy = "book")
-    private List<BookSeriesBookAssociation> series = new ArrayList<>();
+    private List<BookSeriesBook> bookSeriesBooks = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "book_book_genre",
@@ -33,28 +57,87 @@ public class Book extends BaseEntity {
         inverseJoinColumns = @JoinColumn(name = "author_id"))
     private Set<Author> authors = new HashSet<>();
 
+
     protected Book() {
     }
 
-    public Book(BookCover cover,
-                List<BookEdition> editions,
-                List<BookSeriesBookAssociation> series,
+    public Book(String isbn,
+                String title,
+                Integer publicationYear,
+                Locale language,
+                Integer pageCount,
+                BookCover cover,
+                BookFormat format,
+                Publisher publisher,
+                Set<Author> authors,
                 Set<Genre> genres,
-                Set<Author> authors) {
-        cover.setBook(this);
-        editions.forEach(e -> e.setBook(this));
-        series.forEach(s -> s.setBook(this));
-
+                List<BookSeriesBook> bookSeriesBooks) {
+        this.isbn = isbn;
+        this.title = title;
+        this.publicationYear = publicationYear;
+        this.language = language;
+        this.pageCount = pageCount;
         this.cover = cover;
-        this.editions = editions;
-        this.series = series;
-        this.genres = genres;
+        this.format = format;
+        this.publisher = publisher;
         this.authors = authors;
+        this.genres = genres;
+        this.bookSeriesBooks = bookSeriesBooks;
     }
 
 
-    public void setCoverIfNotNull(String coverUrl) {
-        cover.setCoverUrlIfNotNull(coverUrl);
+    public void setIsbnIfNotNull(String isbn) {
+        if (isbn != null) {
+            this.isbn = isbn;
+        }
+    }
+
+    public void setTitleIfNotNull(String title) {
+        if (title != null) {
+            this.title = title;
+        }
+    }
+
+    public void setPublicationYearIfNotNull(Integer publicationYear) {
+        if (publicationYear != null) {
+            this.publicationYear = publicationYear;
+        }
+    }
+
+    public void setLanguageIfNotNull(Locale language) {
+        if (language != null) {
+            this.language = language;
+        }
+    }
+
+    public void setPageCountIfNotNull(Integer pageCount) {
+        if (pageCount != null) {
+            this.pageCount = pageCount;
+        }
+    }
+
+    public void setDescriptionIfNotNull(String description) {
+        if (description != null) {
+            this.description = description;
+        }
+    }
+
+    public void setCoverIfNotNull(BookCover cover) {
+        if (cover != null) {
+            this.cover = cover;
+        }
+    }
+
+    public void setFormatIfNotNull(BookFormat format) {
+        if (format != null) {
+            this.format = format;
+        }
+    }
+
+    public void setPublisherIfNotNull(Publisher publisher) {
+        if (publisher != null) {
+            this.publisher = publisher;
+        }
     }
 
     public void setGenresIfNotNull(Set<Genre> genres) {
@@ -101,17 +184,11 @@ public class Book extends BaseEntity {
         }
     }
 
-    public void setEditionsIfNotNull(List<BookEdition> editions) {
-        if (editions != null) {
-            editions.forEach(e -> e.setBook(this));
-            this.editions = editions;
-        }
-    }
 
-    public void setSeriesIfNotNull(List<BookSeriesBookAssociation> series) {
-        if (series != null) {
-            series.forEach(e -> e.setBook(this));
-            this.series = series;
+    public void setBookSeriesBooksIfNotNull(List<BookSeriesBook> bookSeriesBooks) {
+        if (bookSeriesBooks != null) {
+            bookSeriesBooks.forEach(e -> e.setBook(this));
+            this.bookSeriesBooks = bookSeriesBooks;
         }
     }
 
@@ -127,12 +204,41 @@ public class Book extends BaseEntity {
         return Collections.unmodifiableSet(authors);
     }
 
-    public List<BookEdition> getEditions() {
-        return Collections.unmodifiableList(editions);
+
+    public List<BookSeriesBook> getBookSeriesBooks() {
+        return Collections.unmodifiableList(bookSeriesBooks);
     }
 
-    public List<BookSeriesBookAssociation> getSeries() {
-        return Collections.unmodifiableList(series);
+    public String getTitle() {
+        return title;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public Integer getPublicationYear() {
+        return publicationYear;
+    }
+
+    public Locale getLanguage() {
+        return language;
+    }
+
+    public Integer getPageCount() {
+        return pageCount;
+    }
+
+    public BookFormat getFormat() {
+        return format;
+    }
+
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
 }

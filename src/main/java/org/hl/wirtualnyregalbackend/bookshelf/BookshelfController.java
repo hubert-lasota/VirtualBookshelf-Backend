@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
-import org.hl.wirtualnyregalbackend.bookshelf.model.dto.request.BookshelfMutationDto;
-import org.hl.wirtualnyregalbackend.bookshelf.model.dto.response.BookshelfResponseDto;
+import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfMutationDto;
+import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.security.model.User;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/bookshelves")
-public class BookshelfController {
+class BookshelfController {
 
     private final BookshelfService bookshelfService;
 

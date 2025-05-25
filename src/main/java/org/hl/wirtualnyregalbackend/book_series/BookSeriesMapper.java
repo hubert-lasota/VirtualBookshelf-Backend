@@ -1,10 +1,10 @@
 package org.hl.wirtualnyregalbackend.book_series;
 
-import org.hl.wirtualnyregalbackend.book.model.entity.BookSeriesBookAssociation;
+import org.hl.wirtualnyregalbackend.book.model.entity.BookSeriesBook;
 import org.hl.wirtualnyregalbackend.book_series.model.BookSeries;
 import org.hl.wirtualnyregalbackend.book_series.model.dto.BookSeriesDto;
-import org.hl.wirtualnyregalbackend.common.localization.LocalizationUtils;
-import org.hl.wirtualnyregalbackend.common.localization.LocalizedName;
+import org.hl.wirtualnyregalbackend.common.translation.TranslatedName;
+import org.hl.wirtualnyregalbackend.common.translation.TranslationUtils;
 
 import java.util.Locale;
 
@@ -13,19 +13,19 @@ public class BookSeriesMapper {
     private BookSeriesMapper() {
     }
 
-    public static BookSeriesDto toBookSeriesDto(BookSeriesBookAssociation bookSeriesAssociation, Locale locale) {
+    public static BookSeriesDto toBookSeriesDto(BookSeriesBook bookSeriesAssociation, Locale locale) {
         BookSeries bookSeries = bookSeriesAssociation.getBookSeries();
-        String localizedName = LocalizationUtils.getLocalizedName(bookSeries.getNames(), locale);
+        String localizedName = TranslationUtils.getTranslatedName(bookSeries.getNames(), locale);
         return new BookSeriesDto(bookSeries.getId(), localizedName, bookSeriesAssociation.getBookOrder());
     }
 
     public static BookSeries toBookSeries(BookSeriesDto bookSeriesDto, Locale locale) {
-        LocalizedName localizedName = new LocalizedName(bookSeriesDto.name(), locale);
-        return new BookSeries(localizedName);
+        TranslatedName translatedName = new TranslatedName(bookSeriesDto.name(), locale);
+        return new BookSeries(translatedName);
     }
 
-    public static BookSeriesBookAssociation toBookSeriesBookAssociation(BookSeries bookSeries, BookSeriesDto bookSeriesDto) {
-        return new BookSeriesBookAssociation(bookSeries, bookSeriesDto.bookOrder());
+    public static BookSeriesBook toBookSeriesBookAssociation(BookSeries bookSeries, BookSeriesDto bookSeriesDto) {
+        return new BookSeriesBook(bookSeries, bookSeriesDto.bookOrder());
     }
 
 }

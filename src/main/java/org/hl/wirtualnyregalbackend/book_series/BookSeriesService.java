@@ -1,8 +1,8 @@
 package org.hl.wirtualnyregalbackend.book_series;
 
-import org.hl.wirtualnyregalbackend.book_series.dao.BookSeriesRepository;
 import org.hl.wirtualnyregalbackend.book_series.model.BookSeries;
 import org.hl.wirtualnyregalbackend.book_series.model.dto.BookSeriesDto;
+import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,8 @@ public class BookSeriesService {
 
     public BookSeries findOrCreateBookSeries(BookSeriesDto bookSeriesDto) {
         if (bookSeriesDto.id() != null) {
-            return bookSeriesRepository.findById(bookSeriesDto.id());
+            return bookSeriesRepository.findById(bookSeriesDto.id())
+                .orElseThrow(() -> new EntityNotFoundException("Not found BookSeries with id = %d".formatted(bookSeriesDto.id())));
         }
 
         return createBookSeriesEntity(bookSeriesDto);

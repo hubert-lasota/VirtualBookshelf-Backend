@@ -11,80 +11,44 @@ CREATE TABLE authority
 (
     id         BIGSERIAL PRIMARY KEY,
     user_id    BIGINT      NOT NULL REFERENCES users (id),
-    authority  VARCHAR(50) NOT NULL,
+    name       VARCHAR(50) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL,
     updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE user_profile_picture_binary
+(
+    id          BIGSERIAL PRIMARY KEY,
+    binary_data BYTEA       NOT NULL,
+    mime_type   VARCHAR(50) NOT NULL,
+    file_name   VARCHAR(150),
+    created_at  TIMESTAMPTZ NOT NULL,
+    updated_at  TIMESTAMPTZ
 );
 
 CREATE TABLE user_profile_picture
 (
-    id                  BIGSERIAL PRIMARY KEY,
-    profile_picture_url TEXT        NOT NULL,
-    created_at          TIMESTAMPTZ NOT NULL,
-    updated_at          TIMESTAMPTZ
+    id                             BIGSERIAL PRIMARY KEY,
+    user_profile_picture_binary_id BIGINT REFERENCES user_profile_picture_binary (id),
+    url                            TEXT        NOT NULL,
+    created_at                     TIMESTAMPTZ NOT NULL,
+    updated_at                     TIMESTAMPTZ
 );
 
-CREATE TABLE user_profile_picture_img
+
+
+CREATE TABLE user_profile
 (
     id                      BIGSERIAL PRIMARY KEY,
+    user_id                 BIGINT      NOT NULL REFERENCES users (id),
     user_profile_picture_id BIGINT REFERENCES user_profile_picture (id),
-    img                     BYTEA,
-    img_type                TEXT,
+    first_name              TEXT,
+    last_name               TEXT,
+    description             TEXT,
     created_at              TIMESTAMPTZ NOT NULL,
     updated_at              TIMESTAMPTZ
 );
 
-CREATE TABLE user_profile
-(
-    id                 BIGSERIAL PRIMARY KEY,
-    user_id            BIGINT      NOT NULL REFERENCES users (id),
-    profile_picture_id BIGINT REFERENCES user_profile_picture (id),
-    first_name         TEXT,
-    last_name          TEXT,
-    description        TEXT,
-    created_at         TIMESTAMPTZ NOT NULL,
-    updated_at         TIMESTAMPTZ
-);
-
-CREATE TABLE user_genre_preferences
-(
-    user_profile_id BIGINT REFERENCES user_profile (id),
-    genre_id        BIGINT REFERENCES genre (id),
-    PRIMARY KEY (user_profile_id, genre_id)
-);
-
-CREATE TABLE book
-(
-    id         BIGSERIAL PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
-);
-
-CREATE TABLE book_series
-(
-    id         BIGSERIAL PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
-);
-
-CREATE TABLE book_series_names
-(
-    id           BIGSERIAL PRIMARY KEY,
-    name         TEXT        NOT NULL,
-    language_tag TEXT        NOT NULL,
-    created_at   TIMESTAMPTZ NOT NULL,
-    updated_at   TIMESTAMPTZ
-);
-
-CREATE TABLE book_book_series
-(
-    id             BIGSERIAL PRIMARY KEY,
-    book_id        BIGINT REFERENCES book (id),
-    book_series_id BIGINT REFERENCES book_series (id),
-    book_order     INT,
-    created_at     TIMESTAMPTZ NOT NULL,
-    updated_at     TIMESTAMPTZ
-);
 
 CREATE TABLE book_format
 (
@@ -93,7 +57,7 @@ CREATE TABLE book_format
     updated_at TIMESTAMPTZ
 );
 
-CREATE TABLE book_format_name
+CREATE TABLE book_format_translation
 (
     id             BIGSERIAL PRIMARY KEY,
     book_format_id BIGINT REFERENCES book_format (id),
@@ -103,18 +67,57 @@ CREATE TABLE book_format_name
     updated_at     TIMESTAMPTZ
 );
 
-CREATE TABLE book_edition
+
+CREATE TABLE publisher
+(
+    id         BIGSERIAL PRIMARY KEY,
+    name       TEXT        NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE book
 (
     id               BIGSERIAL PRIMARY KEY,
-    book_id          BIGINT REFERENCES book (id),
     book_format_id   BIGINT REFERENCES book_format (id),
+    publisher_id     BIGINT REFERENCES publisher (id),
     isbn             VARCHAR(13),
     title            TEXT        NOT NULL,
     publication_year INT,
     language_tag     TEXT,
+    page_count       INT,
     created_at       TIMESTAMPTZ NOT NULL,
     updated_at       TIMESTAMPTZ
 );
+
+CREATE TABLE book_series
+(
+    id         BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE book_series_translation
+(
+    id             BIGSERIAL PRIMARY KEY,
+    book_series_id BIGINT      NOT NULL REFERENCES book_series (id),
+    name           TEXT        NOT NULL,
+    language_tag   TEXT        NOT NULL,
+    created_at     TIMESTAMPTZ NOT NULL,
+    updated_at     TIMESTAMPTZ
+);
+
+CREATE TABLE book_series_book
+(
+    id             BIGSERIAL PRIMARY KEY,
+    book_series_id BIGINT REFERENCES book_series (id),
+    book_id        BIGINT REFERENCES book (id),
+    book_order     INT,
+    created_at     TIMESTAMPTZ NOT NULL,
+    updated_at     TIMESTAMPTZ
+);
+
+
 
 CREATE TABLE genre
 (
@@ -123,12 +126,20 @@ CREATE TABLE genre
     updated_at TIMESTAMPTZ
 );
 
-CREATE TABLE genre_name
+CREATE TABLE user_genre_preferences
 (
-    id            BIGSERIAL PRIMARY KEY,
-    book_genre_id BIGINT REFERENCES genre (id),
-    created_at    TIMESTAMPTZ NOT NULL,
-    updated_at    TIMESTAMPTZ
+    user_profile_id BIGINT REFERENCES user_profile (id),
+    genre_id        BIGINT REFERENCES genre (id),
+    PRIMARY KEY (user_profile_id, genre_id)
+);
+
+CREATE TABLE genre_translation
+(
+    id         BIGSERIAL PRIMARY KEY,
+    genre_id   BIGINT      NOT NULL REFERENCES genre (id),
+    name       TEXT        NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
 CREATE TABLE book_genre
@@ -138,23 +149,24 @@ CREATE TABLE book_genre
     PRIMARY KEY (book_id, genre_id)
 );
 
-CREATE TABLE book_cover_img
+CREATE TABLE book_cover_binary
 (
-    id         BIGSERIAL PRIMARY KEY,
-    cover_img  BYTEA,
-    img_type   TEXT,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    id          BIGSERIAL PRIMARY KEY,
+    binary_data BYTEA       NOT NULL,
+    mime_type   VARCHAR(50) NOT NULL,
+    file_name   VARCHAR(150),
+    created_at  TIMESTAMPTZ NOT NULL,
+    updated_at  TIMESTAMPTZ
 );
 
 CREATE TABLE book_cover
 (
-    id                BIGSERIAL PRIMARY KEY,
-    book_id           BIGINT      NOT NULL REFERENCES book (id),
-    book_cover_img_id BIGINT REFERENCES book_cover_img (id),
-    cover_url         TEXT        NOT NULL,
-    created_at        TIMESTAMPTZ NOT NULL,
-    updated_at        TIMESTAMPTZ
+    id                   BIGSERIAL PRIMARY KEY,
+    book_id              BIGINT      NOT NULL REFERENCES book (id),
+    book_cover_binary_id BIGINT REFERENCES book_cover_binary (id),
+    url                  TEXT        NOT NULL,
+    created_at           TIMESTAMPTZ NOT NULL,
+    updated_at           TIMESTAMPTZ
 );
 
 
@@ -169,48 +181,37 @@ CREATE TABLE book_review
     updated_at TIMESTAMPTZ
 );
 
-CREATE TABLE publisher
-(
-    id         BIGSERIAL PRIMARY KEY,
-    name       TEXT        NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
-);
-
-CREATE TABLE book_edition_publisher
-(
-    book_edition_id BIGINT REFERENCES book_edition (id),
-    publisher_id    BIGINT REFERENCES publisher (id),
-    PRIMARY KEY (book_edition_id, publisher_id)
-);
-
-CREATE TABLE author
+CREATE TABLE author_profile_picture_binary
 (
     id          BIGSERIAL PRIMARY KEY,
-    user_id     BIGINT REFERENCES users (id),
-    full_name   TEXT,
-    description TEXT,
+    binary_data BYTEA       NOT NULL,
+    mime_type   VARCHAR(50) NOT NULL,
+    file_name   VARCHAR(150),
     created_at  TIMESTAMPTZ NOT NULL,
     updated_at  TIMESTAMPTZ
 );
 
-CREATE TABLE author_photo_img
+CREATE TABLE author_profile_picture
 (
-    id         BIGSERIAL PRIMARY KEY,
-    img        BYTEA       NOT NULL,
-    img_type   VARCHAR(50) NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    id                               BIGSERIAL PRIMARY KEY,
+    author_profile_picture_binary_id BIGINT REFERENCES author_profile_picture_binary (id),
+    url                              TEXT        NOT NULL,
+    created_at                       TIMESTAMPTZ NOT NULL,
+    updated_at                       TIMESTAMPTZ
 );
 
-CREATE TABLE author_photo
+CREATE TABLE author
 (
-    id                  BIGSERIAL PRIMARY KEY,
-    author_photo_img_id BIGINT REFERENCES author_photo_img (id),
-    photo_url           TEXT        NOT NULL,
-    created_at          TIMESTAMPTZ NOT NULL,
-    updated_at          TIMESTAMPTZ
+    id                        BIGSERIAL PRIMARY KEY,
+    user_id                   BIGINT REFERENCES users (id),
+    author_profile_picture_id BIGINT REFERENCES author_profile_picture (id),
+    full_name                 TEXT,
+    description               TEXT,
+    created_at                TIMESTAMPTZ NOT NULL,
+    updated_at                TIMESTAMPTZ
 );
+
+
 
 CREATE TABLE book_author
 (
@@ -231,17 +232,19 @@ CREATE TABLE author_review
 );
 
 
-CREATE TABLE book_notes
+CREATE TABLE book_note
 (
-    id              BIGSERIAL PRIMARY KEY,
-    book_edition_id BIGINT REFERENCES book_edition (id),
-    start_page      INT         NOT NULL,
-    end_page        INT         NOT NULL,
-    created_at      TIMESTAMPTZ NOT NULL,
-    updated_at      TIMESTAMPTZ
+    id         BIGSERIAL PRIMARY KEY,
+    book_id    BIGINT      NOT NULL REFERENCES book (id),
+    user_id    BIGINT      NOT NULL REFERENCES users (id),
+    content    TEXT        NOT NULL,
+    start_page INT         NOT NULL,
+    end_page   INT         NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );
 
-CREATE TABLE book_reading_details
+CREATE TABLE book_reading
 (
     id                  BIGSERIAL PRIMARY KEY,
     user_id             BIGINT      NOT NULL REFERENCES users (id),
@@ -250,6 +253,7 @@ CREATE TABLE book_reading_details
     progress_percentage INT,
     started_at          TIMESTAMPTZ,
     ended_at            TIMESTAMPTZ,
+    status              VARCHAR(50) NOT NULL,
     created_at          TIMESTAMPTZ NOT NULL,
     updated_at          TIMESTAMPTZ
 );
@@ -265,11 +269,11 @@ CREATE TABLE bookshelf
     updated_at  TIMESTAMPTZ
 );
 
-CREATE TABLE bookshelf_book_edition
+CREATE TABLE bookshelf_book
 (
-    bookshelf_id    BIGINT REFERENCES bookshelf (id),
-    book_edition_id BIGINT REFERENCES book_edition (id),
-    PRIMARY KEY (bookshelf_id, book_edition_id)
+    bookshelf_id BIGINT REFERENCES bookshelf (id),
+    book_id      BIGINT REFERENCES book (id),
+    PRIMARY KEY (bookshelf_id, book_id)
 );
 
 CREATE TABLE book_recommendation
@@ -327,7 +331,7 @@ CREATE TABLE challenge
     updated_at  TIMESTAMPTZ
 );
 
-CREATE TABLE challenge_participant_details
+CREATE TABLE challenge_participant
 (
     id           BIGSERIAL PRIMARY KEY,
     challenge_id BIGINT      NOT NULL REFERENCES challenge (id),

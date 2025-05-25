@@ -5,15 +5,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.common.localization.LocalizedName;
-import org.hl.wirtualnyregalbackend.common.localization.LocalizedNamedEntity;
+import org.hl.wirtualnyregalbackend.common.translation.TranslatedName;
+import org.hl.wirtualnyregalbackend.common.translation.TranslatedNamedEntity;
 
 
 @Entity
-public class BookSeriesName extends BaseEntity implements LocalizedNamedEntity {
+public class BookSeriesName extends BaseEntity implements TranslatedNamedEntity {
 
     @Embedded
-    private LocalizedName localizedName;
+    private TranslatedName translatedName;
 
     @ManyToOne
     @JoinColumn(name = "book_series_id")
@@ -22,14 +22,14 @@ public class BookSeriesName extends BaseEntity implements LocalizedNamedEntity {
     protected BookSeriesName() {
     }
 
-    public BookSeriesName(LocalizedName localizedName) {
-        this.localizedName = localizedName;
+    public BookSeriesName(TranslatedName translatedName) {
+        this.translatedName = translatedName;
     }
 
 
     @Override
-    public LocalizedName getLocalizedName() {
-        return localizedName;
+    public TranslatedName getTranslatedName() {
+        return translatedName;
     }
 
 }

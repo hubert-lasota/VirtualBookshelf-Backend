@@ -9,34 +9,29 @@ import java.util.Objects;
 @Table(name = "user_profile_picture")
 public class UserProfilePicture extends BaseEntity {
 
-    @Column(name = "profile_picture_url")
-    private String profilePictureUrl;
+    @Column
+    private String url;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_picture_img_id")
-    private UserProfilePictureImg profilePictureImg;
+    @JoinColumn(name = "user_profile_picture_binary_id")
+    private UserProfilePictureBinary binaryPicture;
 
     protected UserProfilePicture() {
     }
 
-
-    public UserProfilePicture(String profilePictureUrl) {
-        this.profilePictureUrl = profilePictureUrl;
+    public UserProfilePicture(String url, UserProfilePictureBinary binaryPicture) {
+        this.url = url;
+        this.binaryPicture = Objects.requireNonNull(binaryPicture, "binaryPicture cannot be null.");
     }
 
-    public UserProfilePicture(String profilePictureUrl, UserProfilePictureImg profilePictureImg) {
-        this.profilePictureUrl = profilePictureUrl;
-        this.profilePictureImg = Objects.requireNonNull(profilePictureImg, "profilePictureImg cannot be null.");
-    }
-
-    public void updateProfilePictureUrl(String profilePictureUrl) {
-        if (profilePictureUrl != null) {
-            this.profilePictureUrl = profilePictureUrl;
+    public void setUrlIfNotNull(String url) {
+        if (url != null) {
+            this.url = url;
         }
     }
 
-    public String getProfilePictureUrl() {
-        return profilePictureUrl;
+    public String getUrl() {
+        return url;
     }
 
 }

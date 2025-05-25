@@ -1,6 +1,5 @@
 package org.hl.wirtualnyregalbackend.author;
 
-import org.hl.wirtualnyregalbackend.author.dao.AuthorRepository;
 import org.hl.wirtualnyregalbackend.author.model.Author;
 import org.hl.wirtualnyregalbackend.author.model.dto.AuthorDto;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
@@ -29,7 +28,7 @@ public class AuthorService {
 
     private Author createAuthorEntity(AuthorDto authorDto) {
         String fullName = authorDto.fullName();
-        boolean exists = authorRepository.exitsByFullName(fullName);
+        boolean exists = authorRepository.existsByFullName(fullName);
         if (exists) {
             throw new InvalidRequestException("Author with this full name = %s already exists".formatted(fullName));
         }

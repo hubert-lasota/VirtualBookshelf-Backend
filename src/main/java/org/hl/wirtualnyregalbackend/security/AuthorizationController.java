@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/v1/auth")
 class AuthorizationController {
 
     private final AuthorizationService authorizationService;
 
-    AuthorizationController(AuthorizationService authorizationService) {
+    public AuthorizationController(AuthorizationService authorizationService) {
         this.authorizationService = authorizationService;
     }
 
@@ -29,8 +29,8 @@ class AuthorizationController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/verify-token-validity")
-    public ResponseEntity<?> isJwtValid(@RequestParam String jwt) {
+    @GetMapping(value = "/verify-jwt-validity")
+    public ResponseEntity<?> verifyJwt(@RequestParam String jwt) {
         boolean isValid = authorizationService.isJwtValid(jwt);
         Map<String, Object> response = Map.of("isValid", isValid);
         return ResponseEntity.ok(response);

@@ -1,8 +1,8 @@
 package org.hl.wirtualnyregalbackend.book;
 
 import org.hl.wirtualnyregalbackend.book.model.dto.BookMutationDto;
-import org.hl.wirtualnyregalbackend.book.model.dto.response.BookResponseDto;
-import org.hl.wirtualnyregalbackend.common.PageResponseDto;
+import org.hl.wirtualnyregalbackend.book.model.dto.BookResponseDto;
+import org.hl.wirtualnyregalbackend.common.response_model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.security.model.User;
@@ -13,10 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/books")
-public class BookController {
+@RequestMapping("/v1/books")
+class BookController {
 
     private final BookService bookService;
 
@@ -25,8 +26,9 @@ public class BookController {
     }
 
 
-    public ResponseEntity<?> createBook(@Validated(CreateGroup.class) @RequestBody BookMutationDto bookMutationDto) {
-        BookResponseDto response = bookService.createBook(bookMutationDto);
+    public ResponseEntity<?> createBook(@Validated(CreateGroup.class) @RequestPart("book") BookMutationDto bookMutationDto,
+                                        @RequestPart("cover") MultipartFile coverFile) {
+        BookResponseDto response = bookService.createBook(bookMutationDto, coverFile);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -46,8 +48,9 @@ public class BookController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateBook(@PathVariable Long id,
-                                        @Validated(UpdateGroup.class) @RequestBody BookMutationDto bookMutationDto) {
-        BookResponseDto response = bookService.updateBook(id, bookMutationDto);
+                                        @Validated(UpdateGroup.class) @RequestPart("book") BookMutationDto bookMutationDto,
+                                        @RequestPart("cover") MultipartFile coverFile) {
+        BookResponseDto response = bookService.updateBook(id, bookMutationDto, coverFile);
         return ResponseEntity.ok(response);
     }
 

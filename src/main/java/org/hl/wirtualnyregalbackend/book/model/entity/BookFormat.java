@@ -13,11 +13,11 @@ import java.util.List;
 public class BookFormat extends BaseEntity {
 
     @OneToMany
-    private List<BookFormatName> names;
+    private List<BookFormatTranslation> translations;
 
 
-    public List<BookFormatName> getNames() {
-        return Collections.unmodifiableList(names);
+    public List<BookFormatTranslation> getTranslations() {
+        return Collections.unmodifiableList(translations);
     }
 
 }

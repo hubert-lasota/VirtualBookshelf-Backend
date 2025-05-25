@@ -28,14 +28,14 @@ public class UserProfile extends BaseEntity {
     private User user;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "profile_picture_id")
+    @JoinColumn(name = "user_profile_picture_id")
     private UserProfilePicture profilePicture;
 
     @ManyToMany
     @JoinTable(
-        name = "user_book_genre_preferences",
+        name = "user_genre_preferences",
         joinColumns = @JoinColumn(name = "user_profile_id"),
-        inverseJoinColumns = @JoinColumn(name = "book_genre_id")
+        inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private Set<Genre> genrePreferences = new HashSet<>();
 

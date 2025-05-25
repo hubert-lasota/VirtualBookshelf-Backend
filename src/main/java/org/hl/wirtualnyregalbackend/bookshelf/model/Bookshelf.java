@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.bookshelf.model;
 
 import jakarta.persistence.*;
-import org.hl.wirtualnyregalbackend.book.model.entity.BookEdition;
+import org.hl.wirtualnyregalbackend.book.model.entity.Book;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.security.model.User;
@@ -30,10 +30,10 @@ public class Bookshelf extends BaseEntity {
     private User user;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "bookshelf_book_edition",
+    @JoinTable(name = "bookshelf_book",
         joinColumns = @JoinColumn(name = "bookshelf_id"),
-        inverseJoinColumns = @JoinColumn(name = "book_edition_id"))
-    private Set<BookEdition> bookEditions = new HashSet<>();
+        inverseJoinColumns = @JoinColumn(name = "book_id"))
+    private Set<Book> books = new HashSet<>();
 
     protected Bookshelf() {
     }
@@ -45,18 +45,18 @@ public class Bookshelf extends BaseEntity {
         this.user = user;
     }
 
-    public void addBookEdition(BookEdition bookEdition) {
-        if (bookEditions.contains(bookEdition)) {
-            throw new InvalidRequestException("Book edition is already in bookshelf");
+    public void addBook(Book book) {
+        if (books.contains(book)) {
+            throw new InvalidRequestException("Book is already in bookshelf");
         }
-        bookEditions.add(bookEdition);
+        books.add(book);
     }
 
-    public void removeBookEdition(BookEdition bookEdition) {
-        if (!bookEditions.contains(bookEdition)) {
+    public void removeBookEdition(Book book) {
+        if (!books.contains(book)) {
             throw new InvalidRequestException("Book edition is not in bookshelf");
         }
-        bookEditions.remove(bookEdition);
+        books.remove(book);
     }
 
     public void setNameIfNotNull(String name) {
@@ -77,9 +77,9 @@ public class Bookshelf extends BaseEntity {
         }
     }
 
-    public void setBookEditionsIfNotNull(Set<BookEdition> bookEditions) {
-        if (bookEditions != null) {
-            this.bookEditions = bookEditions;
+    public void setBooksIfNotNull(Set<Book> books) {
+        if (books != null) {
+            this.books = books;
         }
     }
 
@@ -95,8 +95,8 @@ public class Bookshelf extends BaseEntity {
         return description;
     }
 
-    public Set<BookEdition> getBookEditions() {
-        return Collections.unmodifiableSet(bookEditions);
+    public Set<Book> getBooks() {
+        return Collections.unmodifiableSet(books);
     }
 
 }

@@ -20,15 +20,15 @@ public class Author extends BaseEntity {
     private User user;
 
     @OneToOne
-    @JoinColumn(name = "photo_id")
-    private AuthorPhoto photo;
+    @JoinColumn(name = "author_profile_picture_id")
+    private AuthorProfilePicture AuthorProfilePicture;
 
     protected Author() {
     }
 
-    public Author(String fullName, String description, AuthorPhoto authorPhoto, User user) {
+    public Author(String fullName, String description, AuthorProfilePicture authorProfilePicture, User user) {
         this.fullName = fullName;
-        this.photo = authorPhoto;
+        this.AuthorProfilePicture = authorProfilePicture;
         this.user = user;
         this.description = description;
     }
@@ -42,7 +42,7 @@ public class Author extends BaseEntity {
         return description;
     }
 
-    public AuthorPhoto getPhoto() {
-        return photo;
+    public AuthorProfilePicture getAuthorProfilePicture() {
+        return AuthorProfilePicture;
     }
 }

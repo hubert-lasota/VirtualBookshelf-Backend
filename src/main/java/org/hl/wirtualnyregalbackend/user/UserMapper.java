@@ -9,7 +9,7 @@ public class UserMapper {
     }
 
     public static UserHeaderResponseDto toUserHeaderResponse(User user) {
-        String profilePictureUrl = user.getUserProfile().getProfilePicture().getProfilePictureUrl();
+        String profilePictureUrl = user.getUserProfile().getProfilePicture().getUrl();
         return new UserHeaderResponseDto(user.getId(), user.getUsername(), profilePictureUrl);
     }
 

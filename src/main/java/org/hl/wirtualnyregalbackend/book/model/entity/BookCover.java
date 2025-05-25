@@ -7,22 +7,22 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 @Table(name = "book_cover")
 public class BookCover extends BaseEntity {
 
-    @Column(name = "cover_url")
-    private String coverUrl;
+    @Column
+    private String url;
 
     @OneToOne(optional = false)
     @JoinColumn(name = "book_id")
     private Book book;
 
     @OneToOne
-    @JoinColumn(name = "book_cover_img_id")
-    private BookCoverImg coverImg;
+    @JoinColumn(name = "book_cover_binary_id")
+    private BookCoverBinary coverImg;
 
     protected BookCover() {
     }
 
-    public BookCover(String coverUrl, BookCoverImg coverImg) {
-        this.coverUrl = coverUrl;
+    public BookCover(String url, BookCoverBinary coverImg) {
+        this.url = url;
         this.coverImg = coverImg;
     }
 
@@ -30,14 +30,14 @@ public class BookCover extends BaseEntity {
         this.book = book;
     }
 
-    public void setCoverUrlIfNotNull(String coverUrl) {
-        if (coverUrl != null) {
-            this.coverUrl = coverUrl;
+    public void setUrlIfNotNull(String url) {
+        if (url != null) {
+            this.url = url;
         }
     }
 
-    public String getCoverUrl() {
-        return coverUrl;
+    public String getUrl() {
+        return url;
     }
 
 }

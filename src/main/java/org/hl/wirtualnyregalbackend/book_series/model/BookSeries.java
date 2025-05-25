@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.book_series.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.common.localization.LocalizedName;
+import org.hl.wirtualnyregalbackend.common.translation.TranslatedName;
 
 import java.util.List;
 
@@ -16,8 +16,8 @@ public class BookSeries extends BaseEntity {
     protected BookSeries() {
     }
 
-    public BookSeries(LocalizedName localizedName) {
-        names = List.of(new BookSeriesName(localizedName));
+    public BookSeries(TranslatedName translatedName) {
+        names = List.of(new BookSeriesName(translatedName));
     }
 
     public List<BookSeriesName> getNames() {

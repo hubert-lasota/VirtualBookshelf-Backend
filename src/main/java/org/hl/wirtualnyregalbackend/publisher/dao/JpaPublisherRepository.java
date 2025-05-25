@@ -4,9 +4,15 @@ import org.hl.wirtualnyregalbackend.publisher.model.Publisher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+
+@Repository
+interface SpringJpaPublisherRepository extends JpaRepository<Publisher, Long> {
+
+
+    boolean existsByNameIgnoreCase(String name);
+
+}
 
 @Repository
 class JpaPublisherRepository implements PublisherRepository {
@@ -28,24 +34,11 @@ class JpaPublisherRepository implements PublisherRepository {
         return publisherRepository.findById(id);
     }
 
-    @Override
-    public Set<Publisher> findByIds(List<Long> ids) {
-        return publisherRepository.findByIds(ids);
-    }
 
     @Override
     public boolean existsByNameIgnoreCase(String name) {
         return publisherRepository.existsByNameIgnoreCase(name);
     }
-
-}
-
-@Repository
-interface SpringJpaPublisherRepository extends JpaRepository<Publisher, Long> {
-
-    Set<Publisher> findByIds(List<Long> ids);
-
-    boolean existsByNameIgnoreCase(String name);
 
 }
 

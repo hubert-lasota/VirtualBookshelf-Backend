@@ -1,12 +1,11 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
 import org.hl.wirtualnyregalbackend.book.BookService;
-import org.hl.wirtualnyregalbackend.book.model.entity.BookEdition;
-import org.hl.wirtualnyregalbackend.bookshelf.dao.BookshelfRepository;
+import org.hl.wirtualnyregalbackend.book.model.entity.Book;
 import org.hl.wirtualnyregalbackend.bookshelf.model.Bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf.model.BookshelfType;
-import org.hl.wirtualnyregalbackend.bookshelf.model.dto.request.BookshelfMutationDto;
-import org.hl.wirtualnyregalbackend.bookshelf.model.dto.response.BookshelfResponseDto;
+import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfMutationDto;
+import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.security.model.User;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class BookshelfService {
     private final BookshelfRepository bookshelfRepository;
     private final BookService bookService;
 
-    public BookshelfService(BookshelfRepository bookshelfRepository, BookService bookService) {
+    BookshelfService(BookshelfRepository bookshelfRepository, BookService bookService) {
         this.bookshelfRepository = bookshelfRepository;
         this.bookService = bookService;
     }
@@ -55,19 +54,19 @@ public class BookshelfService {
         bookshelfRepository.saveAll(bookshelvesToSave);
     }
 
-    public void addBookToBookshelf(Long bookshelfId, Long bookEditionId) {
-        Bookshelf bookshelf = bookshelfRepository.findById(bookshelfId);
-        BookEdition edition = bookService.findBookEditionEntityById(bookEditionId);
+    public void addBookToBookshelf(Long bookshelfId, Long bookId) {
+        Bookshelf bookshelf = findBookshelfById(bookshelfId);
+        Book book = bookService.findBookById(bookId);
         // TOdo add event
-        bookshelf.addBookEdition(edition);
+        bookshelf.addBook(book);
         bookshelfRepository.save(bookshelf);
     }
 
-    public void removeBookFromBookshelf(Long bookshelfId, Long bookEditionId) {
-        Bookshelf bookshelf = bookshelfRepository.findById(bookshelfId);
-        BookEdition edition = bookService.findBookEditionEntityById(bookEditionId);
+    public void removeBookFromBookshelf(Long bookshelfId, Long bookId) {
+        Bookshelf bookshelf = findBookshelfById(bookshelfId);
+        Book book = bookService.findBookById(bookId);
         // TOdo add event
-        bookshelf.removeBookEdition(edition);
+        bookshelf.removeBookEdition(book);
         bookshelfRepository.save(bookshelf);
     }
 
@@ -81,6 +80,15 @@ public class BookshelfService {
 
     public List<Bookshelf> findUserBookshelvesByBookId(Long bookId, User user) {
         return bookshelfRepository.findUserBookshelvesByBookId(bookId, user.getId());
+    }
+
+    public boolean isUserBookshelfAuthor(Long bookshelfId, Long userId) {
+        return bookshelfRepository.isUserBookshelfAuthor(bookshelfId, userId);
+    }
+
+    private Bookshelf findBookshelfById(Long bookshelfId) {
+        return bookshelfRepository.findById(bookshelfId)
+            .orElseThrow(() -> new IllegalArgumentException("Not found Bookshelf with id = %d".formatted(bookshelfId)));
     }
 
 }

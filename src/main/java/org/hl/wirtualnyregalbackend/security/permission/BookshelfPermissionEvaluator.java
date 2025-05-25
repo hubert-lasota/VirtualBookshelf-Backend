@@ -1,18 +1,18 @@
 package org.hl.wirtualnyregalbackend.security.permission;
 
-import org.hl.wirtualnyregalbackend.bookshelf.dao.BookshelfRepository;
+import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.security.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 
 @Component
-public class BookshelfPermissionEvaluator implements ResourcePermissionEvaluator {
+class BookshelfPermissionEvaluator implements ResourcePermissionEvaluator {
 
-    private BookshelfRepository bookshelfRepository;
+    private final BookshelfService bookshelfService;
 
-    public BookshelfPermissionEvaluator(BookshelfRepository bookshelfRepository) {
-        this.bookshelfRepository = bookshelfRepository;
+    public BookshelfPermissionEvaluator(BookshelfService bookshelfService) {
+        this.bookshelfService = bookshelfService;
     }
 
     @Override
@@ -22,7 +22,7 @@ public class BookshelfPermissionEvaluator implements ResourcePermissionEvaluator
         }
         Long bookshelfId = (Long) targetId;
         User user = (User) authentication.getPrincipal();
-        return bookshelfRepository.isUserBookshelfAuthor(bookshelfId, user.getId());
+        return bookshelfService.isUserBookshelfAuthor(bookshelfId, user.getId());
     }
 
 }

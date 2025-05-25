@@ -1,13 +1,12 @@
 package org.hl.wirtualnyregalbackend.tag;
 
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
-import org.hl.wirtualnyregalbackend.tag.dao.TagRepository;
 import org.hl.wirtualnyregalbackend.tag.model.Tag;
 import org.hl.wirtualnyregalbackend.tag.model.dto.TagDto;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TagService {
+class TagService {
 
     private final TagRepository tagRepository;
 
