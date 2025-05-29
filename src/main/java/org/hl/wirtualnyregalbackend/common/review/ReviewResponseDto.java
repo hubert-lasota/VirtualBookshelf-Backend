@@ -11,6 +11,7 @@ public abstract class ReviewResponseDto extends BaseResponseDto {
 
     @JsonProperty
     private final UserHeaderResponseDto user;
+
     @JsonUnwrapped
     @JsonProperty
     private final ReviewDto review;

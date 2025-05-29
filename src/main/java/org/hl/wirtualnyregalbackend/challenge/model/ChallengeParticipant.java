@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "challenge_participant")
-public class ChallengeParticipantDetails extends BaseEntity {
+public class ChallengeParticipant extends BaseEntity {
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -28,23 +28,25 @@ public class ChallengeParticipantDetails extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    protected ChallengeParticipantDetails() {
+    protected ChallengeParticipant() {
     }
 
-    public ChallengeParticipantDetails(Challenge challenge, Instant startedAt, User user) {
+    public ChallengeParticipant(Challenge challenge, RangeDate rangeDate, User user) {
         this.challenge = Objects.requireNonNull(challenge, "challenge cannot be null");
         this.user = Objects.requireNonNull(user, "user cannot be null");
         this.status = ChallengeStatus.STARTED;
-        this.rangeDate = new RangeDate(startedAt, null);
+        this.rangeDate = rangeDate;
     }
 
-    public void changeStatusToWon(Instant finishedAt) {
+    public void won(Instant finishedAt) {
         changeStatusToOtherThanStarted(ChallengeStatus.WON, finishedAt);
     }
 
-    public void changeStatusToLost(Instant finishedAt) {
+    public void lost(Instant finishedAt) {
         changeStatusToOtherThanStarted(ChallengeStatus.LOST, finishedAt);
     }
+
+
 
     private void changeStatusToOtherThanStarted(ChallengeStatus newStatus, Instant finishedAt) {
         if (status == ChallengeStatus.STARTED) {

@@ -46,9 +46,9 @@ public class Book extends BaseEntity {
     private List<BookSeriesBook> bookSeriesBooks = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "book_book_genre",
+    @JoinTable(name = "book_genre",
         joinColumns = @JoinColumn(name = "book_id"),
-        inverseJoinColumns = @JoinColumn(name = "book_genre_id"))
+        inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private Set<Genre> genres = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)

@@ -21,6 +21,7 @@ public class RangeDate {
     protected RangeDate() {
     }
 
+    // TODO remove Valid Range Date and apply it here
     public RangeDate(Instant startedAt, Instant endedAt) {
         this.startedAt = startedAt;
         this.endedAt = endedAt;

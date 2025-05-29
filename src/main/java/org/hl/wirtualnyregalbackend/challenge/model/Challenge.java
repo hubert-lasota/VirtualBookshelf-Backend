@@ -5,8 +5,6 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 import org.hl.wirtualnyregalbackend.security.model.User;
 
-import java.time.Instant;
-
 
 @Entity
 public class Challenge extends BaseEntity {
