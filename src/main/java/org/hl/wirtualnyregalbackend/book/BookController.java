@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.book;
 
 import org.hl.wirtualnyregalbackend.book.model.dto.BookMutationDto;
 import org.hl.wirtualnyregalbackend.book.model.dto.BookResponseDto;
-import org.hl.wirtualnyregalbackend.common.response_model.PageResponseDto;
+import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.security.model.User;
@@ -26,6 +26,7 @@ class BookController {
     }
 
 
+    @PostMapping
     public ResponseEntity<?> createBook(@Validated(CreateGroup.class) @RequestPart("book") BookMutationDto bookMutationDto,
                                         @RequestPart("cover") MultipartFile coverFile) {
         BookResponseDto response = bookService.createBook(bookMutationDto, coverFile);
@@ -33,9 +34,9 @@ class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<?> searchBooks(@RequestParam String query,
-                                         @PageableDefault Pageable pageable) {
-        PageResponseDto<?> response = bookService.searchBooks(query, pageable);
+    public ResponseEntity<?> findBooks(@RequestParam String query,
+                                       @PageableDefault Pageable pageable) {
+        PageResponseDto<?> response = bookService.findBooks(query, pageable);
         return ResponseEntity.ok(response);
     }
 

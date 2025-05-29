@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.challenge.model;
 
 import jakarta.persistence.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.common.jpa.RangeDate;
+import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 import org.hl.wirtualnyregalbackend.security.model.User;
 
 import java.time.Instant;
@@ -15,10 +15,6 @@ public class Challenge extends BaseEntity {
     private String description;
 
     @Embedded
-    @AttributeOverrides({
-        @AttributeOverride(name = "startAt", column = @Column(name = "start_at_timestamp")),
-        @AttributeOverride(name = "endAt", column = @Column(name = "finish_at_timestamp"))
-    })
     private RangeDate rangeDate;
 
     @ManyToOne
@@ -29,47 +25,34 @@ public class Challenge extends BaseEntity {
     protected Challenge() {
     }
 
-    public Challenge(String description, Instant startAt, Instant finishAt, User user) {
+    public Challenge(String description, RangeDate rangeDate, User user) {
         this.description = description;
-        this.rangeDate = new RangeDate(startAt, finishAt);
+        this.rangeDate = rangeDate;
         this.user = user;
     }
 
-    public void updateDescription(String description) {
-        if (description != null) {
-            this.description = description;
-        }
+    public User getUser() {
+        return user;
     }
 
-    public void updateStartAt(Instant startAt) {
-        if (startAt != null) {
-            Instant finishAt = rangeDate.getEndedAt();
-            this.rangeDate = new RangeDate(startAt, finishAt);
-        }
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public void updateFinishAt(Instant finishAt) {
-        if (finishAt != null) {
-            Instant startAt = rangeDate.getStartedAt();
-            this.rangeDate = new RangeDate(startAt, finishAt);
-        }
+    public RangeDate getRangeDate() {
+        return rangeDate;
+    }
+
+    public void setRangeDate(RangeDate rangeDate) {
+        this.rangeDate = rangeDate;
     }
 
     public String getDescription() {
         return description;
     }
 
-
-    public Instant getStartAt() {
-        return rangeDate.getStartedAt();
-    }
-
-    public Instant getFinishAt() {
-        return rangeDate.getEndedAt();
-    }
-
-    public User getUser() {
-        return user;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

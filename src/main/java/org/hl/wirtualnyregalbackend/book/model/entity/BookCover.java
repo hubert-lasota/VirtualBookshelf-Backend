@@ -16,28 +16,26 @@ public class BookCover extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "book_cover_binary_id")
-    private BookCoverBinary coverImg;
+    private BookCoverBinary coverBinary;
 
     protected BookCover() {
     }
 
-    public BookCover(String url, BookCoverBinary coverImg) {
+    public BookCover(String url, BookCoverBinary coverBinary) {
         this.url = url;
-        this.coverImg = coverImg;
+        this.coverBinary = coverBinary;
     }
 
     public void setBook(Book book) {
         this.book = book;
     }
 
-    public void setUrlIfNotNull(String url) {
-        if (url != null) {
-            this.url = url;
-        }
-    }
-
     public String getUrl() {
         return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
 }

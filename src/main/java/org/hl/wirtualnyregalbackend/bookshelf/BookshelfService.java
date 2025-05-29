@@ -3,7 +3,10 @@ package org.hl.wirtualnyregalbackend.bookshelf;
 import org.hl.wirtualnyregalbackend.book.BookService;
 import org.hl.wirtualnyregalbackend.book.model.entity.Book;
 import org.hl.wirtualnyregalbackend.bookshelf.model.Bookshelf;
+import org.hl.wirtualnyregalbackend.bookshelf.model.BookshelfBook;
 import org.hl.wirtualnyregalbackend.bookshelf.model.BookshelfType;
+import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfBookMutationDto;
+import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfBookResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.security.model.User;
@@ -54,19 +57,23 @@ public class BookshelfService {
         bookshelfRepository.saveAll(bookshelvesToSave);
     }
 
-    public void addBookToBookshelf(Long bookshelfId, Long bookId) {
+    public BookshelfBookResponseDto createBookshelfBook(Long bookshelfId,
+                                                        BookshelfBookMutationDto bookshelfBookDto,
+                                                        User user) {
         Bookshelf bookshelf = findBookshelfById(bookshelfId);
-        Book book = bookService.findBookById(bookId);
+        Book book = bookService.findBookById(bookshelfBookDto.bookId());
         // TOdo add event
-        bookshelf.addBook(book);
-        bookshelfRepository.save(bookshelf);
+        BookshelfBook bookshelfBook = BookshelfMapper.toBookshelfBook(bookshelfBookDto, user, book);
+        bookshelf.addBookshelfBook(bookshelfBook);
+        bookshelfRepository.saveAndFlush(bookshelf);
+        Locale locale = LocaleContextHolder.getLocale();
+        return BookshelfMapper.toBookshelfBookResponseDto(bookshelfBook, locale);
     }
 
-    public void removeBookFromBookshelf(Long bookshelfId, Long bookId) {
+    public void deleteBookshelfBook(Long bookshelfId, Long bookshelfBookId) {
         Bookshelf bookshelf = findBookshelfById(bookshelfId);
-        Book book = bookService.findBookById(bookId);
         // TOdo add event
-        bookshelf.removeBookEdition(book);
+        bookshelf.removeBookshelfBook(bookshelfBookId);
         bookshelfRepository.save(bookshelf);
     }
 

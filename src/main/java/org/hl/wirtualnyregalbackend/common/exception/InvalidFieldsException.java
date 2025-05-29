@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.common.exception;
 
-import org.hl.wirtualnyregalbackend.common.error.ApiError;
+import org.hl.wirtualnyregalbackend.common.model.ApiError;
 
 import java.util.Collections;
 import java.util.List;

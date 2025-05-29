@@ -22,7 +22,7 @@ class BookSpecification {
     }
 
     public static Specification<Book> isbnEqual(String isbn) {
-        return (root, query, cb) -> cb.equal(root.get("book").get("isbn"), isbn);
+        return (root, query, cb) -> cb.equal(root.get("isbn"), isbn);
     }
 
 }

@@ -86,6 +86,7 @@ CREATE TABLE book
     publication_year INT,
     language_tag     TEXT,
     page_count       INT,
+    description      TEXT,
     created_at       TIMESTAMPTZ NOT NULL,
     updated_at       TIMESTAMPTZ
 );
@@ -244,7 +245,7 @@ CREATE TABLE book_note
     updated_at TIMESTAMPTZ
 );
 
-CREATE TABLE book_reading
+CREATE TABLE bookshelf_book
 (
     id                  BIGSERIAL PRIMARY KEY,
     user_id             BIGINT      NOT NULL REFERENCES users (id),
@@ -269,11 +270,11 @@ CREATE TABLE bookshelf
     updated_at  TIMESTAMPTZ
 );
 
-CREATE TABLE bookshelf_book
+CREATE TABLE bookshelf_book_bookshelf
 (
-    bookshelf_id BIGINT REFERENCES bookshelf (id),
-    book_id      BIGINT REFERENCES book (id),
-    PRIMARY KEY (bookshelf_id, book_id)
+    bookshelf_id      BIGINT REFERENCES bookshelf (id),
+    bookshelf_book_id BIGINT REFERENCES bookshelf_book (id),
+    PRIMARY KEY (bookshelf_id, bookshelf_book_id)
 );
 
 CREATE TABLE book_recommendation

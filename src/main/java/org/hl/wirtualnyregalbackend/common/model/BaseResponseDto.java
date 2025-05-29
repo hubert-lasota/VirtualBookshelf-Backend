@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.common.response_model;
+package org.hl.wirtualnyregalbackend.common.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

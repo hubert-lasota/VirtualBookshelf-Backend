@@ -30,10 +30,10 @@ public class Bookshelf extends BaseEntity {
     private User user;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "bookshelf_book",
+    @JoinTable(name = "bookshelf_book_bookshelf",
         joinColumns = @JoinColumn(name = "bookshelf_id"),
-        inverseJoinColumns = @JoinColumn(name = "book_id"))
-    private Set<Book> books = new HashSet<>();
+        inverseJoinColumns = @JoinColumn(name = "bookshelf_book_id"))
+    private Set<BookshelfBook> bookshelfBooks = new HashSet<>();
 
     protected Bookshelf() {
     }
@@ -45,41 +45,21 @@ public class Bookshelf extends BaseEntity {
         this.user = user;
     }
 
-    public void addBook(Book book) {
-        if (books.contains(book)) {
-            throw new InvalidRequestException("Book is already in bookshelf");
-        }
-        books.add(book);
+    public void addBookshelfBook(BookshelfBook book) {
+        bookshelfBooks.forEach(bookshelfBook -> {
+            Book b = bookshelfBook.getBook();
+            if (b.equals(book.getBook())) {
+                throw new InvalidRequestException("Book is already in the bookshelf");
+            }
+        });
+
+        bookshelfBooks.add(book);
     }
 
-    public void removeBookEdition(Book book) {
-        if (!books.contains(book)) {
-            throw new InvalidRequestException("Book edition is not in bookshelf");
-        }
-        books.remove(book);
-    }
-
-    public void setNameIfNotNull(String name) {
-        if (name != null) {
-            this.name = name;
-        }
-    }
-
-    public void setTypeIfNotNull(BookshelfType type) {
-        if (type != null) {
-            this.type = type;
-        }
-    }
-
-    public void setDescriptionIfNotNull(String description) {
-        if (description != null) {
-            this.description = description;
-        }
-    }
-
-    public void setBooksIfNotNull(Set<Book> books) {
-        if (books != null) {
-            this.books = books;
+    public void removeBookshelfBook(Long bookshelfBookId) {
+        boolean isSuccess = bookshelfBooks.removeIf(bookshelfBook -> bookshelfBook.getId().equals(bookshelfBookId));
+        if (!isSuccess) {
+            throw new InvalidRequestException("Bookshelf book id(%s) not found".formatted(bookshelfBookId));
         }
     }
 
@@ -87,16 +67,31 @@ public class Bookshelf extends BaseEntity {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public BookshelfType getType() {
         return type;
+    }
+
+    public void setType(BookshelfType type) {
+        this.type = type;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public Set<Book> getBooks() {
-        return Collections.unmodifiableSet(books);
+    public void setDescription(String description) {
+        this.description = description;
     }
 
+    public Set<BookshelfBook> getBookshelfBooks() {
+        return Collections.unmodifiableSet(bookshelfBooks);
+    }
+
+    public void setBookshelfBooks(Set<BookshelfBook> bookshelfBooks) {
+        this.bookshelfBooks = bookshelfBooks;
+    }
 }

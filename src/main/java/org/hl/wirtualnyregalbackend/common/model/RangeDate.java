@@ -1,15 +1,17 @@
-package org.hl.wirtualnyregalbackend.common.jpa;
+package org.hl.wirtualnyregalbackend.common.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import jakarta.validation.constraints.NotNull;
+import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 
 import java.time.Instant;
-import java.util.Objects;
 
 @Embeddable
+@ValidRangeDate
 public class RangeDate {
 
+    @NotNull(groups = CreateGroup.class)
     @Column(name = "started_at")
     private Instant startedAt;
 
@@ -20,13 +22,9 @@ public class RangeDate {
     }
 
     public RangeDate(Instant startedAt, Instant endedAt) {
-        this.startedAt = Objects.requireNonNull(startedAt, "startedAt cannot be null");
-        if (endedAt != null && (endedAt.isBefore(startedAt) || endedAt.equals(startedAt))) {
-            throw new InvalidRequestException("endedAt must be after startedAt");
-        }
+        this.startedAt = startedAt;
         this.endedAt = endedAt;
     }
-
 
     public Instant getStartedAt() {
         return startedAt;

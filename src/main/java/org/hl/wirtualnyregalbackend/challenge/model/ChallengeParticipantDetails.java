@@ -3,14 +3,14 @@ package org.hl.wirtualnyregalbackend.challenge.model;
 import jakarta.persistence.*;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.common.jpa.RangeDate;
+import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 import org.hl.wirtualnyregalbackend.security.model.User;
 
 import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-@Table(name = "challenge_participant_details")
+@Table(name = "challenge_participant")
 public class ChallengeParticipantDetails extends BaseEntity {
 
     @Column
@@ -18,10 +18,6 @@ public class ChallengeParticipantDetails extends BaseEntity {
     private ChallengeStatus status;
 
     @Embedded
-    @AttributeOverrides({
-        @AttributeOverride(name = "startAt", column = @Column(name = "started_at")),
-        @AttributeOverride(name = "finishAt", column = @Column(name = "finished_at"))
-    })
     private RangeDate rangeDate;
 
     @ManyToOne

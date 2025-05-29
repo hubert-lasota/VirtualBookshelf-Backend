@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.common.exception;
 
-import org.hl.wirtualnyregalbackend.common.error.ApiError;
+import org.hl.wirtualnyregalbackend.common.model.ApiError;
 import org.springframework.http.HttpStatus;
 
 import java.util.Collections;

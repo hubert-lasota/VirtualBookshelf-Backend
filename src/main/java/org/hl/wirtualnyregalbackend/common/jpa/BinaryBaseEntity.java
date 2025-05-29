@@ -24,6 +24,7 @@ public abstract class BinaryBaseEntity extends BaseEntity {
         this.fileName = fileName;
     }
 
+
     public byte[] getBinaryData() {
         return binaryData;
     }

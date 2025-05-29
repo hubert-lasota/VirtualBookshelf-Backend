@@ -12,8 +12,9 @@ import org.hl.wirtualnyregalbackend.book_series.BookSeriesMapper;
 import org.hl.wirtualnyregalbackend.book_series.BookSeriesService;
 import org.hl.wirtualnyregalbackend.book_series.model.BookSeries;
 import org.hl.wirtualnyregalbackend.book_series.model.dto.BookSeriesDto;
-import org.hl.wirtualnyregalbackend.common.response_model.PageResponseDto;
+import org.hl.wirtualnyregalbackend.common.ServerInfoProvider;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
+import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.genre.GenreService;
 import org.hl.wirtualnyregalbackend.genre.model.Genre;
 import org.hl.wirtualnyregalbackend.genre.model.dto.GenreDto;
@@ -46,26 +47,32 @@ public class BookService {
     private final ApplicationEventPublisher eventPublisher;
     private final BookRepository bookRepository;
     private final BookFormatRepository bookFormatRepository;
+    private final BookCoverRepository bookCoverRepository;
     private final BookSeriesService bookSeriesService;
     private final GenreService genreService;
     private final AuthorService authorService;
     private final PublisherService publisherService;
+    private final ServerInfoProvider serverInfoProvider;
 
 
     BookService(ApplicationEventPublisher eventPublisher,
                 BookRepository bookRepository,
                 BookFormatRepository bookFormatRepository,
+                BookCoverRepository bookCoverRepository,
                 BookSeriesService bookSeriesService,
                 GenreService genreService,
                 AuthorService authorService,
-                PublisherService publisherService) {
+                PublisherService publisherService,
+                ServerInfoProvider serverInfoProvider) {
         this.eventPublisher = eventPublisher;
         this.bookRepository = bookRepository;
         this.bookFormatRepository = bookFormatRepository;
+        this.bookCoverRepository = bookCoverRepository;
         this.bookSeriesService = bookSeriesService;
         this.genreService = genreService;
         this.authorService = authorService;
         this.publisherService = publisherService;
+        this.serverInfoProvider = serverInfoProvider;
     }
 
 
@@ -73,7 +80,7 @@ public class BookService {
         Set<Author> authors = findOrCreateAuthors(bookMutationDto.authors());
         Set<Genre> genres = findGenres(bookMutationDto);
         List<BookSeriesBook> series = findOrCreateSeries(bookMutationDto.series());
-        BookCover cover = getBookCover(bookMutationDto.coverUrl(), coverFile);
+        BookCover cover = createBookCover(bookMutationDto.coverUrl(), coverFile);
         BookFormat format = findBookFormatById(bookMutationDto.format().id());
         Publisher publisher = publisherService.findOrCreatePublisher(bookMutationDto.publisher());
 
@@ -83,7 +90,7 @@ public class BookService {
         return BookMapper.toBookResponseDto(book, locale);
     }
 
-    public PageResponseDto<BookResponseDto> searchBooks(String query, Pageable pageable) {
+    public PageResponseDto<BookResponseDto> findBooks(String query, Pageable pageable) {
         Specification<Book> spec = Specification
             .where(BookSpecification.titleIgnoreCaseLike(query))
             .or(BookSpecification.authorFullNameIgnoreCaseLike(query))
@@ -107,44 +114,68 @@ public class BookService {
 
     @Transactional
     public BookResponseDto updateBook(Long bookId,
-                                      BookMutationDto bookMutationDto,
+                                      BookMutationDto bookDto,
                                       MultipartFile coverFile) {
         Book book = findBookById(bookId);
-        book.setIsbnIfNotNull(bookMutationDto.isbn());
-        book.setTitleIfNotNull(bookMutationDto.title());
-        book.setDescriptionIfNotNull(bookMutationDto.description());
-        book.setLanguageIfNotNull(bookMutationDto.language());
-        book.setPageCountIfNotNull(bookMutationDto.pageCount());
-        book.setPublicationYearIfNotNull(bookMutationDto.publicationYear());
+        String isbn = bookDto.isbn();
+        if (isbn != null) {
+            book.setIsbn(isbn);
+        }
 
-        BookFormatDto formatDto = bookMutationDto.format();
+        String title = bookDto.title();
+        if (title != null) {
+            book.setTitle(title);
+        }
+
+
+        String description = bookDto.description();
+        if (description != null) {
+            book.setDescription(description);
+        }
+
+        Locale language = bookDto.language();
+        if (language != null) {
+            book.setLanguage(language);
+        }
+
+        Integer pageCount = bookDto.pageCount();
+        if (pageCount != null) {
+            book.setPageCount(pageCount);
+        }
+
+        Integer publicationYear = bookDto.publicationYear();
+        if (publicationYear != null) {
+            book.setPublicationYear(publicationYear);
+        }
+
+        BookFormatDto formatDto = bookDto.format();
         if (formatDto != null) {
             BookFormat format = findBookFormatById(formatDto.id());
-            book.setFormatIfNotNull(format);
+            book.setFormat(format);
         }
 
-        if (bookMutationDto.publisher() != null) {
-            Publisher publisher = publisherService.findOrCreatePublisher(bookMutationDto.publisher());
-            book.setPublisherIfNotNull(publisher);
+        if (bookDto.publisher() != null) {
+            Publisher publisher = publisherService.findOrCreatePublisher(bookDto.publisher());
+            book.setPublisher(publisher);
         }
 
-        if (bookMutationDto.authors() != null) {
-            Set<Author> authors = findOrCreateAuthors(bookMutationDto.authors());
-            book.setAuthorsIfNotNull(authors);
+        if (bookDto.authors() != null) {
+            Set<Author> authors = findOrCreateAuthors(bookDto.authors());
+            book.setAuthors(authors);
         }
 
-        if (bookMutationDto.genres() != null) {
-            Set<Genre> genres = findGenres(bookMutationDto);
-            book.setGenresIfNotNull(genres);
+        if (bookDto.genres() != null) {
+            Set<Genre> genres = findGenres(bookDto);
+            book.setGenres(genres);
         }
 
-        if (bookMutationDto.series() != null) {
-            List<BookSeriesBook> bookSeriesBooks = findOrCreateSeries(bookMutationDto.series());
-            book.setBookSeriesBooksIfNotNull(bookSeriesBooks);
+        if (bookDto.series() != null) {
+            List<BookSeriesBook> bookSeriesBooks = findOrCreateSeries(bookDto.series());
+            book.setBookSeriesBooks(bookSeriesBooks);
         }
 
-        BookCover cover = getBookCover(bookMutationDto.coverUrl(), coverFile);
-        book.setCoverIfNotNull(cover);
+        BookCover cover = createBookCover(bookDto.coverUrl(), coverFile);
+        book.setCover(cover);
 
         Locale locale = LocaleContextHolder.getLocale();
         return BookMapper.toBookResponseDto(book, locale);
@@ -181,8 +212,7 @@ public class BookService {
             .toList();
     }
 
-    // TODO moze niech flushnie ID - zapytać sie czatu jak zwracac url api/book-covers/{id}
-    private BookCover getBookCover(String coverUrl, MultipartFile coverFile) {
+    private BookCover createBookCover(String coverUrl, MultipartFile coverFile) {
         if (coverUrl != null) {
             return new BookCover(coverUrl, null);
         } else if (coverFile != null && !coverFile.isEmpty()) {
@@ -192,7 +222,13 @@ public class BookService {
                     coverFile.getContentType(),
                     coverFile.getOriginalFilename()
                 );
-                return new BookCover(null, binaryCover);
+                BookCover cover = new BookCover(null, binaryCover);
+                bookCoverRepository.saveAndFlush(cover);
+                String origin = serverInfoProvider.getOrigin();
+                String url = origin + "/api/v1/book-covers/" + cover.getId();
+                cover.setUrl(url);
+                bookCoverRepository.save(cover);
+                return cover;
             } catch (IOException exc) {
                 log.error("Error while reading cover file.", exc);
                 return null;

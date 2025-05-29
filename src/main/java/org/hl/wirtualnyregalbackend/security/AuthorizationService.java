@@ -8,6 +8,7 @@ import org.hl.wirtualnyregalbackend.security.model.User;
 import org.hl.wirtualnyregalbackend.security.model.dto.UserCredentialsDto;
 import org.hl.wirtualnyregalbackend.security.model.dto.UserSignInResponseDto;
 import org.hl.wirtualnyregalbackend.user.UserDefaultConfigurer;
+import org.hl.wirtualnyregalbackend.user.UserMapper;
 import org.hl.wirtualnyregalbackend.user.dao.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,7 @@ class AuthorizationService {
         userRepository.save(user);
         userDefaultConfigurer.configure(user);
         String jwt = jwtService.generateToken(user);
-        return new UserSignInResponseDto(user.getId(), user.getUsername(), jwt);
+        return UserMapper.toUserSignInResponseDto(user, jwt);
     }
 
     public UserSignInResponseDto signIn(UserCredentialsDto credentials) {
@@ -72,7 +73,7 @@ class AuthorizationService {
         User user = (User) authResult.getPrincipal();
 
         String jwt = jwtService.generateToken(user);
-        return new UserSignInResponseDto(user.getId(), user.getUsername(), jwt);
+        return UserMapper.toUserSignInResponseDto(user, jwt);
     }
 
     public boolean isJwtValid(String jwt) {

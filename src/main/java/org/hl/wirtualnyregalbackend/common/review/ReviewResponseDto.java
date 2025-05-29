@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.common.review;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import org.hl.wirtualnyregalbackend.common.response_model.BaseResponseDto;
+import org.hl.wirtualnyregalbackend.common.model.BaseResponseDto;
 import org.hl.wirtualnyregalbackend.user.model.dto.UserHeaderResponseDto;
 
 import java.time.Instant;

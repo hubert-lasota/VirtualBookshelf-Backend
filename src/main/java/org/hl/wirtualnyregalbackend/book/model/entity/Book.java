@@ -82,68 +82,8 @@ public class Book extends BaseEntity {
         this.publisher = publisher;
         this.authors = authors;
         this.genres = genres;
+        bookSeriesBooks.forEach(e -> e.setBook(this));
         this.bookSeriesBooks = bookSeriesBooks;
-    }
-
-
-    public void setIsbnIfNotNull(String isbn) {
-        if (isbn != null) {
-            this.isbn = isbn;
-        }
-    }
-
-    public void setTitleIfNotNull(String title) {
-        if (title != null) {
-            this.title = title;
-        }
-    }
-
-    public void setPublicationYearIfNotNull(Integer publicationYear) {
-        if (publicationYear != null) {
-            this.publicationYear = publicationYear;
-        }
-    }
-
-    public void setLanguageIfNotNull(Locale language) {
-        if (language != null) {
-            this.language = language;
-        }
-    }
-
-    public void setPageCountIfNotNull(Integer pageCount) {
-        if (pageCount != null) {
-            this.pageCount = pageCount;
-        }
-    }
-
-    public void setDescriptionIfNotNull(String description) {
-        if (description != null) {
-            this.description = description;
-        }
-    }
-
-    public void setCoverIfNotNull(BookCover cover) {
-        if (cover != null) {
-            this.cover = cover;
-        }
-    }
-
-    public void setFormatIfNotNull(BookFormat format) {
-        if (format != null) {
-            this.format = format;
-        }
-    }
-
-    public void setPublisherIfNotNull(Publisher publisher) {
-        if (publisher != null) {
-            this.publisher = publisher;
-        }
-    }
-
-    public void setGenresIfNotNull(Set<Genre> genres) {
-        if (genres != null) {
-            this.genres = genres;
-        }
     }
 
     public void addGenre(Genre genre) {
@@ -159,12 +99,6 @@ public class Book extends BaseEntity {
         boolean isSuccess = this.genres.removeIf(genre -> genre.getId().equals(bookGenreId));
         if (!isSuccess) {
             throw new InvalidRequestException("Genre is not assigned to this book");
-        }
-    }
-
-    public void setAuthorsIfNotNull(Set<Author> authors) {
-        if (authors != null) {
-            this.authors = authors;
         }
     }
 
@@ -184,61 +118,101 @@ public class Book extends BaseEntity {
         }
     }
 
-
-    public void setBookSeriesBooksIfNotNull(List<BookSeriesBook> bookSeriesBooks) {
-        if (bookSeriesBooks != null) {
-            bookSeriesBooks.forEach(e -> e.setBook(this));
-            this.bookSeriesBooks = bookSeriesBooks;
-        }
-    }
-
     public BookCover getCover() {
         return cover;
+    }
+
+    public void setCover(BookCover cover) {
+        this.cover = cover;
     }
 
     public Set<Genre> getGenres() {
         return Collections.unmodifiableSet(genres);
     }
 
+    public void setGenres(Set<Genre> genres) {
+        this.genres = genres;
+    }
+
     public Set<Author> getAuthors() {
         return Collections.unmodifiableSet(authors);
     }
 
+    public void setAuthors(Set<Author> authors) {
+        this.authors = authors;
+    }
 
     public List<BookSeriesBook> getBookSeriesBooks() {
         return Collections.unmodifiableList(bookSeriesBooks);
+    }
+
+    public void setBookSeriesBooks(List<BookSeriesBook> bookSeriesBooks) {
+        bookSeriesBooks.forEach(e -> e.setBook(this));
+        this.bookSeriesBooks = bookSeriesBooks;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getIsbn() {
         return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 
     public Integer getPublicationYear() {
         return publicationYear;
     }
 
+    public void setPublicationYear(Integer publicationYear) {
+        this.publicationYear = publicationYear;
+    }
+
     public Locale getLanguage() {
         return language;
+    }
+
+    public void setLanguage(Locale language) {
+        this.language = language;
     }
 
     public Integer getPageCount() {
         return pageCount;
     }
 
+    public void setPageCount(Integer pageCount) {
+        this.pageCount = pageCount;
+    }
+
     public BookFormat getFormat() {
         return format;
+    }
+
+    public void setFormat(BookFormat format) {
+        this.format = format;
     }
 
     public Publisher getPublisher() {
         return publisher;
     }
 
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }
