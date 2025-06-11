@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.book_series;
 
-import org.hl.wirtualnyregalbackend.book_series.model.BookSeries;
-import org.hl.wirtualnyregalbackend.book_series.model.dto.BookSeriesDto;
+import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesMutationDto;
+import org.hl.wirtualnyregalbackend.book_series.entity.BookSeries;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,16 +17,16 @@ public class BookSeriesService {
         this.bookSeriesRepository = bookSeriesRepository;
     }
 
-    public BookSeries findOrCreateBookSeries(BookSeriesDto bookSeriesDto) {
-        if (bookSeriesDto.id() != null) {
-            return bookSeriesRepository.findById(bookSeriesDto.id())
-                .orElseThrow(() -> new EntityNotFoundException("Not found BookSeries with id = %d".formatted(bookSeriesDto.id())));
+    public BookSeries findOrCreateBookSeries(Long id, BookSeriesMutationDto bookSeriesDto) {
+        if (id != null) {
+            return bookSeriesRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Not found BookSeries with id = %d".formatted(id)));
         }
 
         return createBookSeriesEntity(bookSeriesDto);
     }
 
-    private BookSeries createBookSeriesEntity(BookSeriesDto bookSeriesDto) {
+    private BookSeries createBookSeriesEntity(BookSeriesMutationDto bookSeriesDto) {
         Locale locale = LocaleContextHolder.getLocale();
         BookSeries bookSeries = BookSeriesMapper.toBookSeries(bookSeriesDto, locale);
         return bookSeriesRepository.save(bookSeries);

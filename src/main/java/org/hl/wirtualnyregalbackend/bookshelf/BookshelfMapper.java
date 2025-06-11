@@ -1,61 +1,63 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
 import org.hl.wirtualnyregalbackend.book.BookMapper;
-import org.hl.wirtualnyregalbackend.book.model.dto.BookResponseDto;
-import org.hl.wirtualnyregalbackend.book.model.entity.Book;
-import org.hl.wirtualnyregalbackend.bookshelf.model.Bookshelf;
-import org.hl.wirtualnyregalbackend.bookshelf.model.BookshelfBook;
-import org.hl.wirtualnyregalbackend.bookshelf.model.BookshelfBookNote;
-import org.hl.wirtualnyregalbackend.bookshelf.model.dto.*;
-import org.hl.wirtualnyregalbackend.security.model.User;
+import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
+import org.hl.wirtualnyregalbackend.book.entity.Book;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.*;
+import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
+import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfBook;
+import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfBookNote;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 class BookshelfMapper {
 
     private BookshelfMapper() {
     }
 
-    public static Bookshelf toBookshelf(BookshelfMutationDto bookshelfDto, User user) {
+    public static Bookshelf toBookshelf(BookshelfCreateDto bookshelfDto, User user, Set<BookshelfBook> bookshelfBooks) {
         return new Bookshelf(
-            bookshelfDto.name(),
-            bookshelfDto.type(),
-            bookshelfDto.description(),
-            user
+            bookshelfDto.getName(),
+            bookshelfDto.getType(),
+            bookshelfDto.getDescription(),
+            user,
+            bookshelfBooks
         );
     }
 
     public static BookshelfResponseDto toBookshelfResponseDto(Bookshelf bookshelf,
                                                               Locale locale) {
-        BookshelfMutationDto bookshelfMutationDto = toBookshelfMutationDto(bookshelf);
-
         List<BookshelfBookResponseDto> books = bookshelf.getBookshelfBooks()
             .stream()
             .map(bookshelfBook -> BookshelfMapper.toBookshelfBookResponseDto(bookshelfBook, locale))
             .toList();
 
-        return new BookshelfResponseDto(bookshelf.getId(), bookshelfMutationDto, books);
+        return new BookshelfResponseDto(
+            bookshelf.getName(),
+            bookshelf.getType(),
+            bookshelf.getDescription(),
+            bookshelf.getId(),
+            books,
+            bookshelf.getCreatedAt(),
+            bookshelf.getUpdatedAt()
+        );
     }
 
-    public static BookshelfMutationDto toBookshelfMutationDto(Bookshelf bookshelf) {
-        return new BookshelfMutationDto(bookshelf.getName(), bookshelf.getType(), bookshelf.getDescription());
-    }
 
-    public static BookshelfBook toBookshelfBook(BookshelfBookMutationDto bookshelfBookDto,
-                                                User user,
-                                                Book book) {
-        List<BookshelfBookNote> notes = bookshelfBookDto.notes()
+    public static BookshelfBook toBookshelfBook(BookshelfBookCreateDto bookshelfBookDto, Book book) {
+        List<BookshelfBookNote> notes = bookshelfBookDto.getNotes()
             .stream()
             .map(BookshelfMapper::toBookshelfBookNote)
             .toList();
 
         return new BookshelfBook(
-            bookshelfBookDto.currentPage(),
-            user,
+            bookshelfBookDto.getCurrentPage(),
             book,
-            bookshelfBookDto.rangeDate(),
-            bookshelfBookDto.status(),
+            bookshelfBookDto.getRangeDate(),
+            bookshelfBookDto.getStatus(),
             notes
         );
     }
@@ -68,15 +70,15 @@ class BookshelfMapper {
             .toList();
 
         return new BookshelfBookResponseDto(
-            bookshelfBook.getId(),
-            bookshelfBook.getCreatedAt(),
-            bookshelfBook.getUpdatedAt(),
-            book,
             bookshelfBook.getCurrentPage(),
-            bookshelfBook.getProgressPercentage(),
             bookshelfBook.getStatus(),
             bookshelfBook.getRangeDate(),
-            notes
+            notes,
+            bookshelfBook.getId(),
+            bookshelfBook.getProgressPercentage(),
+            book,
+            bookshelfBook.getCreatedAt(),
+            bookshelfBook.getUpdatedAt()
         );
     }
 

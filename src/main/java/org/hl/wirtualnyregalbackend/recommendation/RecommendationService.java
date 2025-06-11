@@ -1,9 +1,9 @@
 package org.hl.wirtualnyregalbackend.recommendation;
 
 import org.hl.wirtualnyregalbackend.book.BookService;
-import org.hl.wirtualnyregalbackend.book.model.entity.Book;
-import org.hl.wirtualnyregalbackend.genre.model.Genre;
-import org.hl.wirtualnyregalbackend.security.model.User;
+import org.hl.wirtualnyregalbackend.book.entity.Book;
+import org.hl.wirtualnyregalbackend.genre.entity.Genre;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 

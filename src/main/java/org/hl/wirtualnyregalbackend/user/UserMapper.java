@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.user;
 
-import org.hl.wirtualnyregalbackend.security.model.User;
-import org.hl.wirtualnyregalbackend.security.model.dto.UserSignInResponseDto;
+import org.hl.wirtualnyregalbackend.security.dto.UserSignInResponseDto;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.hl.wirtualnyregalbackend.user.model.UserProfile;
 import org.hl.wirtualnyregalbackend.user.model.UserProfilePicture;
 import org.hl.wirtualnyregalbackend.user.model.dto.UserHeaderResponseDto;

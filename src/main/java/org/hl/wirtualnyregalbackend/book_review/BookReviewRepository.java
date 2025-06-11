@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.book_review;
 
-import org.hl.wirtualnyregalbackend.book_review.model.BookReview;
+import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

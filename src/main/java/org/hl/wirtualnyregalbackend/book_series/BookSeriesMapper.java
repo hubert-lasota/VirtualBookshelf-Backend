@@ -1,8 +1,9 @@
 package org.hl.wirtualnyregalbackend.book_series;
 
-import org.hl.wirtualnyregalbackend.book.model.entity.BookSeriesBook;
-import org.hl.wirtualnyregalbackend.book_series.model.BookSeries;
-import org.hl.wirtualnyregalbackend.book_series.model.dto.BookSeriesDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookSeriesAssignmentDto;
+import org.hl.wirtualnyregalbackend.book.entity.BookSeriesBook;
+import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesMutationDto;
+import org.hl.wirtualnyregalbackend.book_series.entity.BookSeries;
 import org.hl.wirtualnyregalbackend.common.translation.TranslatedName;
 import org.hl.wirtualnyregalbackend.common.translation.TranslationUtils;
 
@@ -13,18 +14,18 @@ public class BookSeriesMapper {
     private BookSeriesMapper() {
     }
 
-    public static BookSeriesDto toBookSeriesDto(BookSeriesBook bookSeriesAssociation, Locale locale) {
+    public static BookSeriesMutationDto toBookSeriesMutationDto(BookSeriesBook bookSeriesAssociation, Locale locale) {
         BookSeries bookSeries = bookSeriesAssociation.getBookSeries();
         String localizedName = TranslationUtils.getTranslatedName(bookSeries.getNames(), locale);
-        return new BookSeriesDto(bookSeries.getId(), localizedName, bookSeriesAssociation.getBookOrder());
+        return new BookSeriesMutationDto(localizedName);
     }
 
-    public static BookSeries toBookSeries(BookSeriesDto bookSeriesDto, Locale locale) {
+    public static BookSeries toBookSeries(BookSeriesMutationDto bookSeriesDto, Locale locale) {
         TranslatedName translatedName = new TranslatedName(bookSeriesDto.name(), locale);
         return new BookSeries(translatedName);
     }
 
-    public static BookSeriesBook toBookSeriesBookAssociation(BookSeries bookSeries, BookSeriesDto bookSeriesDto) {
+    public static BookSeriesBook toBookSeriesBookAssociation(BookSeries bookSeries, BookSeriesAssignmentDto bookSeriesDto) {
         return new BookSeriesBook(bookSeries, bookSeriesDto.bookOrder());
     }
 

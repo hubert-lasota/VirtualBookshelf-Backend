@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.user;
 
-import org.hl.wirtualnyregalbackend.security.model.User;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component

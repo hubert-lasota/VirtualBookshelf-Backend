@@ -2,8 +2,8 @@ package org.hl.wirtualnyregalbackend.user.model;
 
 import jakarta.persistence.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.genre.model.Genre;
-import org.hl.wirtualnyregalbackend.security.model.User;
+import org.hl.wirtualnyregalbackend.genre.entity.Genre;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 
 import java.util.Collections;
 import java.util.HashSet;

@@ -1,8 +1,8 @@
 package org.hl.wirtualnyregalbackend.tag;
 
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
-import org.hl.wirtualnyregalbackend.tag.model.Tag;
-import org.hl.wirtualnyregalbackend.tag.model.dto.TagDto;
+import org.hl.wirtualnyregalbackend.tag.dto.TagDto;
+import org.hl.wirtualnyregalbackend.tag.entity.Tag;
 import org.springframework.stereotype.Service;
 
 @Service

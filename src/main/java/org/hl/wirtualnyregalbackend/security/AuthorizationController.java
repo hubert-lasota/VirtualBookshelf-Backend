@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.security;
 
-import org.hl.wirtualnyregalbackend.security.model.dto.UserCredentialsDto;
-import org.hl.wirtualnyregalbackend.security.model.dto.UserSignInResponseDto;
+import org.hl.wirtualnyregalbackend.security.dto.UserCredentialsDto;
+import org.hl.wirtualnyregalbackend.security.dto.UserSignInResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

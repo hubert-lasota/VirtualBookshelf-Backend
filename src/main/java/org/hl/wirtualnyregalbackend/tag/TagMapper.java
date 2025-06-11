@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.tag;
 
-import org.hl.wirtualnyregalbackend.tag.model.Tag;
-import org.hl.wirtualnyregalbackend.tag.model.dto.TagDto;
+import org.hl.wirtualnyregalbackend.tag.dto.TagDto;
+import org.hl.wirtualnyregalbackend.tag.entity.Tag;
 
 class TagMapper {
 

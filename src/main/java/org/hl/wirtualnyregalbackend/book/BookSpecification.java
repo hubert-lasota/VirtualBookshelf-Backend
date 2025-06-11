@@ -1,8 +1,8 @@
 package org.hl.wirtualnyregalbackend.book;
 
 import jakarta.persistence.criteria.Join;
-import org.hl.wirtualnyregalbackend.author.model.Author;
-import org.hl.wirtualnyregalbackend.book.model.entity.Book;
+import org.hl.wirtualnyregalbackend.author.entity.Author;
+import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.springframework.data.jpa.domain.Specification;
 
 class BookSpecification {

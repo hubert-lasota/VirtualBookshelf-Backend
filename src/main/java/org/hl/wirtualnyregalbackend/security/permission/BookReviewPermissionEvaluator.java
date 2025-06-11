@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.security.permission;
 
 import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
-import org.hl.wirtualnyregalbackend.security.model.User;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 

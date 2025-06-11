@@ -1,32 +1,35 @@
 package org.hl.wirtualnyregalbackend.author;
 
-import org.hl.wirtualnyregalbackend.author.model.Author;
-import org.hl.wirtualnyregalbackend.author.model.dto.AuthorDto;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
+import org.hl.wirtualnyregalbackend.author.entity.Author;
+import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
 
-    public AuthorService(AuthorRepository authorRepository) {
+    AuthorService(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
     }
 
-    public AuthorDto createAuthor(AuthorDto authorDto) {
+    public AuthorMutationDto createAuthor(AuthorMutationDto authorDto) {
         Author author = createAuthorEntity(authorDto);
-        return AuthorMapper.toAuthorDto(author);
+        return AuthorMapper.toAuthorMutationDto(author);
     }
 
-    public Author findOrCreateAuthor(AuthorDto authorDto) {
-        Optional<Author> authorOpt = authorRepository.findById(authorDto.id());
-        return authorOpt.orElseGet(() -> createAuthorEntity(authorDto));
+    public Author findOrCreateAuthor(Long id, AuthorMutationDto authorMutationDto) {
+        if (id != null) {
+            return authorRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Author with id='%d' not found".formatted(id)));
+        }
+
+        return createAuthorEntity(authorMutationDto);
     }
 
-    private Author createAuthorEntity(AuthorDto authorDto) {
+    private Author createAuthorEntity(AuthorMutationDto authorDto) {
         String fullName = authorDto.fullName();
         boolean exists = authorRepository.existsByFullName(fullName);
         if (exists) {

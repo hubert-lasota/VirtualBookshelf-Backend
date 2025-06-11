@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.user.dao;
 
-import org.hl.wirtualnyregalbackend.security.model.User;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

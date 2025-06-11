@@ -245,19 +245,6 @@ CREATE TABLE book_note
     updated_at TIMESTAMPTZ
 );
 
-CREATE TABLE bookshelf_book
-(
-    id                  BIGSERIAL PRIMARY KEY,
-    user_id             BIGINT      NOT NULL REFERENCES users (id),
-    book_id             BIGINT      NOT NULL REFERENCES book (id),
-    current_page        INT,
-    progress_percentage INT,
-    started_at          TIMESTAMPTZ,
-    ended_at            TIMESTAMPTZ,
-    status              VARCHAR(50) NOT NULL,
-    created_at          TIMESTAMPTZ NOT NULL,
-    updated_at          TIMESTAMPTZ
-);
 
 CREATE TABLE bookshelf
 (
@@ -270,11 +257,18 @@ CREATE TABLE bookshelf
     updated_at  TIMESTAMPTZ
 );
 
-CREATE TABLE bookshelf_book_bookshelf
+CREATE TABLE bookshelf_book
 (
-    bookshelf_id      BIGINT REFERENCES bookshelf (id),
-    bookshelf_book_id BIGINT REFERENCES bookshelf_book (id),
-    PRIMARY KEY (bookshelf_id, bookshelf_book_id)
+    id                  BIGSERIAL PRIMARY KEY,
+    bookshelf_id        BIGINT      NOT NULL REFERENCES bookshelf (id),
+    book_id             BIGINT      NOT NULL REFERENCES book (id),
+    current_page        INT,
+    progress_percentage INT,
+    started_at          TIMESTAMPTZ,
+    ended_at            TIMESTAMPTZ,
+    status              VARCHAR(50) NOT NULL,
+    created_at          TIMESTAMPTZ NOT NULL,
+    updated_at          TIMESTAMPTZ
 );
 
 CREATE TABLE book_recommendation

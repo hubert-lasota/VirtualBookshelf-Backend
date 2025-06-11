@@ -1,24 +1,23 @@
 package org.hl.wirtualnyregalbackend.author;
 
-import org.hl.wirtualnyregalbackend.author.model.Author;
-import org.hl.wirtualnyregalbackend.author.model.AuthorProfilePicture;
-import org.hl.wirtualnyregalbackend.author.model.dto.AuthorDto;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
+import org.hl.wirtualnyregalbackend.author.entity.Author;
+import org.hl.wirtualnyregalbackend.author.entity.AuthorProfilePicture;
 
 public class AuthorMapper {
 
     private AuthorMapper() {
     }
 
-    public static AuthorDto toAuthorDto(Author author) {
-        return new AuthorDto(
-            author.getId(),
+    public static AuthorMutationDto toAuthorMutationDto(Author author) {
+        return new AuthorMutationDto(
             author.getFullName(),
             author.getAuthorProfilePicture().getUrl(),
             author.getDescription()
         );
     }
 
-    public static Author toAuthor(AuthorDto authorDto) {
+    public static Author toAuthor(AuthorMutationDto authorDto) {
         AuthorProfilePicture authorProfilePicture = new AuthorProfilePicture(authorDto.photoUrl());
         return new Author(authorDto.fullName(), authorDto.description(), authorProfilePicture, null);
     }

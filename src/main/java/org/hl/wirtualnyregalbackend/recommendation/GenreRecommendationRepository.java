@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.recommendation;
 
-import org.hl.wirtualnyregalbackend.recommendation.model.GenreRecommendation;
+import org.hl.wirtualnyregalbackend.recommendation.entity.GenreRecommendation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

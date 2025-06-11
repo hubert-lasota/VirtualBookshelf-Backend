@@ -1,24 +1,23 @@
 package org.hl.wirtualnyregalbackend.book;
 
 import org.hl.wirtualnyregalbackend.author.AuthorMapper;
-import org.hl.wirtualnyregalbackend.author.model.Author;
-import org.hl.wirtualnyregalbackend.author.model.dto.AuthorDto;
-import org.hl.wirtualnyregalbackend.book.model.dto.BookFormatDto;
-import org.hl.wirtualnyregalbackend.book.model.dto.BookMutationDto;
-import org.hl.wirtualnyregalbackend.book.model.dto.BookResponseDto;
-import org.hl.wirtualnyregalbackend.book.model.entity.Book;
-import org.hl.wirtualnyregalbackend.book.model.entity.BookCover;
-import org.hl.wirtualnyregalbackend.book.model.entity.BookFormat;
-import org.hl.wirtualnyregalbackend.book.model.entity.BookSeriesBook;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
+import org.hl.wirtualnyregalbackend.author.entity.Author;
+import org.hl.wirtualnyregalbackend.book.dto.*;
+import org.hl.wirtualnyregalbackend.book.entity.Book;
+import org.hl.wirtualnyregalbackend.book.entity.BookSeriesBook;
+import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
+import org.hl.wirtualnyregalbackend.book_format.BookFormatMapper;
+import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
+import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
 import org.hl.wirtualnyregalbackend.book_series.BookSeriesMapper;
-import org.hl.wirtualnyregalbackend.book_series.model.dto.BookSeriesDto;
-import org.hl.wirtualnyregalbackend.common.translation.TranslationUtils;
+import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesMutationDto;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
-import org.hl.wirtualnyregalbackend.genre.model.Genre;
-import org.hl.wirtualnyregalbackend.genre.model.dto.GenreDto;
+import org.hl.wirtualnyregalbackend.genre.dto.GenreMutationDto;
+import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.publisher.PublisherMapper;
-import org.hl.wirtualnyregalbackend.publisher.model.Publisher;
-import org.hl.wirtualnyregalbackend.publisher.model.dto.PublisherDto;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherMutationDto;
+import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
 
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +29,7 @@ public class BookMapper {
     private BookMapper() {
     }
 
+
     public static Book toBook(BookMutationDto bookDto,
                               BookCover cover,
                               BookFormat format,
@@ -38,11 +38,11 @@ public class BookMapper {
                               Set<Genre> genres,
                               List<BookSeriesBook> bookSeriesBooks) {
         return new Book(
-            bookDto.isbn(),
-            bookDto.title(),
-            bookDto.publicationYear(),
-            bookDto.language(),
-            bookDto.pageCount(),
+            bookDto.getIsbn(),
+            bookDto.getTitle(),
+            bookDto.getPublicationYear(),
+            bookDto.getLanguage(),
+            bookDto.getPageCount(),
             cover,
             format,
             publisher,
@@ -53,49 +53,52 @@ public class BookMapper {
     }
 
     public static BookResponseDto toBookResponseDto(Book book, Locale locale) {
-        BookMutationDto bookDto = toBookMutationDto(book, locale);
-        return new BookResponseDto(book.getId(), book.getCreatedAt(), book.getUpdatedAt(), bookDto);
-    }
+        BookFormatDto format = BookFormatMapper.toBookFormatDto(book.getFormat(), locale);
+        PublisherMutationDto publisherMutationDto = PublisherMapper.toPublisherMutationDto(book.getPublisher());
+        PublisherWithIdDto publisher = new PublisherWithIdDto(book.getPublisher().getId(), publisherMutationDto);
 
-    public static BookMutationDto toBookMutationDto(Book book, Locale locale) {
-        BookFormatDto format = toBookFormatDto(book.getFormat(), locale);
-
-        PublisherDto publisher = PublisherMapper.toPublisherDto(book.getPublisher());
-
-        List<AuthorDto> authors = book.getAuthors()
+        List<AuthorWithIdDto> authors = book.getAuthors()
             .stream()
-            .map(AuthorMapper::toAuthorDto)
+            .map((author) -> {
+                AuthorMutationDto dto = AuthorMapper.toAuthorMutationDto(author);
+                return new AuthorWithIdDto(author.getId(), dto);
+            })
             .toList();
 
-        List<GenreDto> genres = book.getGenres()
+        List<GenreWithIdDto> genres = book.getGenres()
             .stream()
-            .map(genre -> GenreMapper.toGenreDto(genre, locale))
+            .map(genre -> {
+                GenreMutationDto dto = GenreMapper.toGenreMutationDto(genre, locale);
+                return new GenreWithIdDto(genre.getId(), dto);
+            })
             .toList();
 
-        List<BookSeriesDto> series = book.getBookSeriesBooks()
+        List<BookSeriesAssignmentDto> series = book.getBookSeriesBooks()
             .stream()
-            .map((bookSeries) -> BookSeriesMapper.toBookSeriesDto(bookSeries, locale))
+            .map((bookSeries) -> {
+                BookSeriesMutationDto dto = BookSeriesMapper.toBookSeriesMutationDto(bookSeries, locale);
+                return new BookSeriesAssignmentDto(bookSeries.getId(), dto, bookSeries.getBookOrder());
+            })
             .toList();
 
-        return new BookMutationDto(
+
+        return new BookResponseDto(
             book.getIsbn(),
             book.getTitle(),
             book.getPublicationYear(),
             book.getPageCount(),
-            format,
-            publisher,
             book.getLanguage(),
             book.getDescription(),
+            book.getCover().getUrl(),
+            publisher,
             authors,
             genres,
             series,
-            book.getCover().getUrl()
+            book.getId(),
+            format,
+            book.getCreatedAt(),
+            book.getUpdatedAt()
         );
-    }
-
-    public static BookFormatDto toBookFormatDto(BookFormat bookFormat, Locale locale) {
-        String localizedName = TranslationUtils.getTranslatedName(bookFormat.getTranslations(), locale);
-        return new BookFormatDto(bookFormat.getId(), localizedName);
     }
 
 }

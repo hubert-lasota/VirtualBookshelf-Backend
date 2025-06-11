@@ -1,12 +1,11 @@
 package org.hl.wirtualnyregalbackend.publisher;
 
+import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
-import org.hl.wirtualnyregalbackend.publisher.dao.PublisherRepository;
-import org.hl.wirtualnyregalbackend.publisher.model.Publisher;
-import org.hl.wirtualnyregalbackend.publisher.model.dto.PublisherDto;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherMutationDto;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponseDto;
+import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class PublisherService {
@@ -18,17 +17,20 @@ public class PublisherService {
     }
 
 
-    public PublisherDto createPublisher(PublisherDto publisherDto) {
+    public PublisherResponseDto createPublisher(PublisherMutationDto publisherDto) {
         Publisher publisher = createPublisherEntity(publisherDto);
-        return PublisherMapper.toPublisherDto(publisher);
+        return PublisherMapper.toPublisherResponseDto(publisher);
     }
 
-    public Publisher findOrCreatePublisher(PublisherDto publisherDto) {
-        Optional<Publisher> publisherOpt = publisherRepository.findById(publisherDto.id());
-        return publisherOpt.orElseGet(() -> createPublisherEntity(publisherDto));
+    public Publisher findOrCreatePublisher(Long id, PublisherMutationDto publisherDto) {
+        if (id != null) {
+            return publisherRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Publisher with id='%d' not found".formatted(id)));
+        }
+        return createPublisherEntity(publisherDto);
     }
 
-    private Publisher createPublisherEntity(PublisherDto publisherDto) {
+    private Publisher createPublisherEntity(PublisherMutationDto publisherDto) {
         boolean exists = publisherRepository.existsByNameIgnoreCase(publisherDto.name());
         if (exists) {
             throw new InvalidRequestException("Publisher with %s name already exists".formatted(publisherDto.name()));

@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
 
-import org.hl.wirtualnyregalbackend.bookshelf.model.Bookshelf;
+import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

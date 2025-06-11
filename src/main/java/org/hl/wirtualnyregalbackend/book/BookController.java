@@ -1,11 +1,11 @@
 package org.hl.wirtualnyregalbackend.book;
 
-import org.hl.wirtualnyregalbackend.book.model.dto.BookMutationDto;
-import org.hl.wirtualnyregalbackend.book.model.dto.BookResponseDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
 import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
-import org.hl.wirtualnyregalbackend.security.model.User;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;

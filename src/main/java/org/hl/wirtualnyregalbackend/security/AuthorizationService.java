@@ -1,12 +1,12 @@
 package org.hl.wirtualnyregalbackend.security;
 
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.security.dto.UserCredentialsDto;
+import org.hl.wirtualnyregalbackend.security.dto.UserSignInResponseDto;
+import org.hl.wirtualnyregalbackend.security.entity.Authority;
+import org.hl.wirtualnyregalbackend.security.entity.AuthorityName;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.hl.wirtualnyregalbackend.security.jwt.JwtService;
-import org.hl.wirtualnyregalbackend.security.model.Authority;
-import org.hl.wirtualnyregalbackend.security.model.AuthorityName;
-import org.hl.wirtualnyregalbackend.security.model.User;
-import org.hl.wirtualnyregalbackend.security.model.dto.UserCredentialsDto;
-import org.hl.wirtualnyregalbackend.security.model.dto.UserSignInResponseDto;
 import org.hl.wirtualnyregalbackend.user.UserDefaultConfigurer;
 import org.hl.wirtualnyregalbackend.user.UserMapper;
 import org.hl.wirtualnyregalbackend.user.dao.UserRepository;

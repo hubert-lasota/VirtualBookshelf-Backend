@@ -1,24 +1,27 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
 import org.hl.wirtualnyregalbackend.book.BookService;
-import org.hl.wirtualnyregalbackend.book.model.entity.Book;
-import org.hl.wirtualnyregalbackend.bookshelf.model.Bookshelf;
-import org.hl.wirtualnyregalbackend.bookshelf.model.BookshelfBook;
-import org.hl.wirtualnyregalbackend.bookshelf.model.BookshelfType;
-import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfBookMutationDto;
-import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfBookResponseDto;
-import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfMutationDto;
-import org.hl.wirtualnyregalbackend.bookshelf.model.dto.BookshelfResponseDto;
-import org.hl.wirtualnyregalbackend.security.model.User;
+import org.hl.wirtualnyregalbackend.book.entity.Book;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.*;
+import org.hl.wirtualnyregalbackend.bookshelf.entity.*;
+import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
+import org.hl.wirtualnyregalbackend.common.model.RangeDate;
+import org.hl.wirtualnyregalbackend.security.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BookshelfService {
+
+    private final static Logger log = LoggerFactory.getLogger(BookshelfService.class);
 
     private final BookshelfRepository bookshelfRepository;
     private final BookService bookService;
@@ -26,14 +29,6 @@ public class BookshelfService {
     BookshelfService(BookshelfRepository bookshelfRepository, BookService bookService) {
         this.bookshelfRepository = bookshelfRepository;
         this.bookService = bookService;
-    }
-
-
-    public BookshelfResponseDto createBookshelf(BookshelfMutationDto bookshelfMutationDto, User user) {
-        Bookshelf bookshelf = BookshelfMapper.toBookshelf(bookshelfMutationDto, user);
-        bookshelfRepository.save(bookshelf);
-        Locale locale = LocaleContextHolder.getLocale();
-        return BookshelfMapper.toBookshelfResponseDto(bookshelf, locale);
     }
 
     public void addDefaultBookshelvesToUser(User user) {
@@ -51,23 +46,96 @@ public class BookshelfService {
             readingName = "Reading";
             readName = "Read";
         }
-        bookshelvesToSave.add(new Bookshelf(toReadName, BookshelfType.TO_READ, "", user));
-        bookshelvesToSave.add(new Bookshelf(readingName, BookshelfType.READING, "", user));
-        bookshelvesToSave.add(new Bookshelf(readName, BookshelfType.READ, "", user));
+        bookshelvesToSave.add(new Bookshelf(toReadName, BookshelfType.TO_READ, "", user, null));
+        bookshelvesToSave.add(new Bookshelf(readingName, BookshelfType.READING, "", user, null));
+        bookshelvesToSave.add(new Bookshelf(readName, BookshelfType.READ, "", user, null));
         bookshelfRepository.saveAll(bookshelvesToSave);
     }
 
-    public BookshelfBookResponseDto createBookshelfBook(Long bookshelfId,
-                                                        BookshelfBookMutationDto bookshelfBookDto,
-                                                        User user) {
-        Bookshelf bookshelf = findBookshelfById(bookshelfId);
-        Book book = bookService.findBookById(bookshelfBookDto.bookId());
-        // TOdo add event
-        BookshelfBook bookshelfBook = BookshelfMapper.toBookshelfBook(bookshelfBookDto, user, book);
-        bookshelf.addBookshelfBook(bookshelfBook);
-        bookshelfRepository.saveAndFlush(bookshelf);
+
+    public BookshelfResponseDto createBookshelf(BookshelfCreateDto bookshelfCreateDto, User user) {
+        Set<BookshelfBook> bookshelfBook = bookshelfCreateDto.getBooks()
+            .stream()
+            .map(this::createBookshelfBookEntity)
+            .collect(Collectors.toSet());
+
+        Bookshelf bookshelf = BookshelfMapper.toBookshelf(bookshelfCreateDto, user, bookshelfBook);
+        bookshelfRepository.save(bookshelf);
         Locale locale = LocaleContextHolder.getLocale();
-        return BookshelfMapper.toBookshelfBookResponseDto(bookshelfBook, locale);
+        return BookshelfMapper.toBookshelfResponseDto(bookshelf, locale);
+    }
+
+
+    public BookshelfResponseDto updateBookshelf(Long id, BookshelfUpdateDto bookshelfDto) {
+        Bookshelf bookshelf = findBookshelfById(id);
+
+        String name = bookshelfDto.getName();
+        if (name != null) {
+            bookshelf.setName(name);
+        }
+
+        BookshelfType type = bookshelfDto.getType();
+        if (type != null) {
+            bookshelf.setType(type);
+        }
+
+        String description = bookshelfDto.getDescription();
+        if (description != null) {
+            bookshelf.setDescription(description);
+        }
+
+        List<BookshelfBookUpdateDto> bookDtos = bookshelfDto.getBooks();
+        if (bookDtos != null) {
+            Set<BookshelfBook> books = bookDtos.stream()
+                .map(bookDto -> {
+                    Long bookshelfBookId = bookDto.getId();
+                    if (bookshelfBookId == null) {
+                        return createBookshelfBookEntity(bookDto);
+                    }
+                    BookshelfBook book = bookshelf.getBookshelfBookById(bookshelfBookId);
+                    updateBookshelfBook(book, bookDto);
+                    return book;
+                })
+                .collect(Collectors.toSet());
+
+            bookshelf.setBookshelfBooks(books);
+        }
+
+        bookshelfRepository.save(bookshelf);
+        Locale locale = LocaleContextHolder.getLocale();
+        return BookshelfMapper.toBookshelfResponseDto(bookshelf, locale);
+    }
+
+    private void updateBookshelfBook(BookshelfBook bookshelfBook, BookshelfBookUpdateDto bookshelfBookDto) {
+        Integer currentPage = bookshelfBookDto.getCurrentPage();
+        if (currentPage != null) {
+            bookshelfBook.setCurrentPage(currentPage);
+        }
+        BookReadingStatus status = bookshelfBookDto.getStatus();
+        if (status != null) {
+            bookshelfBook.setStatus(status);
+        }
+
+        RangeDate rangeDate = bookshelfBookDto.getRangeDate();
+        if (rangeDate != null) {
+            RangeDate merged = RangeDate.merge(bookshelfBook.getRangeDate(), rangeDate);
+            bookshelfBook.setRangeDate(merged);
+        }
+
+        List<BookshelfBookNoteDto> noteDtos = bookshelfBookDto.getNotes();
+        if (noteDtos != null) {
+            List<BookshelfBookNote> notes = noteDtos.stream()
+                .map(BookshelfMapper::toBookshelfBookNote)
+                .toList();
+            bookshelfBook.setNotes(notes);
+        }
+    }
+
+    private BookshelfBook createBookshelfBookEntity(BookshelfBookCreateDto bookshelfBookDto) {
+        BookWithIdDto bookWithIdDto = bookshelfBookDto.getBook();
+        // TOdo add event
+        Book book = bookService.findOrCreateBook(bookWithIdDto.id(), bookWithIdDto.bookDto());
+        return BookshelfMapper.toBookshelfBook(bookshelfBookDto, book);
     }
 
     public void deleteBookshelfBook(Long bookshelfId, Long bookshelfBookId) {
@@ -95,7 +163,7 @@ public class BookshelfService {
 
     private Bookshelf findBookshelfById(Long bookshelfId) {
         return bookshelfRepository.findById(bookshelfId)
-            .orElseThrow(() -> new IllegalArgumentException("Not found Bookshelf with id = %d".formatted(bookshelfId)));
+            .orElseThrow(() -> new EntityNotFoundException("Not found Bookshelf with id = %d".formatted(bookshelfId)));
     }
 
 }
