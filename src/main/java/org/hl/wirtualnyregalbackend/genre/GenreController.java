@@ -1,13 +1,12 @@
 package org.hl.wirtualnyregalbackend.genre;
 
+import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/genres")
@@ -20,9 +19,8 @@ class GenreController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findGenres() {
-        List<GenreResponseDto> genres = genreService.findGenres();
-        Map<String, List<GenreResponseDto>> response = Map.of("genres", genres);
+    public ResponseEntity<?> findGenres(Pageable pageable) {
+        PageResponseDto<GenreResponseDto> response = genreService.findGenres(pageable);
         return ResponseEntity.ok(response);
     }
 

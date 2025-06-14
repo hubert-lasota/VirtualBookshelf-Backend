@@ -1,10 +1,15 @@
 package org.hl.wirtualnyregalbackend.author;
 
 import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorResponseDto;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class AuthorService {
@@ -15,9 +20,15 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
-    public AuthorMutationDto createAuthor(AuthorMutationDto authorDto) {
+    public AuthorResponseDto createAuthor(AuthorMutationDto authorDto) {
         Author author = createAuthorEntity(authorDto);
-        return AuthorMapper.toAuthorMutationDto(author);
+        return AuthorMapper.toAuthorResponseDto(author);
+    }
+
+    public PageResponseDto<AuthorResponseDto> findAuthors(Pageable pageable) {
+        Page<Author> authorPage = authorRepository.findAll(pageable);
+        Page<AuthorResponseDto> authorDtoPage = authorPage.map(AuthorMapper::toAuthorResponseDto);
+        return new PageResponseDto<>(authorDtoPage, "authors");
     }
 
     public Author findOrCreateAuthor(Long id, AuthorMutationDto authorMutationDto) {

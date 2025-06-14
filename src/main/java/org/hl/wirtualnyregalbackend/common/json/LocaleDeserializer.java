@@ -20,7 +20,6 @@ public class LocaleDeserializer extends JsonDeserializer<Locale> {
             ApiError error = new ApiError(p.currentName(), e.getMessage());
             throw new InvalidFieldsException(List.of(error));
         }
-
     }
 
 }

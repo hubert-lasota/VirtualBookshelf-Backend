@@ -1,15 +1,14 @@
-package org.hl.wirtualnyregalbackend.publisher.dto;
+package org.hl.wirtualnyregalbackend.book_series.dto;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import java.time.Instant;
 
-public record PublisherResponseDto(
+public record BookSeriesResponseDto(
     Long id,
     @JsonUnwrapped
-    PublisherMutationDto dto,
+    BookSeriesMutationDto dto,
     Instant createdAt,
     Instant updatedAt
 ) {
 }
-

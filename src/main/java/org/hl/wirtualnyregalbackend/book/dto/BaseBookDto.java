@@ -38,7 +38,7 @@ abstract class BaseBookDto {
     protected final Integer pageCount;
 
     @JsonDeserialize(using = LocaleDeserializer.class)
-    @JsonProperty("languageTag")
+    @JsonProperty("languageCode")
     protected final Locale language;
 
     @JsonProperty
@@ -80,7 +80,6 @@ abstract class BaseBookDto {
                        List<GenreWithIdDto> genres,
                        List<BookSeriesAssignmentDto> series) {
         this.isbn = isbn != null ? isbn.replaceAll("-", "") : null;
-        ;
         this.title = title;
         this.publicationYear = publicationYear;
         this.pageCount = pageCount;

@@ -15,7 +15,7 @@ public class PublisherMapper {
 
     public static PublisherResponseDto toPublisherResponseDto(Publisher publisher) {
         PublisherMutationDto dto = toPublisherMutationDto(publisher);
-        return new PublisherResponseDto(publisher.getId(), publisher.getCreatedAt(), publisher.getUpdatedAt(), dto);
+        return new PublisherResponseDto(publisher.getId(), dto, publisher.getCreatedAt(), publisher.getUpdatedAt());
     }
 
     public static Publisher toPublisher(PublisherMutationDto publisherDto) {

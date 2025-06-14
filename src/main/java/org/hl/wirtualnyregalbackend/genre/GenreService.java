@@ -1,8 +1,11 @@
 package org.hl.wirtualnyregalbackend.genre;
 
+import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,12 +25,11 @@ public class GenreService {
         return genreRepository.findByIds(ids);
     }
 
-    public List<GenreResponseDto> findGenres() {
+    public PageResponseDto<GenreResponseDto> findGenres(Pageable pageable) {
         Locale locale = LocaleContextHolder.getLocale();
-        return genreRepository.findAll()
-            .stream()
-            .map((genre) -> GenreMapper.toGenreResponseDto(genre, locale))
-            .toList();
+        Page<Genre> page = genreRepository.findAll(pageable);
+        Page<GenreResponseDto> response = page.map((genre) -> GenreMapper.toGenreResponseDto(genre, locale));
+        return new PageResponseDto<>(response, "genres");
     }
 
 }

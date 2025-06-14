@@ -2,9 +2,12 @@ package org.hl.wirtualnyregalbackend.publisher;
 
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherMutationDto;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponseDto;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +23,12 @@ public class PublisherService {
     public PublisherResponseDto createPublisher(PublisherMutationDto publisherDto) {
         Publisher publisher = createPublisherEntity(publisherDto);
         return PublisherMapper.toPublisherResponseDto(publisher);
+    }
+
+    public PageResponseDto<PublisherResponseDto> findPublishers(Pageable pageable) {
+        Page<Publisher> publishers = publisherRepository.findAll(pageable);
+        Page<PublisherResponseDto> publisherDtos = publishers.map(PublisherMapper::toPublisherResponseDto);
+        return new PageResponseDto<>(publisherDtos, "publishers");
     }
 
     public Publisher findOrCreatePublisher(Long id, PublisherMutationDto publisherDto) {
