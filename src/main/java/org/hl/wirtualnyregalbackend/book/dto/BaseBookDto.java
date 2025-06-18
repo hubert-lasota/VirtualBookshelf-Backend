@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import org.hibernate.validator.constraints.ISBN;
 import org.hibernate.validator.constraints.URL;
 import org.hl.wirtualnyregalbackend.common.json.LocaleDeserializer;
@@ -15,125 +16,55 @@ import org.hl.wirtualnyregalbackend.common.validation.StringConstraints;
 import java.util.List;
 import java.util.Locale;
 
+@Getter
+@Setter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class BaseBookDto {
 
-    @JsonProperty
     @NotNull(groups = CreateGroup.class)
     @ISBN
-    protected final String isbn;
+    protected String isbn;
 
-    @JsonProperty
     @NotNull(groups = CreateGroup.class)
     @StringConstraints
-    protected final String title;
+    protected String title;
 
-    @JsonProperty
+    @Min(0)
+    protected Integer publicationYear;
+
     @NotNull(groups = CreateGroup.class)
     @Min(0)
-    protected final Integer publicationYear;
-
-    @JsonProperty
-    @NotNull(groups = CreateGroup.class)
-    @Min(0)
-    protected final Integer pageCount;
+    protected Integer pageCount;
 
     @JsonDeserialize(using = LocaleDeserializer.class)
     @JsonProperty("languageCode")
-    protected final Locale language;
+    protected Locale language;
 
-    @JsonProperty
     @StringConstraints(allowMultipleSpacesBetweenWords = true)
-    protected final String description;
+    protected String description;
 
-    @JsonProperty
     @URL
-    protected final String coverUrl;
+    protected String coverUrl;
 
-    @JsonProperty
-    @NotNull(groups = CreateGroup.class)
     @Valid
-    protected final PublisherWithIdDto publisher;
+    protected PublisherWithIdDto publisher;
 
-    @JsonProperty
+
     @NotEmpty(groups = CreateGroup.class)
     @Valid
-    protected final List<AuthorWithIdDto> authors;
+    protected List<AuthorWithIdDto> authors;
 
-    @JsonProperty
     @NotEmpty(groups = CreateGroup.class)
     @Valid
-    protected final List<GenreWithIdDto> genres;
+    protected List<GenreWithIdDto> genres;
 
-    @JsonProperty
     @Valid
-    protected final List<BookSeriesAssignmentDto> series;
+    protected List<BookSeriesAssignmentDto> series;
 
-    public BaseBookDto(String isbn,
-                       String title,
-                       Integer publicationYear,
-                       Integer pageCount,
-                       Locale language,
-                       String description,
-                       String coverUrl,
-                       PublisherWithIdDto publisher,
-                       List<AuthorWithIdDto> authors,
-                       List<GenreWithIdDto> genres,
-                       List<BookSeriesAssignmentDto> series) {
+
+    public void setIsbn(String isbn) {
         this.isbn = isbn != null ? isbn.replaceAll("-", "") : null;
-        this.title = title;
-        this.publicationYear = publicationYear;
-        this.pageCount = pageCount;
-        this.language = language;
-        this.description = description;
-        this.coverUrl = coverUrl;
-        this.publisher = publisher;
-        this.authors = authors;
-        this.genres = genres;
-        this.series = series;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public Integer getPublicationYear() {
-        return publicationYear;
-    }
-
-    public Integer getPageCount() {
-        return pageCount;
-    }
-
-    public Locale getLanguage() {
-        return language;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getCoverUrl() {
-        return coverUrl;
-    }
-
-    public PublisherWithIdDto getPublisher() {
-        return publisher;
-    }
-
-    public List<AuthorWithIdDto> getAuthors() {
-        return authors;
-    }
-
-    public List<GenreWithIdDto> getGenres() {
-        return genres;
-    }
-
-    public List<BookSeriesAssignmentDto> getSeries() {
-        return series;
     }
 
 }

@@ -1,18 +1,20 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookCoverOrderDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfCreateDto;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfUpdateDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,25 +28,29 @@ class BookshelfController {
     }
 
 
-    @PostMapping
-    public ResponseEntity<?> createBookshelf(@Validated(CreateGroup.class) @RequestBody BookshelfCreateDto bookshelfCreateDto,
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createBookshelf(@Validated(CreateGroup.class) @RequestPart("bookshelf") BookshelfCreateDto bookshelfCreateDto,
+                                             @RequestPart(value = "covers", required = false) List<MultipartFile> covers,
+                                             @RequestPart(value = "metadata", required = false) List<BookCoverOrderDto> bookCoverOrderDtos,
                                              @AuthenticationPrincipal User user) {
-        BookshelfResponseDto response = bookshelfService.createBookshelf(bookshelfCreateDto, user);
+        var response = bookshelfService.createBookshelf(bookshelfCreateDto, covers, bookCoverOrderDtos, user);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<?> findCurrentUserBookshelves(@AuthenticationPrincipal User user) {
-        Collection<BookshelfResponseDto> bookshelves = bookshelfService.findUserBookshelves(user.getId());
+        var bookshelves = bookshelfService.findUserBookshelves(user.getId());
         Map<String, Object> response = Map.of("bookshelves", bookshelves);
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("{id}")
+    @PatchMapping("/{id}")
     // TODO add PreAuthorize for bookshelf owner
     public ResponseEntity<?> updateBookshelf(@PathVariable Long id,
-                                             @RequestBody @Validated(UpdateGroup.class) BookshelfUpdateDto bookshelfUpdateDto) {
-        return ResponseEntity.ok(bookshelfService.updateBookshelf(id, bookshelfUpdateDto));
+                                             @RequestPart @Validated(UpdateGroup.class) BookshelfUpdateDto bookshelfUpdateDto,
+                                             @RequestPart(value = "covers", required = false) List<MultipartFile> covers,
+                                             @RequestPart(value = "metadata", required = false) List<BookCoverOrderDto> bookCoverOrderDtos) {
+        return ResponseEntity.ok(bookshelfService.updateBookshelf(id, bookshelfUpdateDto, covers, bookCoverOrderDtos));
     }
 
 

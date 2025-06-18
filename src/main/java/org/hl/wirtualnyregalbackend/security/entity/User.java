@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.security.entity;
 
 import jakarta.persistence.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.user.model.UserProfile;
+import org.hl.wirtualnyregalbackend.user.entity.UserProfile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

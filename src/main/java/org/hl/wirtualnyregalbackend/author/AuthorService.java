@@ -41,7 +41,7 @@ public class AuthorService {
     }
 
     private Author createAuthorEntity(AuthorMutationDto authorDto) {
-        String fullName = authorDto.fullName();
+        String fullName = authorDto.getFullName();
         boolean exists = authorRepository.existsByFullName(fullName);
         if (exists) {
             throw new InvalidRequestException("Author with this full name = %s already exists".formatted(fullName));

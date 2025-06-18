@@ -4,18 +4,26 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Min;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesMutationDto;
 
-public record BookSeriesAssignmentDto(
-    Long id,
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class BookSeriesAssignmentDto {
+
+    private Long id;
 
     @JsonUnwrapped
     @Valid
-    BookSeriesMutationDto bookSeriesDto,
+    private BookSeriesMutationDto bookSeriesDto;
 
     @Min(0)
-    Integer bookOrder
-) {
+    private Integer bookOrder;
 
     @AssertTrue(message = "Provide either book series ID or book series details.")
     public boolean isValid() {

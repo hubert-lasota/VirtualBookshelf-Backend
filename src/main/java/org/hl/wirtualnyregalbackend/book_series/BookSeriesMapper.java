@@ -41,7 +41,7 @@ public class BookSeriesMapper {
     }
 
     public static BookSeriesBook toBookSeriesBookAssociation(BookSeries bookSeries, BookSeriesAssignmentDto bookSeriesDto) {
-        return new BookSeriesBook(bookSeries, bookSeriesDto.bookOrder());
+        return new BookSeriesBook(bookSeries, bookSeriesDto.getBookOrder());
     }
 
 }

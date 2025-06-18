@@ -2,6 +2,7 @@ package org.hl.wirtualnyregalbackend.bookshelf.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.AssertTrue;
+import lombok.Getter;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookReadingStatus;
 import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 import org.hl.wirtualnyregalbackend.common.validation.NotAllFieldsNull;
@@ -9,6 +10,7 @@ import org.hl.wirtualnyregalbackend.common.validation.NotAllFieldsNull;
 import java.util.List;
 
 @NotAllFieldsNull
+@Getter
 public class BookshelfBookUpdateDto extends BookshelfBookCreateDto {
 
     @JsonProperty
@@ -27,10 +29,6 @@ public class BookshelfBookUpdateDto extends BookshelfBookCreateDto {
     @AssertTrue(message = "Provide either bookshelf book ID or book details.")
     public boolean isValid() {
         return id != null && book != null;
-    }
-
-    public Long getId() {
-        return id;
     }
 
 }

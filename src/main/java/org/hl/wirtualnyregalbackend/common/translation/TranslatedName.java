@@ -2,10 +2,17 @@ package org.hl.wirtualnyregalbackend.common.translation;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Locale;
 
 @Embeddable
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class TranslatedName {
 
     @Column
@@ -13,22 +20,5 @@ public class TranslatedName {
 
     @Column(name = "language_tag")
     private Locale language;
-
-    protected TranslatedName() {
-    }
-
-    public TranslatedName(String name, Locale language) {
-        this.name = name;
-        this.language = language;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-
-    public Locale getLanguage() {
-        return language;
-    }
 
 }

@@ -3,13 +3,23 @@ package org.hl.wirtualnyregalbackend.bookshelf.dto;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
 
-public record BookWithIdDto(
-    Long id,
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class BookWithIdDto {
+
+    private Long id;
+
     @JsonUnwrapped
     @Valid
-    BookMutationDto bookDto) {
+    private BookMutationDto bookDto;
 
     @AssertTrue(message = "Provide either book ID or book details.")
     public boolean isValid() {

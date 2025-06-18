@@ -1,8 +1,6 @@
 package org.hl.wirtualnyregalbackend.book;
 
 import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
-import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
-import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.security.entity.User;
@@ -29,21 +27,21 @@ class BookController {
     @PostMapping
     public ResponseEntity<?> createBook(@Validated(CreateGroup.class) @RequestPart("book") BookMutationDto bookMutationDto,
                                         @RequestPart("cover") MultipartFile coverFile) {
-        BookResponseDto response = bookService.createBook(bookMutationDto, coverFile);
+        var response = bookService.createBook(bookMutationDto, coverFile);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
     public ResponseEntity<?> findBooks(@RequestParam String query,
                                        @PageableDefault Pageable pageable) {
-        PageResponseDto<?> response = bookService.findBooks(query, pageable);
+        var response = bookService.findBooks(query, pageable);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findBookById(@PathVariable Long id,
                                           @AuthenticationPrincipal User user) {
-        BookResponseDto response = bookService.findBookById(id, user);
+        var response = bookService.findBookById(id, user);
         return ResponseEntity.ok(response);
     }
 
@@ -51,7 +49,7 @@ class BookController {
     public ResponseEntity<?> updateBook(@PathVariable Long id,
                                         @Validated(UpdateGroup.class) @RequestPart("book") BookMutationDto bookMutationDto,
                                         @RequestPart("cover") MultipartFile coverFile) {
-        BookResponseDto response = bookService.updateBook(id, bookMutationDto, coverFile);
+        var response = bookService.updateBook(id, bookMutationDto, coverFile);
         return ResponseEntity.ok(response);
     }
 

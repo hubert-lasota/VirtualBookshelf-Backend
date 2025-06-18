@@ -1,6 +1,9 @@
 package org.hl.wirtualnyregalbackend.challenge.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.common.model.RangeDate;
@@ -11,6 +14,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "challenge_participant")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChallengeParticipant extends BaseEntity {
 
     @Column
@@ -27,9 +32,6 @@ public class ChallengeParticipant extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    protected ChallengeParticipant() {
-    }
 
     public ChallengeParticipant(Challenge challenge, RangeDate rangeDate, User user) {
         this.challenge = Objects.requireNonNull(challenge, "challenge cannot be null");
@@ -55,22 +57,6 @@ public class ChallengeParticipant extends BaseEntity {
         } else {
             throw new InvalidRequestException("You can't change status to %s if status is not STARTED".formatted(newStatus.toString()));
         }
-    }
-
-    public ChallengeStatus getStatus() {
-        return status;
-    }
-
-    public Challenge getChallenge() {
-        return challenge;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public RangeDate getRangeDate() {
-        return rangeDate;
     }
 
 }

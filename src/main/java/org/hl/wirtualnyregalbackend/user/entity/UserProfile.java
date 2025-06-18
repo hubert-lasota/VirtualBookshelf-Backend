@@ -1,6 +1,7 @@
-package org.hl.wirtualnyregalbackend.user.model;
+package org.hl.wirtualnyregalbackend.user.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.security.entity.User;
@@ -12,6 +13,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "user_profile")
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class UserProfile extends BaseEntity {
 
     @Column(name = "first_name")
@@ -39,37 +44,6 @@ public class UserProfile extends BaseEntity {
     )
     private Set<Genre> genrePreferences = new HashSet<>();
 
-
-    protected UserProfile() {
-    }
-
-    public UserProfile(String firstName, String lastName, String description, Set<Genre> genrePreferences, User user) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.description = description;
-        this.user = user;
-        this.genrePreferences = genrePreferences;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public UserProfilePicture getProfilePicture() {
-        return profilePicture;
-    }
 
     public Set<Genre> getGenrePreferences() {
         return Collections.unmodifiableSet(genrePreferences);

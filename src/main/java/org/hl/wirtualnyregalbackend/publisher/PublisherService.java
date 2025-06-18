@@ -40,9 +40,10 @@ public class PublisherService {
     }
 
     private Publisher createPublisherEntity(PublisherMutationDto publisherDto) {
-        boolean exists = publisherRepository.existsByNameIgnoreCase(publisherDto.name());
+        String name = publisherDto.getName();
+        boolean exists = publisherRepository.existsByNameIgnoreCase(name);
         if (exists) {
-            throw new InvalidRequestException("Publisher with %s name already exists".formatted(publisherDto.name()));
+            throw new InvalidRequestException("Publisher with %s name already exists".formatted(name));
         }
         Publisher publisher = PublisherMapper.toPublisher(publisherDto);
         return publisherRepository.save(publisher);

@@ -2,10 +2,10 @@ package org.hl.wirtualnyregalbackend.user;
 
 import org.hl.wirtualnyregalbackend.security.dto.UserSignInResponseDto;
 import org.hl.wirtualnyregalbackend.security.entity.User;
-import org.hl.wirtualnyregalbackend.user.model.UserProfile;
-import org.hl.wirtualnyregalbackend.user.model.UserProfilePicture;
-import org.hl.wirtualnyregalbackend.user.model.dto.UserHeaderResponseDto;
-import org.hl.wirtualnyregalbackend.user.model.dto.UserProfileDto;
+import org.hl.wirtualnyregalbackend.user.dto.UserHeaderResponseDto;
+import org.hl.wirtualnyregalbackend.user.dto.UserProfileDto;
+import org.hl.wirtualnyregalbackend.user.entity.UserProfile;
+import org.hl.wirtualnyregalbackend.user.entity.UserProfilePicture;
 
 public class UserMapper {
 

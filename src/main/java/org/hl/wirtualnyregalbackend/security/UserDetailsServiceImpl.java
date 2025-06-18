@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.security;
 
-import org.hl.wirtualnyregalbackend.user.dao.UserRepository;
+import org.hl.wirtualnyregalbackend.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

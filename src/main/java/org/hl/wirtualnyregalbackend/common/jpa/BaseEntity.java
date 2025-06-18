@@ -1,11 +1,16 @@
 package org.hl.wirtualnyregalbackend.common.jpa;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.Clock;
 import java.time.Instant;
 
 @MappedSuperclass
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseEntity {
 
     @Id
@@ -18,9 +23,6 @@ public abstract class BaseEntity {
     @Column(name = "updated_at")
     protected Instant updatedAt;
 
-    protected BaseEntity() {
-    }
-
 
     @PrePersist
     protected void prePersist() {
@@ -32,16 +34,5 @@ public abstract class BaseEntity {
         this.updatedAt = Instant.now(Clock.systemUTC());
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
 
 }

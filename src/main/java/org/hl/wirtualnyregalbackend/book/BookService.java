@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -77,21 +78,14 @@ public class BookService {
         return BookMapper.toBookResponseDto(book, locale);
     }
 
-    public Book findOrCreateBook(Long id, BookMutationDto bookMutationDto) {
-        if (id != null) {
-            return findBookById(id);
-        }
-        return createBookEntity(bookMutationDto, null);
-    }
-
-    private Book createBookEntity(BookMutationDto bookMutationDto, MultipartFile coverFile) {
+    public Book createBookEntity(BookMutationDto bookMutationDto, MultipartFile coverFile) {
         Set<Author> authors = findOrCreateAuthors(bookMutationDto.getAuthors());
         Set<Genre> genres = findGenres(bookMutationDto);
         List<BookSeriesBook> series = findOrCreateSeries(bookMutationDto.getSeries());
         BookCover cover = bookCoverService.createBookCover(bookMutationDto.getCoverUrl(), coverFile);
         BookFormat format = bookFormatService.findBookFormatById(bookMutationDto.getFormatId());
         PublisherWithIdDto publisherWithIdDto = bookMutationDto.getPublisher();
-        Publisher publisher = publisherService.findOrCreatePublisher(publisherWithIdDto.id(), publisherWithIdDto.publisherDto());
+        Publisher publisher = publisherService.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
 
         Book book = BookMapper.toBook(bookMutationDto, cover, format, publisher, authors, genres, series);
         bookRepository.save(book);
@@ -164,7 +158,7 @@ public class BookService {
 
         PublisherWithIdDto publisherWithIdDto = bookDto.getPublisher();
         if (publisherWithIdDto != null) {
-            Publisher publisher = publisherService.findOrCreatePublisher(publisherWithIdDto.id(), publisherWithIdDto.publisherDto());
+            Publisher publisher = publisherService.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
             book.setPublisher(publisher);
         }
 
@@ -197,17 +191,21 @@ public class BookService {
             .orElseThrow(() -> new EntityNotFoundException("Book with id = '%d' not found.".formatted(id)));
     }
 
+    public Optional<Book> findBookOptById(Long id) {
+        return bookRepository.findById(id);
+    }
+
     private Set<Author> findOrCreateAuthors(List<AuthorWithIdDto> authorDtos) {
         return authorDtos
             .stream()
-            .map((authorWithIdDto) -> authorService.findOrCreateAuthor(authorWithIdDto.id(), authorWithIdDto.authorDto()))
+            .map((authorWithIdDto) -> authorService.findOrCreateAuthor(authorWithIdDto.getId(), authorWithIdDto.getAuthorDto()))
             .collect(Collectors.toSet());
     }
 
     private Set<Genre> findGenres(BookMutationDto bookMutationDto) {
         List<Long> genreIds = bookMutationDto.getGenres()
             .stream()
-            .map(GenreWithIdDto::id)
+            .map(GenreWithIdDto::getId)
             .toList();
 
         return genreService.findGenresByIds(genreIds);
@@ -216,7 +214,7 @@ public class BookService {
     private List<BookSeriesBook> findOrCreateSeries(List<BookSeriesAssignmentDto> bookSeriesDtos) {
         return bookSeriesDtos.stream()
             .map(seriesDto -> {
-                BookSeries bookSeries = bookSeriesService.findOrCreateBookSeries(seriesDto.id(), seriesDto.bookSeriesDto());
+                BookSeries bookSeries = bookSeriesService.findOrCreateBookSeries(seriesDto.getId(), seriesDto.getBookSeriesDto());
                 return BookSeriesMapper.toBookSeriesBookAssociation(bookSeries, seriesDto);
             })
             .toList();

@@ -19,7 +19,7 @@ public class PublisherMapper {
     }
 
     public static Publisher toPublisher(PublisherMutationDto publisherDto) {
-        return new Publisher(publisherDto.name());
+        return new Publisher(publisherDto.getName());
     }
 
 }

@@ -1,11 +1,21 @@
 package org.hl.wirtualnyregalbackend.publisher.dto;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.StringConstraints;
 
-public record PublisherMutationDto(
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class PublisherMutationDto {
+
     @NotNull(groups = CreateGroup.class)
     @StringConstraints
-    String name) {
+    private String name;
+
 }

@@ -1,7 +1,5 @@
 package org.hl.wirtualnyregalbackend.book_series;
 
-import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesResponseDto;
-import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +18,7 @@ class BookSeriesController {
 
     @GetMapping
     public ResponseEntity<?> findBookSeries(Pageable pageable) {
-        PageResponseDto<BookSeriesResponseDto> response = bookSeriesService.findBookSeries(pageable);
+        var response = bookSeriesService.findBookSeries(pageable);
         return ResponseEntity.ok(response);
     }
 

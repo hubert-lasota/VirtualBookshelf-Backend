@@ -5,7 +5,7 @@ import jakarta.persistence.Converter;
 
 import java.util.Locale;
 
-@Converter
+@Converter(autoApply = true)
 public class LocaleToStringConverter implements AttributeConverter<Locale, String> {
 
     @Override

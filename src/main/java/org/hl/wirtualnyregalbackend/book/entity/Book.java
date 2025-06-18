@@ -1,6 +1,10 @@
 package org.hl.wirtualnyregalbackend.book.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
@@ -13,6 +17,9 @@ import java.util.*;
 
 @Entity
 @Table(name = "book")
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Book extends BaseEntity {
 
     @Column
@@ -60,9 +67,6 @@ public class Book extends BaseEntity {
     private Set<Author> authors = new HashSet<>();
 
 
-    protected Book() {
-    }
-
     public Book(String isbn,
                 String title,
                 Integer publicationYear,
@@ -84,8 +88,7 @@ public class Book extends BaseEntity {
         this.publisher = publisher;
         this.authors = authors;
         this.genres = genres;
-        bookSeriesBooks.forEach(e -> e.setBook(this));
-        this.bookSeriesBooks = bookSeriesBooks;
+        setBookSeriesBooks(bookSeriesBooks);
     }
 
     public void addGenre(Genre genre) {
@@ -120,28 +123,13 @@ public class Book extends BaseEntity {
         }
     }
 
-    public BookCover getCover() {
-        return cover;
-    }
-
-    public void setCover(BookCover cover) {
-        this.cover = cover;
-    }
 
     public Set<Genre> getGenres() {
         return Collections.unmodifiableSet(genres);
     }
 
-    public void setGenres(Set<Genre> genres) {
-        this.genres = genres;
-    }
-
     public Set<Author> getAuthors() {
         return Collections.unmodifiableSet(authors);
-    }
-
-    public void setAuthors(Set<Author> authors) {
-        this.authors = authors;
     }
 
     public List<BookSeriesBook> getBookSeriesBooks() {
@@ -153,69 +141,6 @@ public class Book extends BaseEntity {
         this.bookSeriesBooks = bookSeriesBooks;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public Integer getPublicationYear() {
-        return publicationYear;
-    }
-
-    public void setPublicationYear(Integer publicationYear) {
-        this.publicationYear = publicationYear;
-    }
-
-    public Locale getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(Locale language) {
-        this.language = language;
-    }
-
-    public Integer getPageCount() {
-        return pageCount;
-    }
-
-    public void setPageCount(Integer pageCount) {
-        this.pageCount = pageCount;
-    }
-
-    public BookFormat getFormat() {
-        return format;
-    }
-
-    public void setFormat(BookFormat format) {
-        this.format = format;
-    }
-
-    public Publisher getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(Publisher publisher) {
-        this.publisher = publisher;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     @Override
     public boolean equals(Object o) {

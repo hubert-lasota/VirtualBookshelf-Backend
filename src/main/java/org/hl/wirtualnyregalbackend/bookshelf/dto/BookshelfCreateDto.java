@@ -1,6 +1,7 @@
 package org.hl.wirtualnyregalbackend.bookshelf.dto;
 
 import jakarta.validation.Valid;
+import lombok.Getter;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
 import org.hl.wirtualnyregalbackend.common.validation.NotAllFieldsNull;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
@@ -8,6 +9,7 @@ import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import java.util.List;
 
 @NotAllFieldsNull(groups = UpdateGroup.class)
+@Getter
 public class BookshelfCreateDto extends BaseBookshelfDto {
 
     @Valid
@@ -19,10 +21,6 @@ public class BookshelfCreateDto extends BaseBookshelfDto {
                               List<BookshelfBookCreateDto> books) {
         super(name, type, description);
         this.books = books;
-    }
-
-    public List<BookshelfBookCreateDto> getBooks() {
-        return books;
     }
 
 }

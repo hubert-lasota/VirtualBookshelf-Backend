@@ -3,15 +3,23 @@ package org.hl.wirtualnyregalbackend.book.dto;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
+import org.springframework.stereotype.Service;
 
-public record AuthorWithIdDto(
-    Long id,
+@Getter
+@Service
+@NoArgsConstructor
+@AllArgsConstructor
+public class AuthorWithIdDto {
+
+    private Long id;
 
     @JsonUnwrapped
     @Valid
-    AuthorMutationDto authorDto
-) {
+    private AuthorMutationDto authorDto;
 
     @AssertTrue(message = "Provide either author ID or author details.")
     public boolean isValid() {

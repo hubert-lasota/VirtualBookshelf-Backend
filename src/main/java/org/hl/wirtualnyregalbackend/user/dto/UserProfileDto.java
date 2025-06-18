@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.user.model.dto;
+package org.hl.wirtualnyregalbackend.user.dto;
 
 public record UserProfileDto(
     String firstName,

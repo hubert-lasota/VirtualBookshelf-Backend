@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.security.dto;
 
-import org.hl.wirtualnyregalbackend.user.model.dto.UserProfileDto;
+import org.hl.wirtualnyregalbackend.user.dto.UserProfileDto;
 
 public record UserSignInResponseDto(
     Long id,

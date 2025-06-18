@@ -9,7 +9,7 @@ import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.hl.wirtualnyregalbackend.security.jwt.JwtService;
 import org.hl.wirtualnyregalbackend.user.UserDefaultConfigurer;
 import org.hl.wirtualnyregalbackend.user.UserMapper;
-import org.hl.wirtualnyregalbackend.user.dao.UserRepository;
+import org.hl.wirtualnyregalbackend.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

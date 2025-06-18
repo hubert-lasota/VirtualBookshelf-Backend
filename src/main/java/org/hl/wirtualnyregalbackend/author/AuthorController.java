@@ -1,8 +1,6 @@
 package org.hl.wirtualnyregalbackend.author;
 
 import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
-import org.hl.wirtualnyregalbackend.author.dto.AuthorResponseDto;
-import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +19,14 @@ class AuthorController {
 
     @PostMapping
     public ResponseEntity<?> createAuthor(@RequestBody @Validated(CreateGroup.class) AuthorMutationDto authorDto) {
-        AuthorResponseDto response = authorService.createAuthor(authorDto);
+        var response = authorService.createAuthor(authorDto);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
     public ResponseEntity<?> findAuthors(Pageable pageable) {
-        PageResponseDto<?> responsePage = authorService.findAuthors(pageable);
-        return ResponseEntity.ok(responsePage);
+        var response = authorService.findAuthors(pageable);
+        return ResponseEntity.ok(response);
     }
 
 }

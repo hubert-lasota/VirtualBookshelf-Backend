@@ -10,4 +10,5 @@ public class BookReviewEventListener {
     public void handleBookReviewCreatedEvent(BookReviewCreatedEvent event) {
 
     }
+
 }

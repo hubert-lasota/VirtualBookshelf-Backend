@@ -1,11 +1,18 @@
 package org.hl.wirtualnyregalbackend.author.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 
 @Entity
 @Table(name = "author_profile_picture")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class AuthorProfilePicture extends BaseEntity {
 
     @Column
@@ -15,24 +22,8 @@ public class AuthorProfilePicture extends BaseEntity {
     @JoinColumn(name = "author_profile_picture_binary_id")
     private AuthorProfilePictureBinary authorProfilePictureBinary;
 
-    protected AuthorProfilePicture() {
-    }
-
     public AuthorProfilePicture(String url) {
         this.url = url;
-    }
-
-    public AuthorProfilePicture(String url, AuthorProfilePictureBinary authorProfilePictureBinary) {
-        this.url = url;
-        this.authorProfilePictureBinary = authorProfilePictureBinary;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public AuthorProfilePictureBinary getAuthorProfilePictureBinary() {
-        return authorProfilePictureBinary;
     }
 
 }

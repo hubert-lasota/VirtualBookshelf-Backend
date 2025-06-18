@@ -5,12 +5,17 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookReadingStatus;
 import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 
 import java.util.List;
 
+@Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class BaseBookshelfBookDto {
 
     @JsonProperty
@@ -31,32 +36,5 @@ abstract class BaseBookshelfBookDto {
     @JsonProperty
     @Valid
     protected final List<BookshelfBookNoteDto> notes;
-
-
-    protected BaseBookshelfBookDto(Integer currentPage,
-                                   BookReadingStatus status,
-                                   RangeDate rangeDate,
-                                   List<BookshelfBookNoteDto> notes) {
-        this.currentPage = currentPage;
-        this.status = status;
-        this.rangeDate = rangeDate;
-        this.notes = notes;
-    }
-
-    public Integer getCurrentPage() {
-        return currentPage;
-    }
-
-    public BookReadingStatus getStatus() {
-        return status;
-    }
-
-    public RangeDate getRangeDate() {
-        return rangeDate;
-    }
-
-    public List<BookshelfBookNoteDto> getNotes() {
-        return notes;
-    }
 
 }
