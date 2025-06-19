@@ -27,6 +27,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -78,16 +79,34 @@ public class BookService {
         return BookMapper.toBookResponseDto(book, locale);
     }
 
-    public Book createBookEntity(BookMutationDto bookMutationDto, MultipartFile coverFile) {
-        Set<Author> authors = findOrCreateAuthors(bookMutationDto.getAuthors());
-        Set<Genre> genres = findGenres(bookMutationDto);
-        List<BookSeriesBook> series = findOrCreateSeries(bookMutationDto.getSeries());
-        BookCover cover = bookCoverService.createBookCover(bookMutationDto.getCoverUrl(), coverFile);
-        BookFormat format = bookFormatService.findBookFormatById(bookMutationDto.getFormatId());
-        PublisherWithIdDto publisherWithIdDto = bookMutationDto.getPublisher();
-        Publisher publisher = publisherService.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
+    public Book createBookEntity(BookMutationDto bookDto, MultipartFile coverFile) {
+        Set<Author> authors = findOrCreateAuthors(bookDto.getAuthors());
+        Set<Genre> genres = findGenres(bookDto);
+        BookCover cover = null;
+        String coverUrl = bookDto.getCoverUrl();
+        if (coverFile != null || coverUrl != null) {
+            cover = bookCoverService.createBookCover(bookDto.getCoverUrl(), coverFile);
+        }
 
-        Book book = BookMapper.toBook(bookMutationDto, cover, format, publisher, authors, genres, series);
+        Long formatId = bookDto.getFormatId();
+        BookFormat format = null;
+        if (formatId != null) {
+            format = bookFormatService.findBookFormatById(formatId);
+        }
+
+        PublisherWithIdDto publisherWithIdDto = bookDto.getPublisher();
+        Publisher publisher = null;
+        if (publisherWithIdDto != null) {
+            publisher = publisherService.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
+        }
+
+        List<BookSeriesAssignmentDto> seriesDtos = bookDto.getSeries();
+        List<BookSeriesBook> series = null;
+        if (seriesDtos != null) {
+            series = findOrCreateSeries(seriesDtos);
+        }
+
+        Book book = BookMapper.toBook(bookDto, cover, format, publisher, authors, genres, series);
         bookRepository.save(book);
         return book;
     }
@@ -191,7 +210,10 @@ public class BookService {
             .orElseThrow(() -> new EntityNotFoundException("Book with id = '%d' not found.".formatted(id)));
     }
 
-    public Optional<Book> findBookOptById(Long id) {
+    public Optional<Book> findBookOptById(@Nullable Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
         return bookRepository.findById(id);
     }
 

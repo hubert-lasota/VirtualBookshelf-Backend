@@ -19,13 +19,12 @@ public class Author extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "author_profile_picture_id")
     private AuthorProfilePicture AuthorProfilePicture;
 
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
-
 
 }

@@ -1,24 +1,22 @@
 package org.hl.wirtualnyregalbackend.common.exception;
 
-import org.hl.wirtualnyregalbackend.common.model.ApiError;
+import lombok.Getter;
+import org.hl.wirtualnyregalbackend.common.model.ApiFieldError;
 import org.springframework.http.HttpStatus;
 
 import java.util.Collections;
 import java.util.List;
 
+@Getter
 public class InvalidRequestException extends RuntimeException {
 
-    private final List<ApiError> errors;
+    private final List<ApiFieldError> errors;
     private final HttpStatus httpStatus;
 
-    public InvalidRequestException(List<ApiError> errors, String message, HttpStatus httpStatus) {
+    public InvalidRequestException(List<ApiFieldError> errors, String message, HttpStatus httpStatus) {
         super(message);
         this.errors = errors == null ? Collections.emptyList() : errors;
         this.httpStatus = httpStatus;
-    }
-
-    public InvalidRequestException(List<ApiError> errors, String message) {
-        this(errors, message, HttpStatus.BAD_REQUEST);
     }
 
     public InvalidRequestException(String message) {
@@ -30,12 +28,8 @@ public class InvalidRequestException extends RuntimeException {
     }
 
 
-    public List<ApiError> getErrors() {
+    public List<ApiFieldError> getErrors() {
         return Collections.unmodifiableList(errors);
-    }
-
-    public HttpStatus getHttpStatus() {
-        return httpStatus;
     }
 
 }

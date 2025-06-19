@@ -20,7 +20,6 @@ public class AuthorMutationDto {
     @StringConstraints
     private String fullName;
 
-    @NotNull(groups = CreateGroup.class)
     @URL
     private String photoUrl;
 

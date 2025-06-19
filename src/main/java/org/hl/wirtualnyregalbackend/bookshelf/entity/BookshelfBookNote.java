@@ -1,10 +1,17 @@
 package org.hl.wirtualnyregalbackend.bookshelf.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 @Entity
 @Table(name = "bookshelf_book_note")
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookshelfBookNote extends BaseEntity {
 
     @Column
@@ -20,10 +27,6 @@ public class BookshelfBookNote extends BaseEntity {
     @JoinColumn(name = "bookshelf_book_id")
     private BookshelfBook bookshelfBook;
 
-    protected BookshelfBookNote() {
-    }
-
-
     public BookshelfBookNote(String content,
                              Integer startPage,
                              Integer endPage) {
@@ -32,33 +35,9 @@ public class BookshelfBookNote extends BaseEntity {
         this.endPage = endPage;
     }
 
+
     void setBookshelfBook(BookshelfBook bookshelfBook) {
         this.bookshelfBook = bookshelfBook;
     }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Integer getStartPage() {
-        return startPage;
-    }
-
-    public void setStartPage(Integer startPage) {
-        this.startPage = startPage;
-    }
-
-    public Integer getEndPage() {
-        return endPage;
-    }
-
-    public void setEndPage(Integer endPage) {
-        this.endPage = endPage;
-    }
-
 
 }

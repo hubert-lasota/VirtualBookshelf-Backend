@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,11 @@ class BookshelfController {
                                              @RequestPart(value = "covers", required = false) List<MultipartFile> covers,
                                              @RequestPart(value = "metadata", required = false) List<BookCoverOrderDto> bookCoverOrderDtos,
                                              @AuthenticationPrincipal User user) {
-        var response = bookshelfService.createBookshelf(bookshelfCreateDto, covers, bookCoverOrderDtos, user);
+        var response = bookshelfService.createBookshelf(
+            bookshelfCreateDto,
+            covers != null ? covers : Collections.emptyList(),
+            bookCoverOrderDtos != null ? bookCoverOrderDtos : Collections.emptyList(),
+            user);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

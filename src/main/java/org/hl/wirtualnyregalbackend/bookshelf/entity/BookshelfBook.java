@@ -1,6 +1,10 @@
 package org.hl.wirtualnyregalbackend.bookshelf.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
@@ -13,12 +17,16 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "bookshelf_book")
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookshelfBook extends BaseEntity {
 
     @Column(name = "current_page")
     private Integer currentPage;
 
     @Column(name = "progress_percentage")
+    @Setter(AccessLevel.NONE)
     private Integer progressPercentage;
 
     @Column
@@ -40,9 +48,6 @@ public class BookshelfBook extends BaseEntity {
     private List<BookshelfBookNote> notes = new ArrayList<>();
 
 
-    protected BookshelfBook() {
-    }
-
     public BookshelfBook(Integer currentPage,
                          Book book,
                          RangeDate rangeDate,
@@ -57,14 +62,6 @@ public class BookshelfBook extends BaseEntity {
         this.notes = notes;
     }
 
-    public Integer getProgressPercentage() {
-        return progressPercentage;
-    }
-
-
-    public Integer getCurrentPage() {
-        return currentPage;
-    }
 
     public void setCurrentPage(Integer currentPage) {
         validateCurrentPage(currentPage);
@@ -72,40 +69,8 @@ public class BookshelfBook extends BaseEntity {
         this.progressPercentage = calculateProgressPercentage(currentPage);
     }
 
-    public void setBookshelf(Bookshelf bookshelf) {
-        this.bookshelf = bookshelf;
-    }
-
-    public BookReadingStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(BookReadingStatus status) {
-        this.status = status;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
-    public RangeDate getRangeDate() {
-        return rangeDate;
-    }
-
-    public void setRangeDate(RangeDate rangeDate) {
-        this.rangeDate = rangeDate;
-    }
-
     public List<BookshelfBookNote> getNotes() {
         return Collections.unmodifiableList(notes);
-    }
-
-    public void setNotes(List<BookshelfBookNote> notes) {
-        this.notes = notes;
     }
 
     private Integer validateCurrentPage(Integer currentPage) {

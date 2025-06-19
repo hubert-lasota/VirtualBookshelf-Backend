@@ -4,17 +4,18 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.persistence.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidFieldsException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.model.ApiFieldError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 
 @RestControllerAdvice
@@ -40,9 +41,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleInvalidRequestException(InvalidRequestException ex) {
         HttpStatus status = ex.getHttpStatus();
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, ex.getMessage());
-        Map<String, String> errors = new HashMap<>();
-        ex.getErrors().forEach(apiError -> errors.put(apiError.field(), apiError.message()));
-        problemDetail.setProperty("errors", errors);
+        problemDetail.setProperty("errors", ex.getErrors());
         return new ResponseEntity<>(problemDetail, status);
     }
 
@@ -51,9 +50,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleInvalidFieldsException(InvalidFieldsException ex) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, ex.getMessage());
-        Map<String, String> errors = new HashMap<>();
-        ex.getErrors().forEach(apiError -> errors.put(apiError.field(), apiError.message()));
-        problemDetail.setProperty("errors", errors);
+        problemDetail.setProperty("errors", ex.getErrors());
         return new ResponseEntity<>(problemDetail, status);
     }
 
@@ -70,6 +67,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException ex) {
         HttpStatus status = HttpStatus.FORBIDDEN;
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, ex.getMessage());
+        return new ResponseEntity<>(problemDetail, status);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, "Validation Failed");
+        List<ApiFieldError> errors = ex.getBindingResult().getFieldErrors()
+            .stream()
+            .map(err -> new ApiFieldError(err.getField(), err.getDefaultMessage(), err.getRejectedValue()))
+            .toList();
+        problemDetail.setProperty("errors", errors);
         return new ResponseEntity<>(problemDetail, status);
     }
 

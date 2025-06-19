@@ -9,16 +9,16 @@ import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfBook;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfBookNote;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 class BookshelfMapper {
 
     private BookshelfMapper() {
     }
 
-    public static Bookshelf toBookshelf(BookshelfCreateDto bookshelfDto, User user, Set<BookshelfBook> bookshelfBooks) {
+    public static Bookshelf toBookshelf(BookshelfCreateDto bookshelfDto, User user, List<BookshelfBook> bookshelfBooks) {
         return new Bookshelf(
             bookshelfDto.getName(),
             bookshelfDto.getType(),
@@ -48,7 +48,8 @@ class BookshelfMapper {
 
 
     public static BookshelfBook toBookshelfBook(BookshelfBookCreateDto bookshelfBookDto, Book book) {
-        List<BookshelfBookNote> notes = bookshelfBookDto.getNotes()
+        List<BookshelfBookNoteDto> noteDtos = bookshelfBookDto.getNotes() != null ? bookshelfBookDto.getNotes() : Collections.emptyList();
+        List<BookshelfBookNote> notes = noteDtos
             .stream()
             .map(BookshelfMapper::toBookshelfBookNote)
             .toList();

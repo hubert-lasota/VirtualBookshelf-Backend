@@ -1,6 +1,7 @@
 package org.hl.wirtualnyregalbackend.common.validation;
 
 import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,5 +24,7 @@ public @interface StringConstraints {
     String message() default "Invalid string";
 
     Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
 
 }

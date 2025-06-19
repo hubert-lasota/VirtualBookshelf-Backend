@@ -1,19 +1,19 @@
 package org.hl.wirtualnyregalbackend.common.exception;
 
-import org.hl.wirtualnyregalbackend.common.model.ApiError;
+import org.hl.wirtualnyregalbackend.common.model.ApiFieldError;
 
 import java.util.Collections;
 import java.util.List;
 
 public class InvalidFieldsException extends RuntimeException {
 
-    private final List<ApiError> errors;
+    private final List<ApiFieldError> errors;
 
-    public InvalidFieldsException(List<ApiError> errors) {
+    public InvalidFieldsException(List<ApiFieldError> errors) {
         this.errors = errors;
     }
 
-    public List<ApiError> getErrors() {
+    public List<ApiFieldError> getErrors() {
         return Collections.unmodifiableList(errors);
     }
 

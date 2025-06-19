@@ -14,8 +14,10 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Service
@@ -58,17 +60,17 @@ public class BookshelfService {
                                                 List<BookCoverOrderDto> bookCoverOrderDtos,
                                                 User user) {
         List<BookshelfBookCreateDto> bookDtos = bookshelfCreateDto.getBooks();
-        Set<BookshelfBook> bookshelfBooks = IntStream.range(0, bookDtos.size())
+        List<BookshelfBook> bookshelfBooks = IntStream.range(0, bookDtos.size())
             .mapToObj((index) -> {
                 Optional<BookCoverOrderDto> orderOpt = bookCoverOrderDtos.stream()
                     .filter(order -> order.bookIndex().equals(index))
                     .findFirst();
 
-                MultipartFile cover = orderOpt.isPresent() ? covers.get(orderOpt.get().coverIndex()) : null;
+                MultipartFile cover = orderOpt.map(bookCoverOrderDto -> covers.get(bookCoverOrderDto.coverIndex())).orElse(null);
                 BookshelfBookCreateDto dto = bookDtos.get(index);
                 return createBookshelfBookEntity(dto, cover);
             })
-            .collect(Collectors.toSet());
+            .toList();
 
         Bookshelf bookshelf = BookshelfMapper.toBookshelf(bookshelfCreateDto, user, bookshelfBooks);
         bookshelfRepository.save(bookshelf);
@@ -100,14 +102,14 @@ public class BookshelfService {
 
         List<BookshelfBookUpdateDto> bookDtos = bookshelfDto.getBooks();
         if (bookDtos != null) {
-            Set<BookshelfBook> books = IntStream.range(0, bookDtos.size())
+            List<BookshelfBook> books = IntStream.range(0, bookDtos.size())
                 .mapToObj(index -> {
                     Optional<BookCoverOrderDto> orderOpt = bookCoverOrderDtos.stream()
                         .filter(order -> order.bookIndex().equals(index))
                         .findFirst();
 
                     BookshelfBookUpdateDto bookDto = bookDtos.get(index);
-                    MultipartFile cover = orderOpt.isPresent() ? covers.get(orderOpt.get().coverIndex()) : null;
+                    MultipartFile cover = orderOpt.map(bookCoverOrderDto -> covers.get(bookCoverOrderDto.coverIndex())).orElse(null);
                     Long bookshelfBookId = bookDto.getId();
                     if (bookshelfBookId == null) {
                         return createBookshelfBookEntity(bookDto, cover);
@@ -116,7 +118,7 @@ public class BookshelfService {
                     updateBookshelfBook(book, bookDto);
                     return book;
                 })
-                .collect(Collectors.toSet());
+                .toList();
 
             bookshelf.setBookshelfBooks(books);
         }
@@ -171,10 +173,6 @@ public class BookshelfService {
         return bookshelves.stream()
             .map(bookshelf -> BookshelfMapper.toBookshelfResponseDto(bookshelf, locale))
             .toList();
-    }
-
-    public List<Bookshelf> findUserBookshelvesByBookId(Long bookId, User user) {
-        return bookshelfRepository.findUserBookshelvesByBookId(bookId, user.getId());
     }
 
     public boolean isUserBookshelfAuthor(Long bookshelfId, Long userId) {

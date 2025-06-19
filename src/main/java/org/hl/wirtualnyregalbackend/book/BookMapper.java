@@ -53,9 +53,15 @@ public class BookMapper {
     }
 
     public static BookResponseDto toBookResponseDto(Book book, Locale locale) {
-        BookFormatDto format = BookFormatMapper.toBookFormatDto(book.getFormat(), locale);
-        PublisherMutationDto publisherMutationDto = PublisherMapper.toPublisherMutationDto(book.getPublisher());
-        PublisherWithIdDto publisher = new PublisherWithIdDto(book.getPublisher().getId(), publisherMutationDto);
+        BookFormat format = book.getFormat();
+        BookFormatDto formatDto = format != null ? BookFormatMapper.toBookFormatDto(format, locale) : null;
+
+        Publisher publisher = book.getPublisher();
+        PublisherWithIdDto publisherDto = null;
+        if (publisher != null) {
+            PublisherMutationDto publisherMutationDto = PublisherMapper.toPublisherMutationDto(publisher);
+            publisherDto = new PublisherWithIdDto(publisher.getId(), publisherMutationDto);
+        }
 
         List<AuthorWithIdDto> authors = book.getAuthors()
             .stream()
@@ -81,6 +87,8 @@ public class BookMapper {
             })
             .toList();
 
+        BookCover cover = book.getCover();
+        String coverUrl = cover != null ? cover.getUrl() : null;
 
         return new BookResponseDto(
             book.getIsbn(),
@@ -89,13 +97,13 @@ public class BookMapper {
             book.getPageCount(),
             book.getLanguage(),
             book.getDescription(),
-            book.getCover().getUrl(),
-            publisher,
+            coverUrl,
+            publisherDto,
             authors,
             genres,
             series,
             book.getId(),
-            format,
+            formatDto,
             book.getCreatedAt(),
             book.getUpdatedAt()
         );

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @Service
 public class BookFormatService {
@@ -27,7 +28,7 @@ public class BookFormatService {
     }
 
     public BookFormat findBookFormatById(Long id) throws EntityNotFoundException {
-        return bookFormatRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Book format with id = '%d' not found.".formatted(id)));
+        Optional<BookFormat> formatOpt = id != null ? bookFormatRepository.findById(id) : Optional.empty();
+        return formatOpt.orElseThrow(() -> new EntityNotFoundException("Book format with id = '%d' not found.".formatted(id)));
     }
 }

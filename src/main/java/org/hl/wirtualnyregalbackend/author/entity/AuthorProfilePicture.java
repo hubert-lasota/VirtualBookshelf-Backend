@@ -18,7 +18,7 @@ public class AuthorProfilePicture extends BaseEntity {
     @Column
     private String url;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "author_profile_picture_binary_id")
     private AuthorProfilePictureBinary authorProfilePictureBinary;
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidFieldsException;
-import org.hl.wirtualnyregalbackend.common.model.ApiError;
+import org.hl.wirtualnyregalbackend.common.model.ApiFieldError;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,7 +17,7 @@ public class LocaleDeserializer extends JsonDeserializer<Locale> {
         try {
             return Locale.forLanguageTag(p.getText());
         } catch (IllegalArgumentException e) {
-            ApiError error = new ApiError(p.currentName(), e.getMessage());
+            ApiFieldError error = new ApiFieldError(p.currentName(), e.getMessage(), p.getText());
             throw new InvalidFieldsException(List.of(error));
         }
     }

@@ -1,18 +1,25 @@
 package org.hl.wirtualnyregalbackend.bookshelf.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "bookshelf")
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Bookshelf extends BaseEntity {
 
     @Column
@@ -25,27 +32,19 @@ public class Bookshelf extends BaseEntity {
     @Column
     private String description;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "bookshelf_book_bookshelf",
-        joinColumns = @JoinColumn(name = "bookshelf_id"),
-        inverseJoinColumns = @JoinColumn(name = "bookshelf_book_id"))
-    private Set<BookshelfBook> bookshelfBooks = new HashSet<>();
+    @OneToMany(mappedBy = "bookshelf", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<BookshelfBook> bookshelfBooks = new ArrayList<>();
 
-    protected Bookshelf() {
-    }
-
-    public Bookshelf(String name, BookshelfType type, String description, User user, Set<BookshelfBook> bookshelfBooks) {
+    public Bookshelf(String name, BookshelfType type, String description, User user, List<BookshelfBook> bookshelfBooks) {
         this.name = name;
         this.type = type;
         this.description = description;
         this.user = user;
-        bookshelfBooks.forEach(bookshelfBook -> bookshelfBook.setBookshelf(this));
-        this.bookshelfBooks = bookshelfBooks;
+        setBookshelfBooks(bookshelfBooks);
     }
 
     public BookshelfBook getBookshelfBookById(Long bookshelfBookId) {
@@ -73,37 +72,15 @@ public class Bookshelf extends BaseEntity {
         }
     }
 
-    public String getName() {
-        return name;
+    public List<BookshelfBook> getBookshelfBooks() {
+        return Collections.unmodifiableList(bookshelfBooks);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BookshelfType getType() {
-        return type;
-    }
-
-    public void setType(BookshelfType type) {
-        this.type = type;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Set<BookshelfBook> getBookshelfBooks() {
-        return Collections.unmodifiableSet(bookshelfBooks);
-    }
-
-    public void setBookshelfBooks(Set<BookshelfBook> bookshelfBooks) {
-        bookshelfBooks.forEach(bookshelfBook -> bookshelfBook.setBookshelf(this));
+    public void setBookshelfBooks(List<BookshelfBook> bookshelfBooks) {
         this.bookshelfBooks = bookshelfBooks;
+        if(bookshelfBooks != null) {
+            bookshelfBooks.forEach(bookshelfBook -> bookshelfBook.setBookshelf(this));
+        }
     }
 
 
