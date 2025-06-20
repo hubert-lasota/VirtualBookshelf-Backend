@@ -11,6 +11,7 @@ import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,7 +60,7 @@ public class BookshelfService {
                                                 List<MultipartFile> covers,
                                                 List<BookCoverOrderDto> bookCoverOrderDtos,
                                                 User user) {
-        List<BookshelfBookCreateDto> bookDtos = bookshelfCreateDto.getBooks();
+        List<BookshelfBookMutationDto> bookDtos = bookshelfCreateDto.getBooks();
         List<BookshelfBook> bookshelfBooks = IntStream.range(0, bookDtos.size())
             .mapToObj((index) -> {
                 Optional<BookCoverOrderDto> orderOpt = bookCoverOrderDtos.stream()
@@ -67,7 +68,7 @@ public class BookshelfService {
                     .findFirst();
 
                 MultipartFile cover = orderOpt.map(bookCoverOrderDto -> covers.get(bookCoverOrderDto.coverIndex())).orElse(null);
-                BookshelfBookCreateDto dto = bookDtos.get(index);
+                BookshelfBookMutationDto dto = bookDtos.get(index);
                 return createBookshelfBookEntity(dto, cover);
             })
             .toList();
@@ -128,7 +129,43 @@ public class BookshelfService {
         return BookshelfMapper.toBookshelfResponseDto(bookshelf, locale);
     }
 
-    private void updateBookshelfBook(BookshelfBook bookshelfBook, BookshelfBookUpdateDto bookshelfBookDto) {
+    public void deleteBookshelf(Long id) {
+        bookshelfRepository.deleteById(id);
+    }
+
+
+    public BookshelfBookResponseDto createBookshelfBook(Long bookshelfId,
+                                                        BookshelfBookMutationDto bookshelfBookDto,
+                                                        MultipartFile bookCover) {
+        Bookshelf bookshelf = findBookshelfById(bookshelfId);
+        BookshelfBook bookshelfBook = createBookshelfBookEntity(bookshelfBookDto, bookCover);
+        bookshelf.addBookshelfBook(bookshelfBook);
+        bookshelfRepository.save(bookshelf);
+
+        Locale locale = LocaleContextHolder.getLocale();
+        return BookshelfMapper.toBookshelfBookResponseDto(bookshelfBook, locale);
+    }
+
+    private BookshelfBook createBookshelfBookEntity(BookshelfBookMutationDto bookshelfBookDto, MultipartFile bookCover) {
+        BookWithIdDto bookWithIdDto = bookshelfBookDto.getBook();
+        // TOdo add event
+        Book book = findOrCreateBook(bookWithIdDto.getId(), bookWithIdDto.getBookDto(), bookCover);
+        return BookshelfMapper.toBookshelfBook(bookshelfBookDto, book);
+    }
+
+    public BookshelfBookResponseDto updateBookshelfBook(Long bookshelfId,
+                                                        Long bookshelfBookId,
+                                                        BookshelfBookMutationDto bookshelfBookDto) {
+        Bookshelf bookshelf = findBookshelfById(bookshelfId);
+        BookshelfBook bookshelfBook = bookshelf.getBookshelfBookById(bookshelfBookId);
+        updateBookshelfBook(bookshelfBook, bookshelfBookDto);
+        bookshelfRepository.save(bookshelf);
+
+        Locale locale = LocaleContextHolder.getLocale();
+        return BookshelfMapper.toBookshelfBookResponseDto(bookshelfBook, locale);
+    }
+
+    private void updateBookshelfBook(BookshelfBook bookshelfBook, BookshelfBookMutationDto bookshelfBookDto) {
         Integer currentPage = bookshelfBookDto.getCurrentPage();
         if (currentPage != null) {
             bookshelfBook.setCurrentPage(currentPage);
@@ -153,11 +190,12 @@ public class BookshelfService {
         }
     }
 
-    private BookshelfBook createBookshelfBookEntity(BookshelfBookCreateDto bookshelfBookDto, MultipartFile bookCover) {
-        BookWithIdDto bookWithIdDto = bookshelfBookDto.getBook();
-        // TOdo add event
-        Book book = findOrCreateBook(bookWithIdDto.getId(), bookWithIdDto.getBookDto(), bookCover);
-        return BookshelfMapper.toBookshelfBook(bookshelfBookDto, book);
+    public BookshelfBookResponseDto findBookshelfBook(Long bookshelfId, Long bookshelfBookId) {
+        Bookshelf bookshelf = findBookshelfById(bookshelfId);
+        BookshelfBook bookshelfBook = bookshelf.getBookshelfBookById(bookshelfBookId);
+
+        Locale locale = LocaleContextHolder.getLocale();
+        return BookshelfMapper.toBookshelfBookResponseDto(bookshelfBook, locale);
     }
 
     public void deleteBookshelfBook(Long bookshelfId, Long bookshelfBookId) {
@@ -179,9 +217,9 @@ public class BookshelfService {
         return bookshelfRepository.isUserBookshelfAuthor(bookshelfId, userId);
     }
 
-    private Bookshelf findBookshelfById(Long bookshelfId) {
-        return bookshelfRepository.findById(bookshelfId)
-            .orElseThrow(() -> new EntityNotFoundException("Not found Bookshelf with id = %d".formatted(bookshelfId)));
+    private Bookshelf findBookshelfById(@Nullable Long bookshelfId) {
+        Optional<Bookshelf> bookshelfOpt = bookshelfId != null ? bookshelfRepository.findById(bookshelfId) : Optional.empty();
+        return bookshelfOpt.orElseThrow(() -> new EntityNotFoundException("Not found Bookshelf with id = %d".formatted(bookshelfId)));
     }
 
     private Book findOrCreateBook(Long bookId, BookMutationDto bookDto, MultipartFile cover) {

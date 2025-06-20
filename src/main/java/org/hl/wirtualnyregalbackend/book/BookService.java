@@ -81,7 +81,7 @@ public class BookService {
 
     public Book createBookEntity(BookMutationDto bookDto, MultipartFile coverFile) {
         Set<Author> authors = findOrCreateAuthors(bookDto.getAuthors());
-        Set<Genre> genres = findGenres(bookDto);
+        Set<Genre> genres = genreService.findGenresByIds(bookDto.getGenreIds());
         BookCover cover = null;
         String coverUrl = bookDto.getCoverUrl();
         if (coverFile != null || coverUrl != null) {
@@ -187,8 +187,9 @@ public class BookService {
             book.setAuthors(authors);
         }
 
-        if (bookDto.getGenres() != null) {
-            Set<Genre> genres = findGenres(bookDto);
+        List<Long> genreIds = bookDto.getGenreIds();
+        if (genreIds != null) {
+            Set<Genre> genres = genreService.findGenresByIds(genreIds);
             book.setGenres(genres);
         }
 
@@ -222,15 +223,6 @@ public class BookService {
             .stream()
             .map((authorWithIdDto) -> authorService.findOrCreateAuthor(authorWithIdDto.getId(), authorWithIdDto.getAuthorDto()))
             .collect(Collectors.toSet());
-    }
-
-    private Set<Genre> findGenres(BookMutationDto bookMutationDto) {
-        List<Long> genreIds = bookMutationDto.getGenres()
-            .stream()
-            .map(GenreWithIdDto::getId)
-            .toList();
-
-        return genreService.findGenresByIds(genreIds);
     }
 
     private List<BookSeriesBook> findOrCreateSeries(List<BookSeriesAssignmentDto> bookSeriesDtos) {

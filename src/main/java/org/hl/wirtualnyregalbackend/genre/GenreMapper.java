@@ -12,13 +12,9 @@ public class GenreMapper {
     private GenreMapper() {
     }
 
-    public static GenreMutationDto toGenreMutationDto(Genre genre, Locale locale) {
-        String localizedName = TranslationUtils.getTranslatedName(genre.getNames(), locale);
-        return new GenreMutationDto(localizedName);
-    }
-
     public static GenreResponseDto toGenreResponseDto(Genre genre, Locale locale) {
-        GenreMutationDto dto = toGenreMutationDto(genre, locale);
+        String localizedName = TranslationUtils.getTranslatedName(genre.getTranslations(), locale);
+        GenreMutationDto dto = new GenreMutationDto(localizedName);
         return new GenreResponseDto(genre.getId(), genre.getCreatedAt(), genre.getUpdatedAt(), dto);
     }
 

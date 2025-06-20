@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.genre.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -18,17 +19,17 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Genre extends BaseEntity {
 
-    @OneToMany
-    private List<GenreName> names = new ArrayList<>();
+    @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GenreTranslation> translations = new ArrayList<>();
 
     public Genre(TranslatedName translatedName) {
-        GenreName genreName = new GenreName(translatedName, this);
-        this.names.add(genreName);
+        GenreTranslation genreTranslation = new GenreTranslation(translatedName, this);
+        this.translations.add(genreTranslation);
     }
 
 
-    public List<GenreName> getNames() {
-        return Collections.unmodifiableList(names);
+    public List<GenreTranslation> getTranslations() {
+        return Collections.unmodifiableList(translations);
     }
 
 }

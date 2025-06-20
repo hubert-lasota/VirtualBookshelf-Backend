@@ -18,7 +18,7 @@ public class TranslatedName {
     @Column
     private String name;
 
-    @Column(name = "language_tag")
+    @Column(name = "language_code")
     private Locale language;
 
 }

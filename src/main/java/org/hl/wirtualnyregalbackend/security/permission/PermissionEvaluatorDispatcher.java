@@ -27,9 +27,10 @@ public class PermissionEvaluatorDispatcher implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
-        ResourceType resourceType = ResourceType.valueOf(targetType.toUpperCase());
+        ResourceType resourceType = ResourceType.fromString(targetType);
         ResourcePermissionEvaluator evaluator = evaluators.get(resourceType);
-        ActionType actionType = ActionType.valueOf(((String) permission).toUpperCase());
+        String permissionStr = (String) permission;
+        ActionType actionType = ActionType.fromString(permissionStr);
         return evaluator.hasPermission(authentication, targetId, actionType);
     }
 

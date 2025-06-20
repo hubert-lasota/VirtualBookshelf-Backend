@@ -13,12 +13,12 @@ import java.util.List;
 public class BookshelfCreateDto extends BaseBookshelfDto {
 
     @Valid
-    protected final List<BookshelfBookCreateDto> books;
+    protected final List<BookshelfBookMutationDto> books;
 
     public BookshelfCreateDto(String name,
                               BookshelfType type,
                               String description,
-                              List<BookshelfBookCreateDto> books) {
+                              List<BookshelfBookMutationDto> books) {
         super(name, type, description);
         this.books = books;
     }

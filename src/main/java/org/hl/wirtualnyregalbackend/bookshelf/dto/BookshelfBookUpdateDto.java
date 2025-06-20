@@ -11,7 +11,7 @@ import java.util.List;
 
 @NotAllFieldsNull
 @Getter
-public class BookshelfBookUpdateDto extends BookshelfBookCreateDto {
+public class BookshelfBookUpdateDto extends BookshelfBookMutationDto {
 
     @JsonProperty
     private final Long id;

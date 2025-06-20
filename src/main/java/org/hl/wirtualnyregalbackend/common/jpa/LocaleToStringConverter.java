@@ -10,12 +10,12 @@ public class LocaleToStringConverter implements AttributeConverter<Locale, Strin
 
     @Override
     public String convertToDatabaseColumn(Locale language) {
-        return language == null ? null : language.toLanguageTag();
+        return language == null ? null : language.getLanguage();
     }
 
     @Override
     public Locale convertToEntityAttribute(String language) {
-        return language == null ? null : Locale.forLanguageTag(language);
+        return language == null ? null : new Locale(language);
     }
 
 }

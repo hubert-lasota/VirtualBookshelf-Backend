@@ -15,18 +15,16 @@ public class BookSeriesMapper {
     private BookSeriesMapper() {
     }
 
-    public static BookSeriesMutationDto toBookSeriesMutationDto(BookSeriesBook bookSeriesAssociation, Locale locale) {
-        BookSeries bookSeries = bookSeriesAssociation.getBookSeries();
-        return BookSeriesMapper.toBookSeriesMutationDto(bookSeries, locale);
+    public static BookSeriesMutationDto toBookSeriesMutationDto(BookSeriesBook bookSeriesAssociation) {
+        return new BookSeriesMutationDto(bookSeriesAssociation.getBookSeries().getName());
     }
 
-    public static BookSeriesMutationDto toBookSeriesMutationDto(BookSeries bookSeries, Locale locale) {
-        String localizedName = TranslationUtils.getTranslatedName(bookSeries.getNames(), locale);
-        return new BookSeriesMutationDto(localizedName);
+    public static BookSeriesMutationDto toBookSeriesMutationDto(BookSeries bookSeries) {
+        return new BookSeriesMutationDto(bookSeries.getName());
     }
 
-    public static BookSeriesResponseDto toBookSeriesResponseDto(BookSeries bookSeries, Locale locale) {
-        BookSeriesMutationDto dto = toBookSeriesMutationDto(bookSeries, locale);
+    public static BookSeriesResponseDto toBookSeriesResponseDto(BookSeries bookSeries) {
+        BookSeriesMutationDto dto = toBookSeriesMutationDto(bookSeries);
         return new BookSeriesResponseDto(
             bookSeries.getId(),
             dto,
@@ -35,12 +33,12 @@ public class BookSeriesMapper {
         );
     }
 
-    public static BookSeries toBookSeries(BookSeriesMutationDto bookSeriesDto, Locale locale) {
-        TranslatedName translatedName = new TranslatedName(bookSeriesDto.name(), locale);
-        return new BookSeries(translatedName);
+    public static BookSeries toBookSeries(BookSeriesMutationDto bookSeriesDto) {
+        return new BookSeries(bookSeriesDto.name());
     }
 
-    public static BookSeriesBook toBookSeriesBookAssociation(BookSeries bookSeries, BookSeriesAssignmentDto bookSeriesDto) {
+    public static BookSeriesBook toBookSeriesBookAssociation(BookSeries bookSeries,
+                                                             BookSeriesAssignmentDto bookSeriesDto) {
         return new BookSeriesBook(bookSeries, bookSeriesDto.getBookOrder());
     }
 

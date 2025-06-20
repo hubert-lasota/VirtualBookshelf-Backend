@@ -2,6 +2,7 @@ package org.hl.wirtualnyregalbackend.bookshelf.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Getter;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
 
 import java.time.Instant;
@@ -11,6 +12,7 @@ import java.util.List;
 public class BookshelfResponseDto extends BaseBookshelfDto {
 
     @JsonProperty
+    @Getter
     private final Long id;
 
     @JsonProperty

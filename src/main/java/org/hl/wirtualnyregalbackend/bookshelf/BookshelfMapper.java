@@ -47,7 +47,7 @@ class BookshelfMapper {
     }
 
 
-    public static BookshelfBook toBookshelfBook(BookshelfBookCreateDto bookshelfBookDto, Book book) {
+    public static BookshelfBook toBookshelfBook(BookshelfBookMutationDto bookshelfBookDto, Book book) {
         List<BookshelfBookNoteDto> noteDtos = bookshelfBookDto.getNotes() != null ? bookshelfBookDto.getNotes() : Collections.emptyList();
         List<BookshelfBookNote> notes = noteDtos
             .stream()
@@ -85,6 +85,7 @@ class BookshelfMapper {
 
     public static BookshelfBookNoteDto toBookshelfBookNoteDto(BookshelfBookNote note) {
         return new BookshelfBookNoteDto(
+            note.getTitle(),
             note.getContent(),
             note.getStartPage(),
             note.getEndPage()
@@ -93,6 +94,7 @@ class BookshelfMapper {
 
     public static BookshelfBookNote toBookshelfBookNote(BookshelfBookNoteDto noteDto) {
         return new BookshelfBookNote(
+            noteDto.title(),
             noteDto.content(),
             noteDto.startPage(),
             noteDto.endPage()

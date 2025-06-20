@@ -1,9 +1,6 @@
 package org.hl.wirtualnyregalbackend.genre.entity;
 
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
@@ -11,8 +8,9 @@ import org.hl.wirtualnyregalbackend.common.translation.TranslatedName;
 import org.hl.wirtualnyregalbackend.common.translation.TranslatedNamedEntity;
 
 @Entity
+@Table(name = "genre_translation")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GenreName extends BaseEntity implements TranslatedNamedEntity {
+public class GenreTranslation extends BaseEntity implements TranslatedNamedEntity {
 
     @Embedded
     private TranslatedName translatedName;
@@ -22,10 +20,11 @@ public class GenreName extends BaseEntity implements TranslatedNamedEntity {
     private Genre genre;
 
 
-    public GenreName(TranslatedName translatedName, Genre genre) {
+    public GenreTranslation(TranslatedName translatedName, Genre genre) {
         this.translatedName = translatedName;
         this.genre = genre;
     }
+
 
     @Override
     public TranslatedName getTranslatedName() {

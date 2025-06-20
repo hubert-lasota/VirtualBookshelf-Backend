@@ -13,7 +13,7 @@ import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
 import org.hl.wirtualnyregalbackend.book_series.BookSeriesMapper;
 import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesMutationDto;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
-import org.hl.wirtualnyregalbackend.genre.dto.GenreMutationDto;
+import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.publisher.PublisherMapper;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherMutationDto;
@@ -71,18 +71,15 @@ public class BookMapper {
             })
             .toList();
 
-        List<GenreWithIdDto> genres = book.getGenres()
+        List<GenreResponseDto> genres = book.getGenres()
             .stream()
-            .map(genre -> {
-                GenreMutationDto dto = GenreMapper.toGenreMutationDto(genre, locale);
-                return new GenreWithIdDto(genre.getId(), dto);
-            })
+            .map(genre -> GenreMapper.toGenreResponseDto(genre, locale))
             .toList();
 
         List<BookSeriesAssignmentDto> series = book.getBookSeriesBooks()
             .stream()
             .map((bookSeries) -> {
-                BookSeriesMutationDto dto = BookSeriesMapper.toBookSeriesMutationDto(bookSeries, locale);
+                BookSeriesMutationDto dto = BookSeriesMapper.toBookSeriesMutationDto(bookSeries);
                 return new BookSeriesAssignmentDto(bookSeries.getId(), dto, bookSeries.getBookOrder());
             })
             .toList();

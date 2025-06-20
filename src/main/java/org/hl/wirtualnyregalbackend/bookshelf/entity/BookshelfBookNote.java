@@ -15,6 +15,9 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 public class BookshelfBookNote extends BaseEntity {
 
     @Column
+    private String title;
+
+    @Column
     private String content;
 
     @Column(name = "start_page")
@@ -27,9 +30,12 @@ public class BookshelfBookNote extends BaseEntity {
     @JoinColumn(name = "bookshelf_book_id")
     private BookshelfBook bookshelfBook;
 
-    public BookshelfBookNote(String content,
+    public BookshelfBookNote(String title,
+                             String content,
                              Integer startPage,
-                             Integer endPage) {
+                             Integer endPage
+    ) {
+        this.title = title;
         this.content = content;
         this.startPage = startPage;
         this.endPage = endPage;

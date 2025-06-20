@@ -50,14 +50,9 @@ abstract class BaseBookDto {
     @Valid
     protected PublisherWithIdDto publisher;
 
-
     @NotEmpty(groups = CreateGroup.class)
     @Valid
     protected List<AuthorWithIdDto> authors;
-
-    @NotEmpty(groups = CreateGroup.class)
-    @Valid
-    protected List<GenreWithIdDto> genres;
 
     @Valid
     protected List<BookSeriesAssignmentDto> series;

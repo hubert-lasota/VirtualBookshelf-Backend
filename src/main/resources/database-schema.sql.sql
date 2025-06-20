@@ -62,7 +62,7 @@ CREATE TABLE book_format_translation
     id             BIGSERIAL PRIMARY KEY,
     book_format_id BIGINT REFERENCES book_format (id),
     name           TEXT        NOT NULL,
-    language_tag   TEXT        NOT NULL,
+    language_code  TEXT        NOT NULL,
     created_at     TIMESTAMPTZ NOT NULL,
     updated_at     TIMESTAMPTZ
 );
@@ -94,18 +94,9 @@ CREATE TABLE book
 CREATE TABLE book_series
 (
     id         BIGSERIAL PRIMARY KEY,
+    name       TEXT        NOT NULL,
     created_at TIMESTAMPTZ NOT NULL,
     updated_at TIMESTAMPTZ
-);
-
-CREATE TABLE book_series_translation
-(
-    id             BIGSERIAL PRIMARY KEY,
-    book_series_id BIGINT      NOT NULL REFERENCES book_series (id),
-    name           TEXT        NOT NULL,
-    language_tag   TEXT        NOT NULL,
-    created_at     TIMESTAMPTZ NOT NULL,
-    updated_at     TIMESTAMPTZ
 );
 
 CREATE TABLE book_series_book
@@ -136,11 +127,12 @@ CREATE TABLE user_genre_preferences
 
 CREATE TABLE genre_translation
 (
-    id         BIGSERIAL PRIMARY KEY,
-    genre_id   BIGINT      NOT NULL REFERENCES genre (id),
-    name       TEXT        NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    id            BIGSERIAL PRIMARY KEY,
+    genre_id      BIGINT      NOT NULL REFERENCES genre (id),
+    name          TEXT        NOT NULL,
+    language_code TEXT        NOT NULL,
+    created_at    TIMESTAMPTZ NOT NULL,
+    updated_at    TIMESTAMPTZ
 );
 
 CREATE TABLE book_genre
@@ -233,18 +225,6 @@ CREATE TABLE author_review
 );
 
 
-CREATE TABLE book_note
-(
-    id         BIGSERIAL PRIMARY KEY,
-    book_id    BIGINT      NOT NULL REFERENCES book (id),
-    user_id    BIGINT      NOT NULL REFERENCES users (id),
-    content    TEXT        NOT NULL,
-    start_page INT         NOT NULL,
-    end_page   INT         NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
-);
-
 
 CREATE TABLE bookshelf
 (
@@ -271,6 +251,16 @@ CREATE TABLE bookshelf_book
     updated_at          TIMESTAMPTZ
 );
 
+CREATE TABLE bookshelf_book_note
+(
+    id                BIGSERIAL PRIMARY KEY,
+    bookshelf_book_id BIGINT      NOT NULL REFERENCES bookshelf_book (id),
+    content           TEXT        NOT NULL,
+    start_page        INT         NOT NULL,
+    end_page          INT         NOT NULL,
+    created_at        TIMESTAMPTZ NOT NULL,
+    updated_at        TIMESTAMPTZ
+);
 CREATE TABLE book_recommendation
 (
     id         BIGSERIAL PRIMARY KEY,

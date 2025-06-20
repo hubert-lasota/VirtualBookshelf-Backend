@@ -32,14 +32,12 @@ public class BookSeriesService {
 
     public PageResponseDto<BookSeriesResponseDto> findBookSeries(Pageable pageable) {
         Page<BookSeries> bookSeriesPage = bookSeriesRepository.findAll(pageable);
-        Locale locale = LocaleContextHolder.getLocale();
-        Page<BookSeriesResponseDto> dtoPage = bookSeriesPage.map((bookSeries) -> BookSeriesMapper.toBookSeriesResponseDto(bookSeries, locale));
+        Page<BookSeriesResponseDto> dtoPage = bookSeriesPage.map(BookSeriesMapper::toBookSeriesResponseDto);
         return new PageResponseDto<>(dtoPage, "series");
     }
 
     private BookSeries createBookSeriesEntity(BookSeriesMutationDto bookSeriesDto) {
-        Locale locale = LocaleContextHolder.getLocale();
-        BookSeries bookSeries = BookSeriesMapper.toBookSeries(bookSeriesDto, locale);
+        BookSeries bookSeries = BookSeriesMapper.toBookSeries(bookSeriesDto);
         return bookSeriesRepository.save(bookSeries);
     }
 
