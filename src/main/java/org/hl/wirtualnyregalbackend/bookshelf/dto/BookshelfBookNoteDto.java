@@ -30,7 +30,7 @@ public record BookshelfBookNoteDto(
 
     @AssertTrue(message = "Start page cannot be greater than end page")
     public boolean isValid() {
-        if(startPage != null && endPage != null) {
+        if (startPage != null && endPage != null) {
             return startPage <= endPage;
         }
         return true;

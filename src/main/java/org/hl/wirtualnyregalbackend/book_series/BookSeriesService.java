@@ -5,12 +5,9 @@ import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesResponseDto;
 import org.hl.wirtualnyregalbackend.book_series.entity.BookSeries;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Locale;
 
 @Service
 public class BookSeriesService {

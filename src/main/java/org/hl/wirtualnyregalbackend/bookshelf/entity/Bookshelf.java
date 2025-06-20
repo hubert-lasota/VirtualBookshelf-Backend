@@ -78,7 +78,7 @@ public class Bookshelf extends BaseEntity {
 
     public void setBookshelfBooks(List<BookshelfBook> bookshelfBooks) {
         this.bookshelfBooks = bookshelfBooks;
-        if(bookshelfBooks != null) {
+        if (bookshelfBooks != null) {
             bookshelfBooks.forEach(bookshelfBook -> bookshelfBook.setBookshelf(this));
         }
     }

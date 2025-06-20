@@ -5,10 +5,6 @@ import org.hl.wirtualnyregalbackend.book.entity.BookSeriesBook;
 import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesMutationDto;
 import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesResponseDto;
 import org.hl.wirtualnyregalbackend.book_series.entity.BookSeries;
-import org.hl.wirtualnyregalbackend.common.translation.TranslatedName;
-import org.hl.wirtualnyregalbackend.common.translation.TranslationUtils;
-
-import java.util.Locale;
 
 public class BookSeriesMapper {
 
