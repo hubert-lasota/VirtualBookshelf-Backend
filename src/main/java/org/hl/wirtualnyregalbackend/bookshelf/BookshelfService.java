@@ -1,5 +1,7 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.book.BookService;
 import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
@@ -22,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Service
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class BookshelfService {
 
     private final static Logger log = LoggerFactory.getLogger(BookshelfService.class);
@@ -29,10 +32,6 @@ public class BookshelfService {
     private final BookshelfRepository bookshelfRepository;
     private final BookService bookService;
 
-    BookshelfService(BookshelfRepository bookshelfRepository, BookService bookService) {
-        this.bookshelfRepository = bookshelfRepository;
-        this.bookService = bookService;
-    }
 
     public void addDefaultBookshelvesToUser(User user) {
         List<Bookshelf> bookshelvesToSave = new ArrayList<>();

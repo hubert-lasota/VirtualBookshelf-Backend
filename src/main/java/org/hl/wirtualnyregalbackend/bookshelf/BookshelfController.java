@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.*;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
@@ -20,13 +21,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/bookshelves")
+@AllArgsConstructor
 class BookshelfController {
 
     private final BookshelfService bookshelfService;
-
-    public BookshelfController(BookshelfService bookshelfService) {
-        this.bookshelfService = bookshelfService;
-    }
 
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -83,6 +81,7 @@ class BookshelfController {
         return ResponseEntity.noContent().build();
     }
 
+    // TODO do usuniecia zagniezdzenia dodac endpoint bookshelf-books, bookshelf-book-notes, moze byc na razie wewnatrz tego pakietu
     @PostMapping(value = "/{bookshelfId}/books", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasPermission(#bookshelfId, 'BOOKSHELF', 'CREATE')")
     public ResponseEntity<?> createBookshelfBook(

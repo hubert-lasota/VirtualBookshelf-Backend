@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.book_cover;
 
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCoverBinary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,13 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/book-covers")
+@AllArgsConstructor
 class BookCoverController {
 
     private final BookCoverService bookCoverService;
 
-    public BookCoverController(BookCoverService bookCoverService) {
-        this.bookCoverService = bookCoverService;
-    }
 
     @GetMapping(value = "/{id}", produces = "image/*")
     public ResponseEntity<?> findBookCoverById(@PathVariable Long id) {

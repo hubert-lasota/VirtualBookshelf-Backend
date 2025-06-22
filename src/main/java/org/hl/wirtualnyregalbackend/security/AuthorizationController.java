@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.security;
 
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.security.dto.UserCredentialsDto;
 import org.springframework.http.ResponseEntity;
@@ -10,28 +11,26 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/auth")
+@AllArgsConstructor
 class AuthorizationController {
 
     private final AuthorizationService authorizationService;
 
-    public AuthorizationController(AuthorizationService authorizationService) {
-        this.authorizationService = authorizationService;
-    }
 
-    @PostMapping(value = "/register")
+    @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Validated(CreateGroup.class) @RequestBody UserCredentialsDto credentials) {
         var response = authorizationService.registerUser(credentials);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(value = "/sign-in")
+    @PostMapping("/sign-in")
     public ResponseEntity<?> signIn(@RequestBody UserCredentialsDto credentials) {
         var response = authorizationService.signIn(credentials);
         return ResponseEntity.ok(response);
     }
 
     // TODO raczej do usuniecia
-    @GetMapping(value = "/verify-jwt-validity")
+    @GetMapping("/verify-jwt-validity")
     public ResponseEntity<?> verifyJwt(@RequestParam String jwt) {
         boolean isValid = authorizationService.isJwtValid(jwt);
         Map<String, Object> response = Map.of("isValid", isValid);

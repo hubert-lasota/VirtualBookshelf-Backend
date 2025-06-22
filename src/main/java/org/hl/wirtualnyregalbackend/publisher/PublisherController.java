@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.publisher;
 
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherMutationDto;
 import org.springframework.data.domain.Pageable;
@@ -9,13 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/publishers")
+@AllArgsConstructor
 class PublisherController {
 
     private final PublisherService publisherService;
-
-    public PublisherController(PublisherService publisherService) {
-        this.publisherService = publisherService;
-    }
 
 
     @PostMapping

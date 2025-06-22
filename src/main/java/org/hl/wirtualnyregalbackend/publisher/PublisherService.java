@@ -1,5 +1,7 @@
 package org.hl.wirtualnyregalbackend.publisher;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
@@ -11,13 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class PublisherService {
 
     private final PublisherRepository publisherRepository;
-
-    public PublisherService(PublisherRepository publisherRepository) {
-        this.publisherRepository = publisherRepository;
-    }
 
 
     public PublisherResponseDto createPublisher(PublisherMutationDto publisherDto) {

@@ -1,5 +1,7 @@
 package org.hl.wirtualnyregalbackend.author;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorResponseDto;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
@@ -12,13 +14,11 @@ import org.springframework.stereotype.Service;
 
 
 @Service
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
 
-    AuthorService(AuthorRepository authorRepository) {
-        this.authorRepository = authorRepository;
-    }
 
     public AuthorResponseDto createAuthor(AuthorMutationDto authorDto) {
         Author author = createAuthorEntity(authorDto);

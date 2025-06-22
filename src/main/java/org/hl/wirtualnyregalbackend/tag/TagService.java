@@ -1,18 +1,17 @@
 package org.hl.wirtualnyregalbackend.tag;
 
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.tag.dto.TagDto;
 import org.hl.wirtualnyregalbackend.tag.entity.Tag;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 class TagService {
 
     private final TagRepository tagRepository;
 
-    public TagService(TagRepository tagRepository) {
-        this.tagRepository = tagRepository;
-    }
 
     //    public String createBookTag(String name, Book book) {
 //        if(!tagRepository.existsByNameIgnoreCase(name)) {

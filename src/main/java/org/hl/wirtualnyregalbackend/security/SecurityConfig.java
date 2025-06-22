@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.security;
 
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.security.jwt.JwtFilter;
 import org.hl.wirtualnyregalbackend.security.permission.PermissionEvaluatorDispatcher;
 import org.springframework.context.annotation.Bean;
@@ -23,14 +24,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@AllArgsConstructor
 class SecurityConfig {
 
     private final JwtFilter jwtFilter;
-
-    SecurityConfig(JwtFilter jwtFilter) {
-        this.jwtFilter = jwtFilter;
-    }
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

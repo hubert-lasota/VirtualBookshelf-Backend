@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.security;
 
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.security.dto.UserCredentialsDto;
 import org.hl.wirtualnyregalbackend.security.dto.UserSignInResponseDto;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 class AuthorizationService {
 
     private final static Logger log = LoggerFactory.getLogger(AuthorizationService.class);
@@ -32,17 +34,6 @@ class AuthorizationService {
     private final PasswordEncoder passwordEncoder;
     private final UserDefaultConfigurer userDefaultConfigurer;
 
-    AuthorizationService(UserRepository userRepository,
-                         JwtService jwtService,
-                         AuthenticationManager authenticationManager,
-                         PasswordEncoder passwordEncoder,
-                         UserDefaultConfigurer userDefaultConfigurer) {
-        this.userRepository = userRepository;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder;
-        this.userDefaultConfigurer = userDefaultConfigurer;
-    }
 
     public UserSignInResponseDto registerUser(UserCredentialsDto credentials) {
         if (userRepository.existsByUsername(credentials.username())) {

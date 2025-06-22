@@ -1,5 +1,7 @@
 package org.hl.wirtualnyregalbackend.book_series;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesMutationDto;
 import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesResponseDto;
 import org.hl.wirtualnyregalbackend.book_series.entity.BookSeries;
@@ -10,13 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class BookSeriesService {
 
     private final BookSeriesRepository bookSeriesRepository;
 
-    BookSeriesService(BookSeriesRepository bookSeriesRepository) {
-        this.bookSeriesRepository = bookSeriesRepository;
-    }
 
     public BookSeries findOrCreateBookSeries(Long id, BookSeriesMutationDto bookSeriesDto) {
         if (id != null) {

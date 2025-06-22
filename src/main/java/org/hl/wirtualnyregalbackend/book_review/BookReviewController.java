@@ -1,17 +1,16 @@
 package org.hl.wirtualnyregalbackend.book_review;
 
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/book-reviews")
-public class BookReviewController {
+@RequestMapping("/v1/book-reviews")
+@AllArgsConstructor
+class BookReviewController {
 
     private final BookReviewService bookReviewService;
 
-    public BookReviewController(BookReviewService bookReviewService) {
-        this.bookReviewService = bookReviewService;
-    }
 
 //
 //    @PostMapping

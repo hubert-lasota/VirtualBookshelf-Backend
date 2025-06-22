@@ -1,5 +1,7 @@
 package org.hl.wirtualnyregalbackend.book;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.author.AuthorService;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.book.dto.*;
@@ -40,6 +42,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class BookService {
 
     private static final Logger log = LoggerFactory.getLogger(BookService.class);
@@ -52,25 +55,6 @@ public class BookService {
     private final GenreService genreService;
     private final AuthorService authorService;
     private final PublisherService publisherService;
-
-
-    BookService(ApplicationEventPublisher eventPublisher,
-                BookRepository bookRepository,
-                BookFormatService bookFormatService,
-                BookCoverService bookCoverService,
-                BookSeriesService bookSeriesService,
-                GenreService genreService,
-                AuthorService authorService,
-                PublisherService publisherService) {
-        this.eventPublisher = eventPublisher;
-        this.bookRepository = bookRepository;
-        this.bookFormatService = bookFormatService;
-        this.bookCoverService = bookCoverService;
-        this.bookSeriesService = bookSeriesService;
-        this.genreService = genreService;
-        this.authorService = authorService;
-        this.publisherService = publisherService;
-    }
 
 
     public BookResponseDto createBook(BookMutationDto bookMutationDto, MultipartFile coverFile) {

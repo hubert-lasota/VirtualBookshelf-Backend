@@ -1,5 +1,7 @@
 package org.hl.wirtualnyregalbackend.book_cover;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCoverBinary;
 import org.hl.wirtualnyregalbackend.common.ServerInfoProvider;
@@ -12,17 +14,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Service
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class BookCoverService {
 
     private final Logger log = LoggerFactory.getLogger(BookCoverService.class);
 
     private final BookCoverRepository bookCoverRepository;
     private final ServerInfoProvider serverInfoProvider;
-
-    BookCoverService(BookCoverRepository bookCoverRepository, ServerInfoProvider serverInfoProvider) {
-        this.bookCoverRepository = bookCoverRepository;
-        this.serverInfoProvider = serverInfoProvider;
-    }
 
 
     public BookCover createBookCover(String coverUrl, MultipartFile coverFile) {

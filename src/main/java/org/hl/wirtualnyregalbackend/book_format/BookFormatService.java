@@ -1,5 +1,7 @@
 package org.hl.wirtualnyregalbackend.book_format;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
@@ -11,13 +13,11 @@ import java.util.Locale;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class BookFormatService {
 
     private final BookFormatRepository bookFormatRepository;
 
-    BookFormatService(BookFormatRepository bookFormatRepository) {
-        this.bookFormatRepository = bookFormatRepository;
-    }
 
     public List<BookFormatDto> findBookFormats() {
         Locale locale = LocaleContextHolder.getLocale();

@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.book_format;
 
+import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,13 +12,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/book-formats")
+@AllArgsConstructor
 class BookFormatController {
 
     private final BookFormatService bookFormatService;
-
-    public BookFormatController(BookFormatService bookFormatService) {
-        this.bookFormatService = bookFormatService;
-    }
 
 
     @GetMapping
