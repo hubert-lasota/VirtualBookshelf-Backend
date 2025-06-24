@@ -1,7 +1,10 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
 import lombok.AllArgsConstructor;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.*;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookCoverOrderDto;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfCreateDto;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfUpdateDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.security.entity.User;
@@ -81,51 +84,5 @@ class BookshelfController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO do usuniecia zagniezdzenia dodac endpoint bookshelf-books, bookshelf-book-notes, moze byc na razie wewnatrz tego pakietu
-    @PostMapping(value = "/{bookshelfId}/books", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasPermission(#bookshelfId, 'BOOKSHELF', 'CREATE')")
-    public ResponseEntity<?> createBookshelfBook(
-        @PathVariable
-        Long bookshelfId,
-        @RequestPart("bookshelfBook")
-        @Validated(CreateGroup.class)
-        BookshelfBookMutationDto bookshelfBookDto,
-        @RequestPart(value = "cover", required = false)
-        MultipartFile cover,
-        UriComponentsBuilder uriBuilder
-    ) {
-        BookshelfBookResponseDto response = bookshelfService.createBookshelfBook(bookshelfId, bookshelfBookDto, cover);
-
-        URI location = uriBuilder
-            .path("/v1/bookshelves/{bookshelfId}/books/{bookId}")
-            .buildAndExpand(bookshelfId, response.getId())
-            .toUri();
-
-        return ResponseEntity.created(location).body(response);
-    }
-
-    @GetMapping("/{bookshelfId}/books/{bookId}")
-    @PreAuthorize("hasPermission(#bookshelfId, 'BOOKSHELF', 'READ')")
-    public ResponseEntity<?> findBookshelfBook(@PathVariable Long bookshelfId, @PathVariable Long bookId) {
-        var response = bookshelfService.findBookshelfBook(bookshelfId, bookId);
-        return ResponseEntity.ok(response);
-    }
-
-    @PatchMapping("/{bookshelfId}/books/{bookshelfBookId}")
-    @PreAuthorize("hasPermission(#bookshelfId, 'BOOKSHELF', 'DELETE')")
-    public ResponseEntity<?> updateBookshelfBook(@PathVariable Long bookshelfId,
-                                                 @PathVariable Long bookshelfBookId,
-                                                 @RequestBody @Validated(UpdateGroup.class) BookshelfBookMutationDto bookshelfBookDto) {
-        BookshelfBookResponseDto response = bookshelfService.updateBookshelfBook(bookshelfId, bookshelfBookId, bookshelfBookDto);
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/{bookshelfId}/books/{bookId}")
-    @PreAuthorize("hasPermission(#bookshelfId, 'BOOKSHELF', 'DELETE')")
-    public ResponseEntity<?> deleteBookshelfBook(@PathVariable Long bookshelfId,
-                                                 @PathVariable Long bookId) {
-        bookshelfService.deleteBookshelfBook(bookshelfId, bookId);
-        return ResponseEntity.noContent().build();
-    }
 
 }

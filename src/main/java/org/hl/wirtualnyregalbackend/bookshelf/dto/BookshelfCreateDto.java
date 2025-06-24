@@ -3,6 +3,7 @@ package org.hl.wirtualnyregalbackend.bookshelf.dto;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
+import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookMutationDto;
 import org.hl.wirtualnyregalbackend.common.validation.NotAllFieldsNull;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 

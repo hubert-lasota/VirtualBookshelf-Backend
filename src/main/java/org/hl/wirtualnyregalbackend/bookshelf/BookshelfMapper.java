@@ -1,15 +1,13 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
-import org.hl.wirtualnyregalbackend.book.BookMapper;
-import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
-import org.hl.wirtualnyregalbackend.book.entity.Book;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.*;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfCreateDto;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfBook;
-import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfBookNote;
+import org.hl.wirtualnyregalbackend.bookshelf_book.BookshelfBookMapper;
+import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookResponseDto;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,7 +30,7 @@ class BookshelfMapper {
                                                               Locale locale) {
         List<BookshelfBookResponseDto> books = bookshelf.getBookshelfBooks()
             .stream()
-            .map(bookshelfBook -> BookshelfMapper.toBookshelfBookResponseDto(bookshelfBook, locale))
+            .map(bookshelfBook -> BookshelfBookMapper.toBookshelfBookResponseDto(bookshelfBook, locale))
             .toList();
 
         return new BookshelfResponseDto(
@@ -46,59 +44,5 @@ class BookshelfMapper {
         );
     }
 
-
-    public static BookshelfBook toBookshelfBook(BookshelfBookMutationDto bookshelfBookDto, Book book) {
-        List<BookshelfBookNoteDto> noteDtos = bookshelfBookDto.getNotes() != null ? bookshelfBookDto.getNotes() : Collections.emptyList();
-        List<BookshelfBookNote> notes = noteDtos
-            .stream()
-            .map(BookshelfMapper::toBookshelfBookNote)
-            .toList();
-
-        return new BookshelfBook(
-            bookshelfBookDto.getCurrentPage(),
-            book,
-            bookshelfBookDto.getRangeDate(),
-            bookshelfBookDto.getStatus(),
-            notes
-        );
-    }
-
-    public static BookshelfBookResponseDto toBookshelfBookResponseDto(BookshelfBook bookshelfBook, Locale locale) {
-        BookResponseDto book = BookMapper.toBookResponseDto(bookshelfBook.getBook(), locale);
-        List<BookshelfBookNoteDto> notes = bookshelfBook.getNotes()
-            .stream()
-            .map(BookshelfMapper::toBookshelfBookNoteDto)
-            .toList();
-
-        return new BookshelfBookResponseDto(
-            bookshelfBook.getCurrentPage(),
-            bookshelfBook.getStatus(),
-            bookshelfBook.getRangeDate(),
-            notes,
-            bookshelfBook.getId(),
-            bookshelfBook.getProgressPercentage(),
-            book,
-            bookshelfBook.getCreatedAt(),
-            bookshelfBook.getUpdatedAt()
-        );
-    }
-
-    public static BookshelfBookNoteDto toBookshelfBookNoteDto(BookshelfBookNote note) {
-        return new BookshelfBookNoteDto(
-            note.getTitle(),
-            note.getContent(),
-            note.getStartPage(),
-            note.getEndPage()
-        );
-    }
-
-    public static BookshelfBookNote toBookshelfBookNote(BookshelfBookNoteDto noteDto) {
-        return new BookshelfBookNote(
-            noteDto.title(),
-            noteDto.content(),
-            noteDto.startPage(),
-            noteDto.endPage()
-        );
-    }
 
 }

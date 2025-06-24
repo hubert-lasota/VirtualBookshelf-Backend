@@ -2,6 +2,7 @@ package org.hl.wirtualnyregalbackend.bookshelf.dto;
 
 import lombok.Getter;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
+import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookUpdateDto;
 import org.hl.wirtualnyregalbackend.common.validation.NotAllFieldsNull;
 
 import java.util.List;

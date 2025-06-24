@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
+import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookResponseDto;
 
 import java.time.Instant;
 import java.util.List;

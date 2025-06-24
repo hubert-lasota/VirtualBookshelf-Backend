@@ -1,8 +1,9 @@
-package org.hl.wirtualnyregalbackend.bookshelf.dto;
+package org.hl.wirtualnyregalbackend.bookshelf_book.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.AssertTrue;
 import lombok.Getter;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookWithIdDto;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookReadingStatus;
 import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 import org.hl.wirtualnyregalbackend.common.validation.NotAllFieldsNull;

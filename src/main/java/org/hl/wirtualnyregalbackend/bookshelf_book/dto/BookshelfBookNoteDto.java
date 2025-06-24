@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.bookshelf.dto;
+package org.hl.wirtualnyregalbackend.bookshelf_book.dto;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
