@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfCreateDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
-import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfBook;
+import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBook;
 import org.hl.wirtualnyregalbackend.bookshelf_book.BookshelfBookMapper;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookResponseDto;
 import org.hl.wirtualnyregalbackend.security.entity.User;

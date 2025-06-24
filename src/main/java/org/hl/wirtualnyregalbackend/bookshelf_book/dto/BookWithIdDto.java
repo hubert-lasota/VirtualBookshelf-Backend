@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.bookshelf.dto;
+package org.hl.wirtualnyregalbackend.bookshelf_book.dto;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.validation.Valid;

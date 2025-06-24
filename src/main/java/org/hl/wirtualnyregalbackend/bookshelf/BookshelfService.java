@@ -7,7 +7,7 @@ import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfCreateDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfUpdateDto;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
-import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfBook;
+import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBook;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
 import org.hl.wirtualnyregalbackend.bookshelf_book.BookshelfBookService;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookMutationDto;

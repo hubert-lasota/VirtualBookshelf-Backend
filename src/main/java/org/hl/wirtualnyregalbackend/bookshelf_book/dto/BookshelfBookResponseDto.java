@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
-import org.hl.wirtualnyregalbackend.bookshelf.entity.BookReadingStatus;
+import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookReadingStatus;
 import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 
 import java.time.Instant;

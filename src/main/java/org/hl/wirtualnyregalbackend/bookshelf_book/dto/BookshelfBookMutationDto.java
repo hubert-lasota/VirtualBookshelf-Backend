@@ -4,8 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.BookWithIdDto;
-import org.hl.wirtualnyregalbackend.bookshelf.entity.BookReadingStatus;
+import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookReadingStatus;
 import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 

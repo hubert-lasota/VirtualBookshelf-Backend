@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.bookshelf.entity;
+package org.hl.wirtualnyregalbackend.bookshelf_book.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

@@ -19,5 +19,4 @@ public class BookshelfHelper {
         return bookshelfOpt.orElseThrow(() -> new EntityNotFoundException("Not found Bookshelf with id = %d".formatted(bookshelfId)));
     }
 
-
 }

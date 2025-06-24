@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.bookshelf.entity;
+package org.hl.wirtualnyregalbackend.bookshelf_book.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
+import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.common.model.RangeDate;

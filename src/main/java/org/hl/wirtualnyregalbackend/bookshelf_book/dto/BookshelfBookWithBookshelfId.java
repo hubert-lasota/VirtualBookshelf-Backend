@@ -2,8 +2,7 @@ package org.hl.wirtualnyregalbackend.bookshelf_book.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.BookWithIdDto;
-import org.hl.wirtualnyregalbackend.bookshelf.entity.BookReadingStatus;
+import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookReadingStatus;
 import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 
 import java.util.List;
