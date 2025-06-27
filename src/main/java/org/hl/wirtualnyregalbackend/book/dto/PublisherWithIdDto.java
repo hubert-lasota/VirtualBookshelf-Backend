@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.book.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
@@ -21,6 +22,7 @@ public class PublisherWithIdDto {
     @Valid
     private PublisherMutationDto publisherDto;
 
+    @JsonIgnore
     @AssertTrue(message = "Provide either publisher ID or publisher details.")
     public boolean isValid() {
         return (id != null) && (publisherDto != null);

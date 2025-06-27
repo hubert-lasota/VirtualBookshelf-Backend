@@ -3,11 +3,12 @@ package org.hl.wirtualnyregalbackend.bookshelf_book;
 import org.hl.wirtualnyregalbackend.book.BookMapper;
 import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
-import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBook;
-import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBookNote;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookNoteDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookResponseDto;
+import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBook;
+import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBookNote;
+import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,9 +36,13 @@ public class BookshelfBookMapper {
         );
     }
 
-    public static BookshelfBookResponseDto toBookshelfBookResponseDto(BookshelfBook bookshelfBook, Locale locale) {
-        BookResponseDto book = BookMapper.toBookResponseDto(bookshelfBook.getBook(), locale);
-        List<BookshelfBookNoteDto> notes = bookshelfBook.getNotes()
+    public static BookshelfBookResponseDto toBookshelfBookResponseDto(BookshelfBook bookshelfBook,
+                                                                      ReviewStats stats,
+                                                                      Locale locale) {
+        BookResponseDto book = BookMapper.toBookResponseDto(bookshelfBook.getBook(), stats, locale);
+
+        List<BookshelfBookNoteDto> notes = bookshelfBook
+            .getNotes()
             .stream()
             .map(BookshelfBookMapper::toBookshelfBookNoteDto)
             .toList();

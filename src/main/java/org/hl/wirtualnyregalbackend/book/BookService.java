@@ -12,11 +12,13 @@ import org.hl.wirtualnyregalbackend.book_cover.BookCoverService;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_format.BookFormatService;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
+import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
 import org.hl.wirtualnyregalbackend.book_series.BookSeriesMapper;
 import org.hl.wirtualnyregalbackend.book_series.BookSeriesService;
 import org.hl.wirtualnyregalbackend.book_series.entity.BookSeries;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
+import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
 import org.hl.wirtualnyregalbackend.genre.GenreService;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.publisher.PublisherService;
@@ -55,12 +57,12 @@ public class BookService {
     private final GenreService genreService;
     private final AuthorService authorService;
     private final PublisherService publisherService;
+    private final BookReviewService bookReviewService;
 
 
     public BookResponseDto createBook(BookMutationDto bookMutationDto, MultipartFile coverFile) {
         Book book = createBookEntity(bookMutationDto, coverFile);
-        Locale locale = LocaleContextHolder.getLocale();
-        return BookMapper.toBookResponseDto(book, locale);
+        return mapToBookResponseDto(book, null);
     }
 
     public Book createBookEntity(BookMutationDto bookDto, MultipartFile coverFile) {
@@ -102,8 +104,23 @@ public class BookService {
             .or(BookSpecification.isbnEqual(query));
 
         Page<Book> bookPage = bookRepository.findAll(spec, pageable);
-        Locale locale = LocaleContextHolder.getLocale();
-        Page<BookResponseDto> responsePage = bookPage.map(book -> BookMapper.toBookResponseDto(book, locale));
+
+        List<Long> bookIds = bookPage
+            .getContent()
+            .stream()
+            .map(Book::getId)
+            .toList();
+
+        List<ReviewStats> reviewStats = bookReviewService.getBookReviewStatsByBookIds(bookIds);
+        Page<BookResponseDto> responsePage = bookPage.map(book -> {
+            ReviewStats stats = reviewStats
+                .stream()
+                .filter(s -> book.getId().equals(s.entityId()))
+                .findFirst()
+                .orElseThrow();
+
+            return mapToBookResponseDto(book, stats);
+        });
         return new PageResponseDto<>(responsePage, "books");
     }
 
@@ -111,11 +128,8 @@ public class BookService {
         Book book = findBookById(bookId);
         BookFoundEvent event = new BookFoundEvent(book, user);
         eventPublisher.publishEvent(event);
-
-        Locale locale = LocaleContextHolder.getLocale();
-        return BookMapper.toBookResponseDto(book, locale);
+        return mapToBookResponseDto(book);
     }
-
 
     @Transactional
     public BookResponseDto updateBook(Long bookId,
@@ -185,8 +199,7 @@ public class BookService {
         BookCover cover = bookCoverService.createBookCover(bookDto.getCoverUrl(), coverFile);
         book.setCover(cover);
 
-        Locale locale = LocaleContextHolder.getLocale();
-        return BookMapper.toBookResponseDto(book, locale);
+        return mapToBookResponseDto(book);
     }
 
 
@@ -210,12 +223,23 @@ public class BookService {
     }
 
     private List<BookSeriesBook> findOrCreateSeries(List<BookSeriesAssignmentDto> bookSeriesDtos) {
-        return bookSeriesDtos.stream()
+        return bookSeriesDtos
+            .stream()
             .map(seriesDto -> {
                 BookSeries bookSeries = bookSeriesService.findOrCreateBookSeries(seriesDto.getId(), seriesDto.getBookSeriesDto());
                 return BookSeriesMapper.toBookSeriesBookAssociation(bookSeries, seriesDto);
             })
             .toList();
+    }
+
+    private BookResponseDto mapToBookResponseDto(Book book) {
+        ReviewStats stats = bookReviewService.getBookReviewStats(book.getId());
+        return mapToBookResponseDto(book, stats);
+    }
+
+    private BookResponseDto mapToBookResponseDto(Book book, ReviewStats stats) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return BookMapper.toBookResponseDto(book, stats, locale);
     }
 
 }

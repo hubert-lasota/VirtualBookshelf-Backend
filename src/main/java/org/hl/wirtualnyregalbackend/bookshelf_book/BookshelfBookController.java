@@ -1,8 +1,10 @@
 package org.hl.wirtualnyregalbackend.bookshelf_book;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookWithBookshelfId;
+import org.hl.wirtualnyregalbackend.bookshelf_book.dto.MoveBookshelfBookDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.springframework.http.MediaType;
@@ -54,6 +56,28 @@ public class BookshelfBookController {
     @PreAuthorize("hasPermission(#bookshelfBookId, 'BOOKSHELF_BOOK', 'DELETE')")
     public ResponseEntity<?> updateBookshelfBook(@PathVariable Long bookshelfBookId, @RequestBody @Validated(UpdateGroup.class) BookshelfBookWithBookshelfId bookshelfBookDto) {
         var response = bookshelfBookService.updateBookshelfBook(bookshelfBookId, bookshelfBookDto);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{bookshelfBookId}/move")
+    @PreAuthorize("hasPermission(#request.bookshelfId, 'BOOKSHELF', 'UPDATE')")
+    public ResponseEntity<?> moveBookshelfBook(@PathVariable Long bookshelfBookId,
+                                               @Valid @RequestBody MoveBookshelfBookDto request) {
+        var response = bookshelfBookService.moveBookshelfBook(bookshelfBookId, request.bookshelfId());
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{bookshelfBookId}/read")
+    @PreAuthorize("hasPermission(#bookshelfBookId, 'BOOKSHELF', 'UPDATE')")
+    public ResponseEntity<?> markBookshelfBookAsRead(@PathVariable Long bookshelfBookId) {
+        var response = bookshelfBookService.markBookshelfBookAsRead(bookshelfBookId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{bookshelfBookId}/reading")
+    @PreAuthorize("hasPermission(#bookshelfBookId, 'BOOKSHELF_BOOK', 'UPDATE')")
+    public ResponseEntity<?> markBookshelfBookAsReading(@PathVariable Long bookshelfBookId) {
+        var response = bookshelfBookService.markBookshelfBookAsReading(bookshelfBookId);
         return ResponseEntity.ok(response);
     }
 

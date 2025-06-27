@@ -7,12 +7,14 @@ import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/v1/books")
@@ -23,9 +25,16 @@ class BookController {
 
     @PostMapping
     public ResponseEntity<?> createBook(@Validated(CreateGroup.class) @RequestPart("book") BookMutationDto bookMutationDto,
-                                        @RequestPart("cover") MultipartFile coverFile) {
+                                        @RequestPart("cover") MultipartFile coverFile,
+                                        UriComponentsBuilder uriBuilder) {
         var response = bookService.createBook(bookMutationDto, coverFile);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+        URI location = uriBuilder
+            .path("/v1/books/{}")
+            .buildAndExpand(response.getId())
+            .toUri();
+
+        return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping

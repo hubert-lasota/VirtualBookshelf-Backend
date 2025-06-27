@@ -21,7 +21,8 @@ public class BookFormatService {
 
     public List<BookFormatDto> findBookFormats() {
         Locale locale = LocaleContextHolder.getLocale();
-        return bookFormatRepository.findAll()
+        return bookFormatRepository
+            .findAll()
             .stream()
             .map(format -> BookFormatMapper.toBookFormatDto(format, locale))
             .toList();

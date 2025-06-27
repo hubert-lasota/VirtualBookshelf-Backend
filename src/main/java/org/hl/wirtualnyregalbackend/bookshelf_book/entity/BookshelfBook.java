@@ -64,6 +64,14 @@ public class BookshelfBook extends BaseEntity {
     }
 
 
+    public void read() {
+        this.status = BookReadingStatus.READ;
+    }
+
+    public void reading() {
+        this.status = BookReadingStatus.READING;
+    }
+
     public void setCurrentPage(Integer currentPage) {
         validateCurrentPage(currentPage);
         this.currentPage = currentPage;

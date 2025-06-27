@@ -19,7 +19,8 @@ class BookCoverController {
     @GetMapping(value = "/{id}", produces = "image/*")
     public ResponseEntity<?> findBookCoverById(@PathVariable Long id) {
         BookCoverBinary binary = bookCoverService.findBookCoverBinaryByCoverId(id);
-        return ResponseEntity.ok()
+        return ResponseEntity
+            .ok()
             .header("Content-Type", binary.getMimeType())
             .body(binary);
     }

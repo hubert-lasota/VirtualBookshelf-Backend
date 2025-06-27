@@ -12,6 +12,7 @@ import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
 import org.hl.wirtualnyregalbackend.book_series.BookSeriesMapper;
 import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesMutationDto;
+import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
@@ -52,7 +53,9 @@ public class BookMapper {
         );
     }
 
-    public static BookResponseDto toBookResponseDto(Book book, Locale locale) {
+    public static BookResponseDto toBookResponseDto(Book book,
+                                                    ReviewStats reviewStats,
+                                                    Locale locale) {
         BookFormat format = book.getFormat();
         BookFormatDto formatDto = format != null ? BookFormatMapper.toBookFormatDto(format, locale) : null;
 
@@ -63,7 +66,8 @@ public class BookMapper {
             publisherDto = new PublisherWithIdDto(publisher.getId(), publisherMutationDto);
         }
 
-        List<AuthorWithIdDto> authors = book.getAuthors()
+        List<AuthorWithIdDto> authors = book
+            .getAuthors()
             .stream()
             .map((author) -> {
                 AuthorMutationDto dto = AuthorMapper.toAuthorMutationDto(author);
@@ -71,12 +75,14 @@ public class BookMapper {
             })
             .toList();
 
-        List<GenreResponseDto> genres = book.getGenres()
+        List<GenreResponseDto> genres = book
+            .getGenres()
             .stream()
             .map(genre -> GenreMapper.toGenreResponseDto(genre, locale))
             .toList();
 
-        List<BookSeriesAssignmentDto> series = book.getBookSeriesBooks()
+        List<BookSeriesAssignmentDto> series = book
+            .getBookSeriesBooks()
             .stream()
             .map((bookSeries) -> {
                 BookSeriesMutationDto dto = BookSeriesMapper.toBookSeriesMutationDto(bookSeries);
@@ -102,7 +108,8 @@ public class BookMapper {
             book.getId(),
             formatDto,
             book.getCreatedAt(),
-            book.getUpdatedAt()
+            book.getUpdatedAt(),
+            reviewStats
         );
     }
 

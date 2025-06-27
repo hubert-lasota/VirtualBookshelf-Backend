@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.book.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
@@ -25,6 +26,7 @@ public class BookSeriesAssignmentDto {
     @Min(0)
     private Integer bookOrder;
 
+    @JsonIgnore
     @AssertTrue(message = "Provide either book series ID or book series details.")
     public boolean isValid() {
         return (id != null) && (bookSeriesDto != null);
