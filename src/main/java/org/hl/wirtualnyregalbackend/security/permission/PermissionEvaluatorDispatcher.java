@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.security.permission;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class PermissionEvaluatorDispatcher implements PermissionEvaluator {
 
     private final Map<ResourceType, ResourcePermissionEvaluator> evaluators = new HashMap<>();
@@ -34,6 +36,7 @@ public class PermissionEvaluatorDispatcher implements PermissionEvaluator {
         ResourcePermissionEvaluator evaluator = evaluators.get(resourceType);
         String permissionStr = (String) permission;
         ActionType actionType = ActionType.fromString(permissionStr);
+        log.debug("Permission evaluator for resource type: {}, action type: {}, using evaluator: {}", resourceType, actionType, evaluator.getClass().getSimpleName());
         return evaluator.hasPermission(authentication, targetId, actionType);
     }
 

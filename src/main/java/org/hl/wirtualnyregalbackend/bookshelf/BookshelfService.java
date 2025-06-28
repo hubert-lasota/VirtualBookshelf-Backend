@@ -2,6 +2,7 @@ package org.hl.wirtualnyregalbackend.bookshelf;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
@@ -21,9 +22,8 @@ import java.util.Locale;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
+@Slf4j
 public class BookshelfService {
-
-    private final static Logger log = LoggerFactory.getLogger(BookshelfService.class);
 
     private final BookshelfRepository bookshelfRepository;
     private final BookshelfHelper bookshelfHelper;

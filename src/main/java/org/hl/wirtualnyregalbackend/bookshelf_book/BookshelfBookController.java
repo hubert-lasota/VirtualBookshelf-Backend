@@ -68,7 +68,7 @@ public class BookshelfBookController {
     }
 
     @PatchMapping("/{bookshelfBookId}/read")
-    @PreAuthorize("hasPermission(#bookshelfBookId, 'BOOKSHELF', 'UPDATE')")
+    @PreAuthorize("hasPermission(#bookshelfBookId, 'BOOKSHELF_BOOK', 'UPDATE')")
     public ResponseEntity<?> markBookshelfBookAsRead(@PathVariable Long bookshelfBookId) {
         var response = bookshelfBookService.markBookshelfBookAsRead(bookshelfBookId);
         return ResponseEntity.ok(response);

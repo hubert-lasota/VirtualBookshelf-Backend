@@ -111,12 +111,18 @@ public class BookshelfBookService {
         return mapToBookshelfBookResponseDto(book);
     }
 
+    public BookshelfBook findBookshelfBookEntityId(Long bookshelfBookId) throws EntityNotFoundException {
+        Optional<BookshelfBook> bookOpt = bookshelfBookId != null ? bookshelfBookRepository.findById(bookshelfBookId) : Optional.empty();
+        return bookOpt.orElseThrow(() -> new EntityNotFoundException("BookshelfBook with id: %d not found".formatted(bookshelfBookId)));
+    }
+
     @Transactional
     public void deleteBookshelfBook(Long bookshelfBookId) {
         BookshelfBook bookshelfBook = findBookshelfBookEntityId(bookshelfBookId);
+        Bookshelf bookshelf = bookshelfBook.getBookshelf();
+        bookshelf.removeBookshelfBook(bookshelfBook.getId());
         // TOdo add event
         Book book = bookshelfBook.getBook();
-        bookshelfBookRepository.delete(bookshelfBook);
     }
 
 
@@ -125,10 +131,6 @@ public class BookshelfBookService {
             .orElseGet(() -> bookService.createBookEntity(bookDto, cover));
     }
 
-    private BookshelfBook findBookshelfBookEntityId(Long bookshelfBookId) throws EntityNotFoundException {
-        Optional<BookshelfBook> bookOpt = bookshelfBookId != null ? bookshelfBookRepository.findById(bookshelfBookId) : Optional.empty();
-        return bookOpt.orElseThrow(() -> new EntityNotFoundException("BookshelfBook with id: %d not found".formatted(bookshelfBookId)));
-    }
 
     private BookshelfBookResponseDto mapToBookshelfBookResponseDto(BookshelfBook bookshelfBook) {
         ReviewStats stats = bookReviewService.getBookReviewStats(bookshelfBook.getBook().getId());
