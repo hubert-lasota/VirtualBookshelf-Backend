@@ -11,9 +11,6 @@ import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -45,22 +42,16 @@ public class BookshelfBook extends BaseEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @OneToMany(mappedBy = "bookshelfBook")
-    private List<BookshelfBookNote> notes = new ArrayList<>();
-
 
     public BookshelfBook(Integer currentPage,
                          Book book,
                          RangeDate rangeDate,
-                         BookReadingStatus status,
-                         List<BookshelfBookNote> notes) {
+                         BookReadingStatus status) {
         this.book = Objects.requireNonNull(book, "book cannot be null.");
         this.rangeDate = rangeDate;
         this.currentPage = validateCurrentPage(currentPage);
         this.progressPercentage = calculateProgressPercentage(currentPage);
         this.status = status;
-        notes.forEach(note -> note.setBookshelfBook(this));
-        this.notes = notes;
     }
 
 
@@ -76,10 +67,6 @@ public class BookshelfBook extends BaseEntity {
         validateCurrentPage(currentPage);
         this.currentPage = currentPage;
         this.progressPercentage = calculateProgressPercentage(currentPage);
-    }
-
-    public List<BookshelfBookNote> getNotes() {
-        return Collections.unmodifiableList(notes);
     }
 
     private Integer validateCurrentPage(Integer currentPage) {

@@ -8,7 +8,6 @@ import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookReadingStatus;
 import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 
 import java.time.Instant;
-import java.util.List;
 
 @JsonPropertyOrder({"id"})
 public class BookshelfBookResponseDto extends BaseBookshelfBookDto {
@@ -33,13 +32,12 @@ public class BookshelfBookResponseDto extends BaseBookshelfBookDto {
     public BookshelfBookResponseDto(Integer currentPage,
                                     BookReadingStatus status,
                                     RangeDate rangeDate,
-                                    List<BookshelfBookNoteDto> notes,
                                     Long id,
                                     Integer progressPercentage,
                                     BookResponseDto book,
                                     Instant createdAt,
                                     Instant updatedAt) {
-        super(currentPage, status, rangeDate, notes);
+        super(currentPage, status, rangeDate);
         this.id = id;
         this.progressPercentage = progressPercentage;
         this.book = book;

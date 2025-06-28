@@ -83,8 +83,7 @@ public class BookshelfBookController {
 
     @DeleteMapping("/{bookshelfBookId}")
     @PreAuthorize("hasPermission(#bookshelfBookId, 'BOOKSHELF_BOOK', 'DELETE')")
-    public ResponseEntity<?> deleteBookshelfBook(
-        @PathVariable Long bookshelfBookId) {
+    public ResponseEntity<?> deleteBookshelfBook(@PathVariable Long bookshelfBookId) {
         bookshelfBookService.deleteBookshelfBook(bookshelfBookId);
         return ResponseEntity.noContent().build();
     }

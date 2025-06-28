@@ -13,11 +13,14 @@ public class PermissionEvaluatorDispatcher implements PermissionEvaluator {
 
     private final Map<ResourceType, ResourcePermissionEvaluator> evaluators = new HashMap<>();
 
-    PermissionEvaluatorDispatcher(BookReviewPermissionEvaluator bookReviewPermissionEvaluator,
-                                  BookshelfPermissionEvaluator bookshelfPermissionEvaluator) {
+    PermissionEvaluatorDispatcher(
+        BookReviewPermissionEvaluator bookReviewPermissionEvaluator,
+        BookshelfPermissionEvaluator bookshelfPermissionEvaluator,
+        BookshelfBookPermissionEvaluator bookshelfBookPermissionEvaluator
+    ) {
         evaluators.put(ResourceType.BOOK_REVIEW, bookReviewPermissionEvaluator);
         evaluators.put(ResourceType.BOOKSHELF, bookshelfPermissionEvaluator);
-
+        evaluators.put(ResourceType.BOOKSHELF_BOOK, bookshelfBookPermissionEvaluator);
     }
 
     @Override

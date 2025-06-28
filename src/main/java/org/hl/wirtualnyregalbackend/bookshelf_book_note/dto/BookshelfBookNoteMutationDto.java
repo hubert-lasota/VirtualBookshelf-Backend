@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.bookshelf_book.dto;
+package org.hl.wirtualnyregalbackend.bookshelf_book_note.dto;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
@@ -9,7 +9,7 @@ import org.hl.wirtualnyregalbackend.common.validation.NotAllFieldsNull;
 import org.hl.wirtualnyregalbackend.common.validation.StringConstraints;
 
 @NotAllFieldsNull
-public record BookshelfBookNoteDto(
+public record BookshelfBookNoteMutationDto(
 
     @NotNull(groups = CreateGroup.class)
     @StringConstraints

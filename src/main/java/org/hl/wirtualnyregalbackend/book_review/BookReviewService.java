@@ -16,7 +16,11 @@ public class BookReviewService {
 
 
     public ReviewStats getBookReviewStats(Long bookId) {
-        return getBookReviewStatsByBookIds(List.of(bookId)).get(0);
+        List<ReviewStats> stats = getBookReviewStatsByBookIds(List.of(bookId));
+        if (stats.isEmpty()) {
+            return null;
+        }
+        return stats.get(0);
     }
 
     public List<ReviewStats> getBookReviewStatsByBookIds(List<Long> bookIds) {

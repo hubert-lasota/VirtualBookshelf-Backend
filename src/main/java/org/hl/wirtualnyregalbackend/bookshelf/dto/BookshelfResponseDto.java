@@ -1,43 +1,18 @@
 package org.hl.wirtualnyregalbackend.bookshelf.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.Getter;
-import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookResponseDto;
 
 import java.time.Instant;
 import java.util.List;
 
-@JsonPropertyOrder({"id"})
-public class BookshelfResponseDto extends BaseBookshelfDto {
-
-    @JsonProperty
-    @Getter
-    private final Long id;
-
-    @JsonProperty
-    private final List<BookshelfBookResponseDto> books;
-
-    @JsonProperty
-    private final Instant createdAt;
-
-    @JsonProperty
-    private final Instant updatedAt;
-
-
-    public BookshelfResponseDto(String name,
-                                BookshelfType type,
-                                String description,
-                                Long id,
-                                List<BookshelfBookResponseDto> books,
-                                Instant createdAt,
-                                Instant updatedAt) {
-        super(name, type, description);
-        this.id = id;
-        this.books = books;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
+public record BookshelfResponseDto(
+    Long id,
+    @JsonUnwrapped
+    BookshelfMutationDto dto,
+    List<BookshelfBookResponseDto> books,
+    Instant createdAt,
+    Instant updatedAt
+) {
 }
+
