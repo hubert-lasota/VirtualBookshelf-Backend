@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.bookshelf_book_note.dto;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class NoteWithBookshelfBookIdDto {
 
     @NotNull
     @Valid
+    @JsonUnwrapped
     private BookshelfBookNoteMutationDto noteDto;
-
 
 }

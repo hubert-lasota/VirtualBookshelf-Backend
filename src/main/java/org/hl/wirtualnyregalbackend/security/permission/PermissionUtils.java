@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.security.permission;
 
 import org.springframework.security.core.Authentication;
 
-public class PermissionUtils {
+class PermissionUtils {
 
     private PermissionUtils() {
     }

@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.bookshelf_book_note.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -28,6 +29,7 @@ public record BookshelfBookNoteMutationDto(
     @Min(1)
     Integer endPage) {
 
+    @JsonIgnore
     @AssertTrue(message = "Start page cannot be greater than end page")
     public boolean isValid() {
         if (startPage != null && endPage != null) {

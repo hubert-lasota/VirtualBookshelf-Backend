@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/bookshelf-book-notes")
@@ -47,7 +48,9 @@ class BookshelfBookNoteController {
 
     @GetMapping
     public ResponseEntity<?> findBookshelfBookNotes(@RequestParam Long bookshelfBookId) {
-        return ResponseEntity.ok(noteService.findBookshelfBookNotes(bookshelfBookId));
+        var response = noteService.findBookshelfBookNotes(bookshelfBookId);
+        Map<String, Object> responseMap = Map.of("notes", response);
+        return ResponseEntity.ok(responseMap);
     }
 
     @PatchMapping("/{noteId}")

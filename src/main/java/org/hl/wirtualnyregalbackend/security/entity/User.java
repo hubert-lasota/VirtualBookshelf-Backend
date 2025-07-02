@@ -1,6 +1,9 @@
 package org.hl.wirtualnyregalbackend.security.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.user.entity.UserProfile;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,6 +13,8 @@ import java.util.*;
 
 @Entity
 @Table(name = "users")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity implements UserDetails {
 
     @Column
@@ -23,10 +28,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Authority> authorities = new ArrayList<>();
-
-
-    protected User() {
-    }
 
     public User(String username, String password, Authority... authorities) {
         this.username = username;
@@ -43,10 +44,6 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public String getUsername() {
         return username;
-    }
-
-    public UserProfile getUserProfile() {
-        return userProfile;
     }
 
     @Override

@@ -11,7 +11,6 @@ import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookWithIdDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookResponseDto;
-import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookWithBookshelfId;
 import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookReadingStatus;
 import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBook;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
@@ -36,8 +35,8 @@ public class BookshelfBookService {
     private final BookService bookService;
     private final BookReviewService bookReviewService;
 
-    public BookshelfBookResponseDto createBookshelfBook(BookshelfBookWithBookshelfId bookshelfBookDto, MultipartFile bookCover) {
-        Bookshelf bookshelf = bookshelfHelper.findBookshelfById(bookshelfBookDto.getBookshelfId());
+    public BookshelfBookResponseDto createBookshelfBook(Long bookshelfId, BookshelfBookMutationDto bookshelfBookDto, MultipartFile bookCover) {
+        Bookshelf bookshelf = bookshelfHelper.findBookshelfById(bookshelfId);
         BookshelfBook bookshelfBook = createBookshelfBookEntity(bookshelfBookDto, bookCover);
         bookshelfBook.setBookshelf(bookshelf);
         bookshelfBookRepository.save(bookshelfBook);
@@ -51,7 +50,7 @@ public class BookshelfBookService {
         return BookshelfBookMapper.toBookshelfBook(bookshelfBookDto, book);
     }
 
-    public BookshelfBookResponseDto updateBookshelfBook(Long bookshelfBookId, BookshelfBookWithBookshelfId bookshelfBookDto) {
+    public BookshelfBookResponseDto updateBookshelfBook(Long bookshelfBookId, BookshelfBookMutationDto bookshelfBookDto) {
         BookshelfBook bookshelfBook = findBookshelfBookEntityId(bookshelfBookId);
         updateBookshelfBook(bookshelfBook, bookshelfBookDto);
         bookshelfBookRepository.save(bookshelfBook);
