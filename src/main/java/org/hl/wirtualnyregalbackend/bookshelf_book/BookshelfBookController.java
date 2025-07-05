@@ -8,15 +8,18 @@ import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookWithBookshel
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.MoveBookshelfBookDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/bookshelf-books")
@@ -51,6 +54,13 @@ public class BookshelfBookController {
     public ResponseEntity<?> findBookshelfBook(@PathVariable Long bookshelfBookId) {
         var response = bookshelfBookService.findBookshelfBookById(bookshelfBookId);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> findCurrentUserBookshelfBooks(@AuthenticationPrincipal User user) {
+        var response = bookshelfBookService.findUserBookshelfBooks(user);
+        Map<String, Object> responseMap = Map.of("books", response);
+        return ResponseEntity.ok(responseMap);
     }
 
     @PatchMapping("/{bookshelfBookId}")

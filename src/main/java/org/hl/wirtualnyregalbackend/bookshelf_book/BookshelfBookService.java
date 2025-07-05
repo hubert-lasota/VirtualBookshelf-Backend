@@ -6,16 +6,18 @@ import org.hl.wirtualnyregalbackend.book.BookService;
 import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
-import org.hl.wirtualnyregalbackend.bookshelf.BookshelfHelper;
+import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookWithIdDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookReadingStatus;
 import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBook;
+import org.hl.wirtualnyregalbackend.bookshelf_book_note.BookshelfBookNoteHelper;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,12 +33,13 @@ import java.util.function.Consumer;
 public class BookshelfBookService {
 
     private final BookshelfBookRepository bookshelfBookRepository;
-    private final BookshelfHelper bookshelfHelper;
+    private final BookshelfService bookshelfService;
     private final BookService bookService;
     private final BookReviewService bookReviewService;
+    private final BookshelfBookNoteHelper noteHelper;
 
     public BookshelfBookResponseDto createBookshelfBook(Long bookshelfId, BookshelfBookMutationDto bookshelfBookDto, MultipartFile bookCover) {
-        Bookshelf bookshelf = bookshelfHelper.findBookshelfById(bookshelfId);
+        Bookshelf bookshelf = bookshelfService.findBookshelfById(bookshelfId);
         BookshelfBook bookshelfBook = createBookshelfBookEntity(bookshelfBookDto, bookCover);
         bookshelfBook.setBookshelf(bookshelf);
         bookshelfBookRepository.save(bookshelfBook);
@@ -75,7 +78,7 @@ public class BookshelfBookService {
     }
 
     public BookshelfBookResponseDto moveBookshelfBook(Long bookshelfBookId, Long bookshelfId) {
-        Bookshelf bookshelf = bookshelfHelper.findBookshelfById(bookshelfId);
+        Bookshelf bookshelf = bookshelfService.findBookshelfById(bookshelfId);
         BookshelfBook bookshelfBook = findBookshelfBookEntityId(bookshelfBookId);
         bookshelfBook.setBookshelf(bookshelf);
         bookshelfBookRepository.save(bookshelfBook);
@@ -97,9 +100,9 @@ public class BookshelfBookService {
         return mapToBookshelfBookResponseDto(book);
     }
 
-    public List<BookshelfBookResponseDto> findBookshelfBooks(Long bookshelfId) {
-        List<BookshelfBook> books = bookshelfBookRepository.findBookshelfBookByBookshelfId(bookshelfId);
-        return books
+    public List<BookshelfBookResponseDto> findUserBookshelfBooks(User user) {
+        return bookshelfBookRepository
+            .findBookshelfBooksByUserId(user.getId())
             .stream()
             .map(this::mapToBookshelfBookResponseDto)
             .toList();
@@ -118,8 +121,7 @@ public class BookshelfBookService {
     @Transactional
     public void deleteBookshelfBook(Long bookshelfBookId) {
         BookshelfBook bookshelfBook = findBookshelfBookEntityId(bookshelfBookId);
-        Bookshelf bookshelf = bookshelfBook.getBookshelf();
-        bookshelf.removeBookshelfBook(bookshelfBook.getId());
+        bookshelfBookRepository.delete(bookshelfBook);
         // TOdo add event
         Book book = bookshelfBook.getBook();
     }
@@ -133,8 +135,9 @@ public class BookshelfBookService {
 
     private BookshelfBookResponseDto mapToBookshelfBookResponseDto(BookshelfBook bookshelfBook) {
         ReviewStats stats = bookReviewService.getBookReviewStats(bookshelfBook.getBook().getId());
+        Long totalNotes = noteHelper.getTotalNotes(bookshelfBook.getId());
         Locale locale = LocaleContextHolder.getLocale();
-        return BookshelfBookMapper.toBookshelfBookResponseDto(bookshelfBook, stats, locale);
+        return BookshelfBookMapper.toBookshelfBookResponseDto(bookshelfBook, stats, totalNotes, locale);
     }
 
 }

@@ -10,7 +10,10 @@ import java.util.List;
 @Repository
 interface BookshelfBookRepository extends JpaRepository<BookshelfBook, Long> {
 
-    @Query("select b from BookshelfBook b where b.bookshelf.id = :bookshelfId")
-    List<BookshelfBook> findBookshelfBookByBookshelfId(Long bookshelfId);
+    @Query("select count(b) from BookshelfBook b where b.bookshelf.id = :bookshelfId")
+    Long countBooks(Long bookshelfId);
+
+    @Query("select b from BookshelfBook b where b.bookshelf.user.id = :userId")
+    List<BookshelfBook> findBookshelfBooksByUserId(Long userId);
 
 }

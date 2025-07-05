@@ -23,6 +23,12 @@ public class BookshelfBookResponseDto extends BaseBookshelfBookDto {
     private final BookResponseDto book;
 
     @JsonProperty
+    private final BookshelfHeaderResponseDto bookshelf;
+
+    @JsonProperty
+    private final Long totalNotes;
+
+    @JsonProperty
     private final Instant createdAt;
 
     @JsonProperty
@@ -35,12 +41,16 @@ public class BookshelfBookResponseDto extends BaseBookshelfBookDto {
                                     Long id,
                                     Integer progressPercentage,
                                     BookResponseDto book,
+                                    BookshelfHeaderResponseDto bookshelf,
+                                    Long totalNotes,
                                     Instant createdAt,
                                     Instant updatedAt) {
         super(currentPage, status, rangeDate);
         this.id = id;
         this.progressPercentage = progressPercentage;
         this.book = book;
+        this.bookshelf = bookshelf;
+        this.totalNotes = totalNotes;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

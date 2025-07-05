@@ -13,4 +13,7 @@ interface BookshelfBookNoteRepository extends JpaRepository<BookshelfBookNote, L
     @Query("select note from BookshelfBookNote note where note.bookshelfBook.id = :bookshelfBookId")
     List<BookshelfBookNote> findBookshelfBookNotesByBookshelfBookId(Long bookshelfBookId);
 
+    @Query("select count(n) from BookshelfBookNote n where n.bookshelfBook.id = :bookshelfBookId")
+    Long countNotes(Long bookshelfBookId);
+
 }

@@ -8,8 +8,8 @@ import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
-import org.hl.wirtualnyregalbackend.bookshelf_book.BookshelfBookService;
-import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookResponseDto;
+import org.hl.wirtualnyregalbackend.bookshelf_book.BookshelfBookHelper;
+import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -24,8 +25,7 @@ import java.util.Locale;
 public class BookshelfService {
 
     private final BookshelfRepository bookshelfRepository;
-    private final BookshelfHelper bookshelfHelper;
-    private final BookshelfBookService bookshelfBookService;
+    private final BookshelfBookHelper bookshelfBookHelper;
     private final BookReviewService bookReviewService;
 
 
@@ -59,7 +59,7 @@ public class BookshelfService {
 
 
     public BookshelfResponseDto updateBookshelf(Long id, BookshelfMutationDto bookshelfDto) {
-        Bookshelf bookshelf = bookshelfHelper.findBookshelfById(id);
+        Bookshelf bookshelf = findBookshelfById(id);
 
         String name = bookshelfDto.name();
         if (name != null) {
@@ -96,10 +96,15 @@ public class BookshelfService {
         return bookshelfRepository.isUserBookshelfAuthor(bookshelfId, userId);
     }
 
+    public Bookshelf findBookshelfById(Long bookshelfId) throws EntityNotFoundException {
+        Optional<Bookshelf> bookshelfOpt = bookshelfId != null ? bookshelfRepository.findById(bookshelfId) : Optional.empty();
+        return bookshelfOpt.orElseThrow(() -> new EntityNotFoundException("Not found Bookshelf with id = %d".formatted(bookshelfId)));
+    }
+
 
     private BookshelfResponseDto mapToBookshelfResponseDto(Bookshelf bookshelf) {
-        List<BookshelfBookResponseDto> books = bookshelfBookService.findBookshelfBooks(bookshelf.getId());
-        return BookshelfMapper.toBookshelfResponseDto(bookshelf, books);
+        Long totalBooks = bookshelfBookHelper.getTotalBooks(bookshelf.getId());
+        return BookshelfMapper.toBookshelfResponseDto(bookshelf, totalBooks);
     }
 
 }
