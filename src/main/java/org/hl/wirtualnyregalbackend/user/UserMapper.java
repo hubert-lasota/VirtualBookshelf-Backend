@@ -12,9 +12,9 @@ public class UserMapper {
     private UserMapper() {
     }
 
-    public static UserHeaderResponseDto toUserHeaderResponse(User user) {
-        String profilePictureUrl = user.getUserProfile().getProfilePicture().getUrl();
-        return new UserHeaderResponseDto(user.getId(), user.getUsername(), profilePictureUrl);
+    public static UserHeaderResponseDto toUserHeaderResponseDto(User user) {
+        UserProfileDto profile = toUserProfileDto(user.getUserProfile());
+        return new UserHeaderResponseDto(user.getId(), user.getUsername(), profile);
     }
 
     public static UserSignInResponseDto toUserSignInResponseDto(User user, String jwt) {

@@ -16,7 +16,6 @@ import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
 import org.hl.wirtualnyregalbackend.book_series.BookSeriesMapper;
 import org.hl.wirtualnyregalbackend.book_series.BookSeriesService;
 import org.hl.wirtualnyregalbackend.book_series.entity.BookSeries;
-import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
 import org.hl.wirtualnyregalbackend.genre.GenreService;
@@ -51,6 +50,7 @@ public class BookService {
 
     private final ApplicationEventPublisher eventPublisher;
     private final BookRepository bookRepository;
+    private final BookHelper bookHelper;
     private final BookFormatService bookFormatService;
     private final BookCoverService bookCoverService;
     private final BookSeriesService bookSeriesService;
@@ -125,7 +125,7 @@ public class BookService {
     }
 
     public BookResponseDto findBookById(Long bookId, User user) {
-        Book book = findBookById(bookId);
+        Book book = bookHelper.findBookById(bookId);
         BookFoundEvent event = new BookFoundEvent(book, user);
         eventPublisher.publishEvent(event);
         return mapToBookResponseDto(book);
@@ -135,7 +135,7 @@ public class BookService {
     public BookResponseDto updateBook(Long bookId,
                                       BookMutationDto bookDto,
                                       MultipartFile coverFile) {
-        Book book = findBookById(bookId);
+        Book book = bookHelper.findBookById(bookId);
         String isbn = bookDto.getIsbn();
         if (isbn != null) {
             book.setIsbn(isbn);
@@ -202,11 +202,6 @@ public class BookService {
         return mapToBookResponseDto(book);
     }
 
-
-    public Book findBookById(Long id) throws EntityNotFoundException {
-        return bookRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Book with id = '%d' not found.".formatted(id)));
-    }
 
     public Optional<Book> findBookOptById(@Nullable Long id) {
         if (id == null) {

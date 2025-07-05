@@ -11,10 +11,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static org.hl.wirtualnyregalbackend.security.SecurityConfig.EXCLUDED_PATHS;
 
 @Component
 @AllArgsConstructor
@@ -28,6 +31,13 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        for (String path : EXCLUDED_PATHS) {
+            AntPathRequestMatcher matcher = new AntPathRequestMatcher(path);
+            if (matcher.matches(request)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
 
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header == null || !header.startsWith("Bearer ")) {

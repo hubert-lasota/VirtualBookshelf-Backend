@@ -1,9 +1,12 @@
 package org.hl.wirtualnyregalbackend.common.review;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 
 @MappedSuperclass
 @Getter
@@ -13,9 +16,14 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 public abstract class Review extends BaseEntity {
 
     @Column
-    private Float rating;
+    protected Float rating;
 
     @Column
-    private String content;
+    protected String content;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id")
+    @Setter(AccessLevel.NONE)
+    protected User user;
 
 }

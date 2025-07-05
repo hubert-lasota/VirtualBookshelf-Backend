@@ -21,11 +21,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @AllArgsConstructor
-class SecurityConfig {
+public class SecurityConfig {
+    public static final List<String> EXCLUDED_PATHS = List.of("/v1/auth/**", "/v1/book-covers/**");
 
     private final JwtFilter jwtFilter;
 
@@ -33,15 +36,14 @@ class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
             .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(authorize -> {
+            .authorizeHttpRequests(authorize ->
                 authorize
-                    .requestMatchers("/v1/auth/**", "/v1/book-covers/**").permitAll()
-                    .anyRequest().authenticated();
-            })
-            .sessionManagement(session -> {
+                    .requestMatchers(EXCLUDED_PATHS.toArray(new String[0])).permitAll()
+                    .anyRequest().authenticated())
+            .sessionManagement(session ->
                 session
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-            })
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
     }

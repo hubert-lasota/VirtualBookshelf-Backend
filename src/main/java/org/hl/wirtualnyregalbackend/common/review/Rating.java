@@ -1,6 +1,7 @@
 package org.hl.wirtualnyregalbackend.common.review;
 
 import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,5 +16,7 @@ public @interface Rating {
     String message() default "Invalid rating";
 
     Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
 
 }

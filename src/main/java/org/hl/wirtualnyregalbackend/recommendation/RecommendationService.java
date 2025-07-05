@@ -1,13 +1,9 @@
 package org.hl.wirtualnyregalbackend.recommendation;
 
 import org.hl.wirtualnyregalbackend.book.BookService;
-import org.hl.wirtualnyregalbackend.book.entity.Book;
-import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 class RecommendationService {
@@ -26,8 +22,8 @@ class RecommendationService {
 
     @Async
     public void saveBookAndGenreRecommendationAsync(Long bookId, User user) {
-        Book book = bookService.findBookById(bookId);
-        Set<Genre> genres = book.getGenres();
+//        Book book = bookService.findBookById(bookId);
+//        Set<Genre> genres = book.getGenres();
 
     }
 
