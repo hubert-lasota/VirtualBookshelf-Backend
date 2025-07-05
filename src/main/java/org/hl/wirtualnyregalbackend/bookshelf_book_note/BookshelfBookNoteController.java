@@ -54,9 +54,8 @@ class BookshelfBookNoteController {
     }
 
     @PatchMapping("/{noteId}")
-    public ResponseEntity<?> updateBookshelfBookNote(@PathVariable Long noteId,
-                                                     @Validated(UpdateGroup.class) @RequestBody BookshelfBookNoteMutationDto noteDto) {
-        var response  = noteService.updateBookshelfBookNote(noteId, noteDto);
+    public ResponseEntity<?> updateBookshelfBookNote(@PathVariable Long noteId, @Validated(UpdateGroup.class) @RequestBody BookshelfBookNoteMutationDto noteDto) {
+        var response = noteService.updateBookshelfBookNote(noteId, noteDto);
         return ResponseEntity.ok(response);
     }
 

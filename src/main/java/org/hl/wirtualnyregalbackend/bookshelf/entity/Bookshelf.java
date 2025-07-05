@@ -1,9 +1,11 @@
 package org.hl.wirtualnyregalbackend.bookshelf.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBook;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 
@@ -30,8 +32,9 @@ public class Bookshelf extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Setter(AccessLevel.NONE) @Getter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "bookshelf", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE,  orphanRemoval = true)
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "bookshelf", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<BookshelfBook> books;
 
     public Bookshelf(String name, BookshelfType type, String description, User user) {
@@ -42,7 +45,7 @@ public class Bookshelf extends BaseEntity {
     }
 
     public void removeBookshelfBook(Long bookshelfBookId) {
-      this.books.removeIf((book) -> book.getId().equals(bookshelfBookId));
+        this.books.removeIf((book) -> book.getId().equals(bookshelfBookId));
     }
 
 }

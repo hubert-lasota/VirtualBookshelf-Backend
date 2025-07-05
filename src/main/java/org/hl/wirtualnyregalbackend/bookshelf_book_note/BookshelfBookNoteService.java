@@ -18,7 +18,7 @@ import java.util.Optional;
 public class BookshelfBookNoteService {
 
     private final BookshelfBookNoteRepository noteRepository;
-    private final BookshelfBookService  bookshelfBookService;
+    private final BookshelfBookService bookshelfBookService;
 
     public BookshelfBookNoteResponseDto createBookshelfBookNote(Long bookshelfBookId, BookshelfBookNoteMutationDto noteDto) {
         BookshelfBook book = bookshelfBookService.findBookshelfBookEntityId(bookshelfBookId);
