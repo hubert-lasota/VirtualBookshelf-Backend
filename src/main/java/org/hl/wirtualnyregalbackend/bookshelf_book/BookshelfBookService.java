@@ -19,6 +19,8 @@ import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -100,9 +102,14 @@ public class BookshelfBookService {
         return mapToBookshelfBookResponseDto(book);
     }
 
-    public List<BookshelfBookResponseDto> findUserBookshelfBooks(User user) {
+    public List<BookshelfBookResponseDto> findUserBookshelfBooks(User user, @Nullable String query) {
+        Specification<BookshelfBook> spec = BookshelfBookSpecification.byUser(user);
+        if (query != null) {
+            spec = spec.and(BookshelfBookSpecification.byQuery(query));
+        }
+
         return bookshelfBookRepository
-            .findBookshelfBooksByUserId(user.getId())
+            .findAll(spec)
             .stream()
             .map(this::mapToBookshelfBookResponseDto)
             .toList();
@@ -121,6 +128,7 @@ public class BookshelfBookService {
     @Transactional
     public void deleteBookshelfBook(Long bookshelfBookId) {
         BookshelfBook bookshelfBook = findBookshelfBookEntityId(bookshelfBookId);
+        noteHelper.deleteNotesByBookshelfBookId(bookshelfBookId);
         bookshelfBookRepository.delete(bookshelfBook);
         // TOdo add event
         Book book = bookshelfBook.getBook();

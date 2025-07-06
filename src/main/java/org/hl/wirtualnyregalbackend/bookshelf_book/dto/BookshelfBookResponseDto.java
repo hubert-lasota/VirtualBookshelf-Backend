@@ -17,7 +17,7 @@ public class BookshelfBookResponseDto extends BaseBookshelfBookDto {
     private final Long id;
 
     @JsonProperty
-    private final Integer progressPercentage;
+    private final Float progressPercentage;
 
     @JsonProperty
     private final BookResponseDto book;
@@ -39,7 +39,7 @@ public class BookshelfBookResponseDto extends BaseBookshelfBookDto {
                                     BookReadingStatus status,
                                     RangeDate rangeDate,
                                     Long id,
-                                    Integer progressPercentage,
+                                    Float progressPercentage,
                                     BookResponseDto book,
                                     BookshelfHeaderResponseDto bookshelf,
                                     Long totalNotes,

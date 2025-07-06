@@ -13,4 +13,8 @@ public class BookshelfBookNoteHelper {
         return noteRepository.countNotes(bookshelfBookId);
     }
 
+    public void deleteNotesByBookshelfBookId(Long bookshelfBookId) {
+        noteRepository.deleteNotesByBookshelfBookId(bookshelfBookId);
+    }
+
 }

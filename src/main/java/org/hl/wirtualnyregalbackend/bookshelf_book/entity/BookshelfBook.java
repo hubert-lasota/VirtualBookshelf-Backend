@@ -25,7 +25,7 @@ public class BookshelfBook extends BaseEntity {
 
     @Column(name = "progress_percentage")
     @Setter(AccessLevel.NONE)
-    private Integer progressPercentage;
+    private Float progressPercentage;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -49,9 +49,8 @@ public class BookshelfBook extends BaseEntity {
                          BookReadingStatus status) {
         this.book = Objects.requireNonNull(book, "book cannot be null.");
         this.rangeDate = rangeDate;
-        this.currentPage = validateCurrentPage(currentPage);
-        this.progressPercentage = calculateProgressPercentage(currentPage);
         this.status = status;
+        setCurrentPage(currentPage);
     }
 
 
@@ -69,18 +68,24 @@ public class BookshelfBook extends BaseEntity {
         this.progressPercentage = calculateProgressPercentage(currentPage);
     }
 
-    private Integer validateCurrentPage(Integer currentPage) {
+    private void validateCurrentPage(Integer currentPage) {
         int bookPageCount = book.getPageCount();
         if (currentPage > bookPageCount) {
             throw new InvalidRequestException("Current page is higher than book number of pages");
         }
-        return currentPage;
     }
 
-    private Integer calculateProgressPercentage(Integer currentPage) {
+    private Float calculateProgressPercentage(Integer currentPage) {
         int bookPageCount = book.getPageCount();
-        float progress = (float) currentPage / (float) bookPageCount;
-        return (int) progress * 100;
+        if (currentPage == null || currentPage <= 0) {
+            return 0F;
+        }
+
+        if (currentPage >= bookPageCount) {
+            return 100F;
+        }
+
+        return ((float) currentPage) / bookPageCount  * 100F;
     }
 
     @Override

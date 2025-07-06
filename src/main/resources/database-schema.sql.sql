@@ -243,7 +243,7 @@ CREATE TABLE bookshelf_book
     bookshelf_id        BIGINT      NOT NULL REFERENCES bookshelf (id),
     book_id             BIGINT      NOT NULL REFERENCES book (id),
     current_page        INT,
-    progress_percentage INT,
+    progress_percentage FLOAT,
     started_at          TIMESTAMPTZ,
     ended_at            TIMESTAMPTZ,
     status              VARCHAR(50) NOT NULL,

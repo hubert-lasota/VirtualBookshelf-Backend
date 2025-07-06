@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookResponseDto;
-import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookWithBookshelfId;
+import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookWithBookshelfIdDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.MoveBookshelfBookDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
@@ -34,7 +34,7 @@ public class BookshelfBookController {
     public ResponseEntity<?> createBookshelfBook(
         @RequestPart("bookshelfBook")
         @Validated(CreateGroup.class)
-        BookshelfBookWithBookshelfId body,
+        BookshelfBookWithBookshelfIdDto body,
         @RequestPart(value = "cover", required = false)
         MultipartFile cover,
         UriComponentsBuilder uriBuilder
@@ -57,9 +57,14 @@ public class BookshelfBookController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findCurrentUserBookshelfBooks(@AuthenticationPrincipal User user) {
-        var response = bookshelfBookService.findUserBookshelfBooks(user);
-        Map<String, Object> responseMap = Map.of("books", response);
+    public ResponseEntity<?> findCurrentUserBookshelfBooks(
+        @RequestParam(required = false)
+        String query,
+        @AuthenticationPrincipal
+        User user
+    ) {
+        var response = bookshelfBookService.findUserBookshelfBooks(user, query);
+        Map<String, Object> responseMap = Map.of("bookshelfBooks", response);
         return ResponseEntity.ok(responseMap);
     }
 

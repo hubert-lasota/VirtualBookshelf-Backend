@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BookshelfBookWithBookshelfId {
+public class BookshelfBookWithBookshelfIdDto {
 
     @NotNull
     private Long bookshelfId;
