@@ -244,8 +244,8 @@ CREATE TABLE bookshelf_book
     book_id             BIGINT      NOT NULL REFERENCES book (id),
     current_page        INT,
     progress_percentage FLOAT,
-    started_at          TIMESTAMPTZ,
-    ended_at            TIMESTAMPTZ,
+    started_reading_at  TIMESTAMPTZ,
+    finished_reading_at TIMESTAMPTZ,
     status              VARCHAR(50) NOT NULL,
     created_at          TIMESTAMPTZ NOT NULL,
     updated_at          TIMESTAMPTZ
@@ -307,13 +307,17 @@ CREATE TABLE author_tag
 
 CREATE TABLE challenge
 (
-    id          BIGSERIAL PRIMARY KEY,
-    user_id     BIGINT REFERENCES users (id),
-    description TEXT        NOT NULL,
-    started_at  TIMESTAMPTZ NOT NULL,
-    ended_at    TIMESTAMPTZ NOT NULL,
-    created_at  TIMESTAMPTZ NOT NULL,
-    updated_at  TIMESTAMPTZ
+    id           BIGSERIAL PRIMARY KEY,
+    user_id      BIGINT      NOT NULL REFERENCES users (id),
+    genre_id     BIGINT REFERENCES genre (id),
+    title        TEXT        NOT NULL,
+    description  TEXT        NOT NULL,
+    start_at     TIMESTAMPTZ NOT NULL,
+    end_at       TIMESTAMPTZ NOT NULL,
+    type         TEXT        NOT NULL,
+    target_count INTEGER     NOT NULL,
+    created_at   TIMESTAMPTZ NOT NULL,
+    updated_at   TIMESTAMPTZ
 );
 
 CREATE TABLE challenge_participant
@@ -323,7 +327,7 @@ CREATE TABLE challenge_participant
     user_id      BIGINT      NOT NULL REFERENCES users (id),
     status       VARCHAR(50),
     started_at   TIMESTAMPTZ NOT NULL,
-    ended_at     TIMESTAMPTZ,
+    finished_at  TIMESTAMPTZ,
     created_at   TIMESTAMPTZ NOT NULL,
     updated_at   TIMESTAMPTZ
 );

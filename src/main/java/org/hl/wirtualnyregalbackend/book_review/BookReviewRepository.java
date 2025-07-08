@@ -30,4 +30,7 @@ interface BookReviewRepository extends JpaRepository<BookReview, Long> {
         """)
     List<ReviewStats> getReviewStatsByBookIds(List<Long> bookIds);
 
+    @Query("select count(b) > 0 from BookReview b where b.book.id = :bookId and b.user.id = :userId")
+    boolean existsByBookIdAndUserId(Long bookId, Long userId);
+
 }

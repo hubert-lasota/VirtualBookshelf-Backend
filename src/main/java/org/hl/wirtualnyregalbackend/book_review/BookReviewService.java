@@ -7,6 +7,7 @@ import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.book_review.dto.BookReviewCreateDto;
 import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
+import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.common.review.*;
 import org.hl.wirtualnyregalbackend.security.entity.User;
@@ -26,8 +27,12 @@ public class BookReviewService {
     private final BookHelper bookHelper;
     private final UserService userService;
 
+
     public ReviewResponseDto createBookReview(BookReviewCreateDto reviewDto, User user) {
         Book book = bookHelper.findBookById(reviewDto.getBookId());
+        if (bookReviewRepository.existsByBookIdAndUserId(reviewDto.getBookId(), user.getId())) {
+            throw new InvalidRequestException("Review already exists for book '%d' and user '%d'".formatted(reviewDto.getBookId(), user.getId()));
+        }
         BookReview bookReview = BookReviewMapper.toBookReview(reviewDto, book, user);
         bookReviewRepository.save(bookReview);
         return ReviewMapper.toReviewResponseDto(bookReview);

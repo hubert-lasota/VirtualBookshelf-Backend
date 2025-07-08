@@ -9,8 +9,8 @@ import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 
+import java.time.Instant;
 import java.util.Objects;
 
 @Entity
@@ -31,8 +31,11 @@ public class BookshelfBook extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private BookReadingStatus status;
 
-    @Embedded
-    private RangeDate rangeDate;
+    @Column
+    private Instant startedReadingAt;
+
+    @Column
+    private Instant finishedReadingAt;
 
     @ManyToOne
     @JoinColumn(name = "bookshelf_id")
@@ -45,10 +48,12 @@ public class BookshelfBook extends BaseEntity {
 
     public BookshelfBook(Integer currentPage,
                          Book book,
-                         RangeDate rangeDate,
+                         Instant startedReadingAt,
+                         Instant finishedReadingAt,
                          BookReadingStatus status) {
         this.book = Objects.requireNonNull(book, "book cannot be null.");
-        this.rangeDate = rangeDate;
+        this.startedReadingAt = startedReadingAt;
+        this.finishedReadingAt = finishedReadingAt;
         this.status = status;
         setCurrentPage(currentPage);
     }
@@ -85,7 +90,7 @@ public class BookshelfBook extends BaseEntity {
             return 100F;
         }
 
-        return ((float) currentPage) / bookPageCount  * 100F;
+        return ((float) currentPage) / bookPageCount * 100F;
     }
 
     @Override

@@ -3,8 +3,10 @@ package org.hl.wirtualnyregalbackend.challenge.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.common.model.RangeDate;
+import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.security.entity.User;
+
+import java.time.Instant;
 
 
 @Entity
@@ -15,11 +17,28 @@ import org.hl.wirtualnyregalbackend.security.entity.User;
 public class Challenge extends BaseEntity {
 
     @Column
+    private String title;
+
+    @Column
     private String description;
 
-    @Embedded
-    private RangeDate rangeDate;
+    @Column
+    private Instant startAt;
 
+    @Column
+    private Instant endAt;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private ChallengeType type;
+
+    private Integer targetCount;
+
+    @ManyToOne
+    @JoinColumn(name = "genre_id")
+    private Genre genre;
+
+    @Setter(AccessLevel.NONE)
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

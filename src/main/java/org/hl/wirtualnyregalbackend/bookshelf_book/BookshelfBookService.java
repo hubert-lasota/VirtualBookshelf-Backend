@@ -15,8 +15,8 @@ import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookReadingStatus;
 import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBook;
 import org.hl.wirtualnyregalbackend.bookshelf_book_note.BookshelfBookNoteHelper;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
-import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
+import org.hl.wirtualnyregalbackend.common.validation.RangeDateValidator;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -72,11 +73,17 @@ public class BookshelfBookService {
             bookshelfBook.setStatus(status);
         }
 
-        RangeDate rangeDate = bookshelfBookDto.getRangeDate();
-        if (rangeDate != null) {
-            RangeDate merged = RangeDate.merge(bookshelfBook.getRangeDate(), rangeDate);
-            bookshelfBook.setRangeDate(merged);
-        }
+        Instant startedReadingAt = bookshelfBookDto.getStartedReadingAt() != null
+            ? bookshelfBookDto.getStartedReadingAt()
+            : bookshelfBook.getStartedReadingAt();
+
+        Instant finishedReadingAt = bookshelfBookDto.getFinishedReadingAt() != null
+            ? bookshelfBookDto.getFinishedReadingAt()
+            : bookshelfBook.getFinishedReadingAt();
+
+        RangeDateValidator.validate(startedReadingAt, finishedReadingAt, "startedReadingAt", "finishedReadingAt");
+        bookshelfBook.setStartedReadingAt(startedReadingAt);
+        bookshelfBook.setFinishedReadingAt(finishedReadingAt);
     }
 
     public BookshelfBookResponseDto moveBookshelfBook(Long bookshelfBookId, Long bookshelfId) {

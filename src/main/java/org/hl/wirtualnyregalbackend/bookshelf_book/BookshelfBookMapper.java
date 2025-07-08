@@ -22,7 +22,8 @@ public class BookshelfBookMapper {
         return new BookshelfBook(
             bookshelfBookDto.getCurrentPage(),
             book,
-            bookshelfBookDto.getRangeDate(),
+            bookshelfBookDto.getStartedReadingAt(),
+            bookshelfBookDto.getFinishedReadingAt(),
             bookshelfBookDto.getStatus()
         );
     }
@@ -39,14 +40,13 @@ public class BookshelfBookMapper {
         return new BookshelfBookResponseDto(
             bookshelfBook.getCurrentPage(),
             bookshelfBook.getStatus(),
-            bookshelfBook.getRangeDate(),
+            bookshelfBook.getStartedReadingAt(),
+            bookshelfBook.getFinishedReadingAt(),
             bookshelfBook.getId(),
             bookshelfBook.getProgressPercentage(),
             book,
             bookshelfDto,
-            totalNotes,
-            bookshelfBook.getCreatedAt(),
-            bookshelfBook.getUpdatedAt()
+            totalNotes
         );
     }
 

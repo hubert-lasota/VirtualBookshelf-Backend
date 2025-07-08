@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.bookshelf_book_note;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.bookshelf_book.BookshelfBookService;
 import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBook;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class BookshelfBookNoteService {
 
     private final BookshelfBookNoteRepository noteRepository;

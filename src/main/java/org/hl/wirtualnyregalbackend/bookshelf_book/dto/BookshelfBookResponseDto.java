@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookReadingStatus;
-import org.hl.wirtualnyregalbackend.common.model.RangeDate;
 
 import java.time.Instant;
 
@@ -28,31 +27,22 @@ public class BookshelfBookResponseDto extends BaseBookshelfBookDto {
     @JsonProperty
     private final Long totalNotes;
 
-    @JsonProperty
-    private final Instant createdAt;
-
-    @JsonProperty
-    private final Instant updatedAt;
-
 
     public BookshelfBookResponseDto(Integer currentPage,
                                     BookReadingStatus status,
-                                    RangeDate rangeDate,
+                                    Instant startedReadingAt,
+                                    Instant finishedReadingAt,
                                     Long id,
                                     Float progressPercentage,
                                     BookResponseDto book,
                                     BookshelfHeaderResponseDto bookshelf,
-                                    Long totalNotes,
-                                    Instant createdAt,
-                                    Instant updatedAt) {
-        super(currentPage, status, rangeDate);
+                                    Long totalNotes) {
+        super(currentPage, status, startedReadingAt, finishedReadingAt);
         this.id = id;
         this.progressPercentage = progressPercentage;
         this.book = book;
         this.bookshelf = bookshelf;
         this.totalNotes = totalNotes;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
 }

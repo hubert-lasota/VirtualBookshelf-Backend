@@ -107,8 +107,6 @@ public class BookMapper {
             series,
             book.getId(),
             formatDto,
-            book.getCreatedAt(),
-            book.getUpdatedAt(),
             reviewStats
         );
     }
