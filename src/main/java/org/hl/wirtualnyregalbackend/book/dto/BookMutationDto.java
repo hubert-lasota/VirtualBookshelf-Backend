@@ -19,4 +19,5 @@ public class BookMutationDto extends BaseBookDto {
 
     @NotEmpty
     private List<Long> genreIds;
+
 }

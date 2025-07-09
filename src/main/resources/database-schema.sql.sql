@@ -35,8 +35,6 @@ CREATE TABLE user_profile_picture
     updated_at                     TIMESTAMPTZ
 );
 
-
-
 CREATE TABLE user_profile
 (
     id                      BIGSERIAL PRIMARY KEY,
@@ -84,45 +82,18 @@ CREATE TABLE book
     isbn             VARCHAR(13),
     title            TEXT        NOT NULL,
     publication_year INT,
-    language_tag     TEXT,
+    language_code    TEXT,
     page_count       INT,
     description      TEXT,
     created_at       TIMESTAMPTZ NOT NULL,
     updated_at       TIMESTAMPTZ
 );
 
-CREATE TABLE book_series
-(
-    id         BIGSERIAL PRIMARY KEY,
-    name       TEXT        NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
-);
-
-CREATE TABLE book_series_book
-(
-    id             BIGSERIAL PRIMARY KEY,
-    book_series_id BIGINT REFERENCES book_series (id),
-    book_id        BIGINT REFERENCES book (id),
-    book_order     INT,
-    created_at     TIMESTAMPTZ NOT NULL,
-    updated_at     TIMESTAMPTZ
-);
-
-
-
 CREATE TABLE genre
 (
     id         BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     updated_at TIMESTAMPTZ
-);
-
-CREATE TABLE user_genre_preferences
-(
-    user_profile_id BIGINT REFERENCES user_profile (id),
-    genre_id        BIGINT REFERENCES genre (id),
-    PRIMARY KEY (user_profile_id, genre_id)
 );
 
 CREATE TABLE genre_translation
@@ -204,8 +175,6 @@ CREATE TABLE author
     updated_at                TIMESTAMPTZ
 );
 
-
-
 CREATE TABLE book_author
 (
     book_id   BIGINT REFERENCES book (id),
@@ -225,7 +194,6 @@ CREATE TABLE author_review
 );
 
 
-
 CREATE TABLE bookshelf
 (
     id          BIGSERIAL PRIMARY KEY,
@@ -237,72 +205,28 @@ CREATE TABLE bookshelf
     updated_at  TIMESTAMPTZ
 );
 
-CREATE TABLE bookshelf_book
+CREATE TABLE reading_book
 (
     id                  BIGSERIAL PRIMARY KEY,
     bookshelf_id        BIGINT      NOT NULL REFERENCES bookshelf (id),
     book_id             BIGINT      NOT NULL REFERENCES book (id),
-    current_page        INT,
-    progress_percentage FLOAT,
-    started_reading_at  TIMESTAMPTZ,
-    finished_reading_at TIMESTAMPTZ,
     status              VARCHAR(50) NOT NULL,
+    started_reading_at  TIMESTAMPTZ NOT NULL,
+    finished_reading_at TIMESTAMPTZ,
     created_at          TIMESTAMPTZ NOT NULL,
     updated_at          TIMESTAMPTZ
 );
 
-CREATE TABLE bookshelf_book_note
+CREATE TABLE reading_note
 (
-    id                BIGSERIAL PRIMARY KEY,
-    bookshelf_book_id BIGINT      NOT NULL REFERENCES bookshelf_book (id),
-    content           TEXT        NOT NULL,
-    start_page        INT         NOT NULL,
-    end_page          INT         NOT NULL,
-    created_at        TIMESTAMPTZ NOT NULL,
-    updated_at        TIMESTAMPTZ
-);
-CREATE TABLE book_recommendation
-(
-    id         BIGSERIAL PRIMARY KEY,
-    user_id    BIGINT      NOT NULL REFERENCES users (id),
-    book_id    BIGINT REFERENCES book (id),
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
-);
-
-CREATE TABLE genre_recommendation
-(
-    id         BIGSERIAL PRIMARY KEY,
-    user_id    BIGINT      NOT NULL REFERENCES users (id),
-    genre_id   BIGINT      NOT NULL REFERENCES genre (id),
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
-);
-
-CREATE TABLE tag
-(
-    id         BIGSERIAL PRIMARY KEY,
-    name       VARCHAR(50) NOT NULL UNIQUE,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
-);
-
-CREATE TABLE book_tag
-(
-    id         BIGSERIAL PRIMARY KEY,
-    book_id    BIGINT      NOT NULL REFERENCES book (id),
-    tag_id     BIGINT      NOT NULL REFERENCES tag (id),
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
-);
-
-CREATE TABLE author_tag
-(
-    id         BIGSERIAL PRIMARY KEY,
-    author_id  BIGINT      NOT NULL REFERENCES author (id),
-    tag_id     BIGINT      NOT NULL REFERENCES tag (id),
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    id              BIGSERIAL PRIMARY KEY,
+    reading_book_id BIGINT      NOT NULL REFERENCES reading_book (id),
+    title           TEXT        NOT NULL,
+    content         TEXT        NOT NULL,
+    page_from       INT         NOT NULL,
+    page_to         INT         NOT NULL,
+    created_at      TIMESTAMPTZ NOT NULL,
+    updated_at      TIMESTAMPTZ
 );
 
 CREATE TABLE challenge
@@ -342,4 +266,12 @@ CREATE TABLE notification
     read_at    TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL,
     updated_at TIMESTAMPTZ
+);
+
+
+CREATE TABLE user_genre_preferences
+(
+    user_profile_id BIGINT REFERENCES user_profile (id),
+    genre_id        BIGINT REFERENCES genre (id),
+    PRIMARY KEY (user_profile_id, genre_id)
 );

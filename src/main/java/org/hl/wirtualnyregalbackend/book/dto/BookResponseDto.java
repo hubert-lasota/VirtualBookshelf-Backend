@@ -36,11 +36,10 @@ public class BookResponseDto extends BaseBookDto {
                            PublisherWithIdDto publisher,
                            List<AuthorWithIdDto> authors,
                            List<GenreResponseDto> genres,
-                           List<BookSeriesAssignmentDto> series,
                            Long id,
                            BookFormatDto format,
                            ReviewStats review) {
-        super(isbn, title, publicationYear, pageCount, language, description, coverUrl, publisher, authors, series);
+        super(isbn, title, publicationYear, pageCount, language, description, coverUrl, publisher, authors);
         this.id = id;
         this.format = format;
         this.genres = genres;

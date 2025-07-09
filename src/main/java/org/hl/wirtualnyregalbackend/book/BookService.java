@@ -4,18 +4,17 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.author.AuthorService;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
-import org.hl.wirtualnyregalbackend.book.dto.*;
+import org.hl.wirtualnyregalbackend.book.dto.AuthorWithIdDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
+import org.hl.wirtualnyregalbackend.book.dto.PublisherWithIdDto;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
-import org.hl.wirtualnyregalbackend.book.entity.BookSeriesBook;
 import org.hl.wirtualnyregalbackend.book.event.BookFoundEvent;
 import org.hl.wirtualnyregalbackend.book_cover.BookCoverService;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_format.BookFormatService;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
 import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
-import org.hl.wirtualnyregalbackend.book_series.BookSeriesMapper;
-import org.hl.wirtualnyregalbackend.book_series.BookSeriesService;
-import org.hl.wirtualnyregalbackend.book_series.entity.BookSeries;
 import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
 import org.hl.wirtualnyregalbackend.genre.GenreService;
@@ -53,7 +52,6 @@ public class BookService {
     private final BookHelper bookHelper;
     private final BookFormatService bookFormatService;
     private final BookCoverService bookCoverService;
-    private final BookSeriesService bookSeriesService;
     private final GenreService genreService;
     private final AuthorService authorService;
     private final PublisherService publisherService;
@@ -86,13 +84,7 @@ public class BookService {
             publisher = publisherService.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
         }
 
-        List<BookSeriesAssignmentDto> seriesDtos = bookDto.getSeries();
-        List<BookSeriesBook> series = null;
-        if (seriesDtos != null) {
-            series = findOrCreateSeries(seriesDtos);
-        }
-
-        Book book = BookMapper.toBook(bookDto, cover, format, publisher, authors, genres, series);
+        Book book = BookMapper.toBook(bookDto, cover, format, publisher, authors, genres);
         bookRepository.save(book);
         return book;
     }
@@ -191,11 +183,6 @@ public class BookService {
             book.setGenres(genres);
         }
 
-        if (bookDto.getSeries() != null) {
-            List<BookSeriesBook> bookSeriesBooks = findOrCreateSeries(bookDto.getSeries());
-            book.setBookSeriesBooks(bookSeriesBooks);
-        }
-
         BookCover cover = bookCoverService.createBookCover(bookDto.getCoverUrl(), coverFile);
         book.setCover(cover);
 
@@ -215,16 +202,6 @@ public class BookService {
             .stream()
             .map((authorWithIdDto) -> authorService.findOrCreateAuthor(authorWithIdDto.getId(), authorWithIdDto.getAuthorDto()))
             .collect(Collectors.toSet());
-    }
-
-    private List<BookSeriesBook> findOrCreateSeries(List<BookSeriesAssignmentDto> bookSeriesDtos) {
-        return bookSeriesDtos
-            .stream()
-            .map(seriesDto -> {
-                BookSeries bookSeries = bookSeriesService.findOrCreateBookSeries(seriesDto.getId(), seriesDto.getBookSeriesDto());
-                return BookSeriesMapper.toBookSeriesBookAssociation(bookSeries, seriesDto);
-            })
-            .toList();
     }
 
     private BookResponseDto mapToBookResponseDto(Book book) {

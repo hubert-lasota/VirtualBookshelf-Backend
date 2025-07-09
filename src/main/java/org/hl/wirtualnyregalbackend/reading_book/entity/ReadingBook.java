@@ -1,0 +1,62 @@
+package org.hl.wirtualnyregalbackend.reading_book.entity;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hl.wirtualnyregalbackend.book.entity.Book;
+import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
+import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
+
+import java.time.Instant;
+
+@Entity
+@Table(name = "reading_book")
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ReadingBook extends BaseEntity {
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private ReadingStatus status;
+
+    @Column
+    @Setter(AccessLevel.NONE)
+    private Instant startedReadingAt;
+
+    @Column
+    @Setter(AccessLevel.NONE)
+    private Instant finishedReadingAt;
+
+    @ManyToOne
+    @JoinColumn(name = "bookshelf_id")
+    private Bookshelf bookshelf;
+
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    private Book book;
+
+
+    public ReadingBook(ReadingStatus status,
+                       Instant startedReadingAt,
+                       Instant finishedReadingAt,
+                       Bookshelf bookshelf,
+                       Book book) {
+        this.status = status;
+        this.bookshelf = bookshelf;
+        this.book = book;
+        setReadingPeriod(startedReadingAt, finishedReadingAt);
+    }
+
+    public void setReadingPeriod(Instant startedReadingAt, Instant finishedReadingAt) {
+        if (startedReadingAt.isAfter(finishedReadingAt)) {
+            throw new InvalidRequestException("Started reading time must be before finished reading time.");
+        }
+        this.startedReadingAt = startedReadingAt;
+        this.finishedReadingAt = finishedReadingAt;
+    }
+
+}

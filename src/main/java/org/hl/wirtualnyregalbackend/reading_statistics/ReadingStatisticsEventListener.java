@@ -1,8 +1,8 @@
 package org.hl.wirtualnyregalbackend.reading_statistics;
 
 import lombok.AllArgsConstructor;
-import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBook;
-import org.hl.wirtualnyregalbackend.bookshelf_book.event.BookshelfBookCreatedEvent;
+import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
+import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookCreatedEvent;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -18,12 +18,12 @@ public class ReadingStatisticsEventListener {
 
     @EventListener
     @Async
-    public void handleBookshelfBookCreatedEvent(BookshelfBookCreatedEvent event) {
-        BookshelfBook bookshelfBook = event.bookshelfBook();
-        User user = bookshelfBook.getBookshelf().getUser();
+    public void handleBookshelfBookCreatedEvent(ReadingBookCreatedEvent event) {
+        ReadingBook readingBook = event.readingBook();
+        User user = readingBook.getBookshelf().getUser();
 
-        bookLenStatsService.updateBookLengthStatistics(user, bookshelfBook.getBook());
-        genreStatsService.updateGenreStatistics(user, bookshelfBook.getBook());
+        bookLenStatsService.updateBookLengthStatistics(user, readingBook.getBook());
+        genreStatsService.updateGenreStatistics(user, readingBook.getBook());
 
     }
 

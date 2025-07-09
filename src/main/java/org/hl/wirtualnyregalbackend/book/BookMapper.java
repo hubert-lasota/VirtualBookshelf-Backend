@@ -3,15 +3,15 @@ package org.hl.wirtualnyregalbackend.book;
 import org.hl.wirtualnyregalbackend.author.AuthorMapper;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
-import org.hl.wirtualnyregalbackend.book.dto.*;
+import org.hl.wirtualnyregalbackend.book.dto.AuthorWithIdDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
+import org.hl.wirtualnyregalbackend.book.dto.PublisherWithIdDto;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
-import org.hl.wirtualnyregalbackend.book.entity.BookSeriesBook;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_format.BookFormatMapper;
 import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
-import org.hl.wirtualnyregalbackend.book_series.BookSeriesMapper;
-import org.hl.wirtualnyregalbackend.book_series.dto.BookSeriesMutationDto;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
@@ -36,20 +36,19 @@ public class BookMapper {
                               BookFormat format,
                               Publisher publisher,
                               Set<Author> authors,
-                              Set<Genre> genres,
-                              List<BookSeriesBook> bookSeriesBooks) {
+                              Set<Genre> genres) {
         return new Book(
             bookDto.getIsbn(),
             bookDto.getTitle(),
             bookDto.getPublicationYear(),
             bookDto.getLanguage(),
             bookDto.getPageCount(),
+            bookDto.getDescription(),
             cover,
             format,
             publisher,
-            authors,
             genres,
-            bookSeriesBooks
+            authors
         );
     }
 
@@ -81,15 +80,6 @@ public class BookMapper {
             .map(genre -> GenreMapper.toGenreResponseDto(genre, locale))
             .toList();
 
-        List<BookSeriesAssignmentDto> series = book
-            .getBookSeriesBooks()
-            .stream()
-            .map((bookSeries) -> {
-                BookSeriesMutationDto dto = BookSeriesMapper.toBookSeriesMutationDto(bookSeries);
-                return new BookSeriesAssignmentDto(bookSeries.getId(), dto, bookSeries.getBookOrder());
-            })
-            .toList();
-
         BookCover cover = book.getCover();
         String coverUrl = cover != null ? cover.getUrl() : null;
 
@@ -104,7 +94,6 @@ public class BookMapper {
             publisherDto,
             authors,
             genres,
-            series,
             book.getId(),
             formatDto,
             reviewStats

@@ -1,10 +1,7 @@
 package org.hl.wirtualnyregalbackend.book.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
@@ -20,6 +17,7 @@ import java.util.*;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Book extends BaseEntity {
 
     @Column
@@ -31,7 +29,7 @@ public class Book extends BaseEntity {
     @Column(name = "publication_year")
     private Integer publicationYear;
 
-    @Column(name = "language_tag")
+    @Column(name = "language_code")
     private Locale language;
 
     @Column(name = "page_count")
@@ -51,9 +49,6 @@ public class Book extends BaseEntity {
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;
 
-    @OneToMany(mappedBy = "book")
-    private List<BookSeriesBook> bookSeriesBooks = new ArrayList<>();
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "book_genre",
         joinColumns = @JoinColumn(name = "book_id"),
@@ -66,30 +61,6 @@ public class Book extends BaseEntity {
         inverseJoinColumns = @JoinColumn(name = "author_id"))
     private Set<Author> authors = new HashSet<>();
 
-
-    public Book(String isbn,
-                String title,
-                Integer publicationYear,
-                Locale language,
-                Integer pageCount,
-                BookCover cover,
-                BookFormat format,
-                Publisher publisher,
-                Set<Author> authors,
-                Set<Genre> genres,
-                List<BookSeriesBook> bookSeriesBooks) {
-        this.isbn = isbn;
-        this.title = title;
-        this.publicationYear = publicationYear;
-        this.language = language;
-        this.pageCount = pageCount;
-        this.cover = cover;
-        this.format = format;
-        this.publisher = publisher;
-        this.authors = authors;
-        this.genres = genres;
-        setBookSeriesBooks(bookSeriesBooks);
-    }
 
     public void addGenre(Genre genre) {
         Objects.requireNonNull(genre, "genre cannot be null");
@@ -130,31 +101,6 @@ public class Book extends BaseEntity {
 
     public Set<Author> getAuthors() {
         return Collections.unmodifiableSet(authors);
-    }
-
-    public List<BookSeriesBook> getBookSeriesBooks() {
-        return Collections.unmodifiableList(bookSeriesBooks);
-    }
-
-    public void setBookSeriesBooks(List<BookSeriesBook> bookSeriesBooks) {
-        bookSeriesBooks.forEach(e -> e.setBook(this));
-        this.bookSeriesBooks = bookSeriesBooks;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Book book = (Book) o;
-        if (this.id != null && book.id != null) {
-            return this.id.equals(book.id);
-        }
-        return Objects.equals(isbn, book.isbn) && Objects.equals(title, book.title) && Objects.equals(publicationYear, book.publicationYear) && Objects.equals(language, book.language) && Objects.equals(pageCount, book.pageCount) && Objects.equals(description, book.description) && Objects.equals(cover, book.cover) && Objects.equals(format, book.format) && Objects.equals(publisher, book.publisher) && Objects.equals(bookSeriesBooks, book.bookSeriesBooks) && Objects.equals(genres, book.genres) && Objects.equals(authors, book.authors);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(isbn, title, publicationYear, language, pageCount, description, cover, format, publisher, bookSeriesBooks, genres, authors);
     }
 
 }

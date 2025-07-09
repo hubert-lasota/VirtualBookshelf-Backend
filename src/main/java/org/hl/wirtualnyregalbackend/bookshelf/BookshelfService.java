@@ -8,8 +8,8 @@ import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
-import org.hl.wirtualnyregalbackend.bookshelf_book.BookshelfBookHelper;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
+import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ import java.util.Optional;
 public class BookshelfService {
 
     private final BookshelfRepository bookshelfRepository;
-    private final BookshelfBookHelper bookshelfBookHelper;
+    private final ReadingBookHelper readingBookHelper;
     private final BookReviewService bookReviewService;
 
 
@@ -103,7 +103,7 @@ public class BookshelfService {
 
 
     private BookshelfResponseDto mapToBookshelfResponseDto(Bookshelf bookshelf) {
-        Long totalBooks = bookshelfBookHelper.getTotalBooks(bookshelf.getId());
+        Long totalBooks = readingBookHelper.getTotalBooks(bookshelf.getId());
         return BookshelfMapper.toBookshelfResponseDto(bookshelf, totalBooks);
     }
 
