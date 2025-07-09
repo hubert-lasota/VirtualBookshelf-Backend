@@ -39,7 +39,7 @@ public class ReadingBookController {
         ReadingBookResponseDto response = readingBookService.createReadingBook(body.getBookshelfId(), body.getBookshelfBookDto(), cover);
 
         URI location = uriBuilder
-            .path("/v1/bookshelf-books/{bookId}")
+            .path("/v1/reading-books/{bookId}")
             .buildAndExpand(response.getId())
             .toUri();
 
@@ -61,7 +61,7 @@ public class ReadingBookController {
         User user
     ) {
         var response = readingBookService.findUserReadingBooks(user, query);
-        Map<String, Object> responseMap = Map.of("bookshelfBooks", response);
+        Map<String, Object> responseMap = Map.of("readingBooks", response);
         return ResponseEntity.ok(responseMap);
     }
 
