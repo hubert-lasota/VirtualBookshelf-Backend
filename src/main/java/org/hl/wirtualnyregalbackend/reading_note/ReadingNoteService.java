@@ -20,15 +20,15 @@ public class ReadingNoteService {
     private final ReadingNoteRepository noteRepository;
     private final ReadingBookService readingBookService;
 
-    public ReadingNoteResponseDto createBookshelfBookNote(Long bookshelfBookId, ReadingNoteMutationDto noteDto) {
-        ReadingBook book = readingBookService.findReadingBookEntityId(bookshelfBookId);
-        ReadingNote note = ReadingNoteMapper.toBookshelfBookNote(noteDto, book);
+    public ReadingNoteResponseDto createReadingNote(Long readingBookId, ReadingNoteMutationDto noteDto) {
+        ReadingBook book = readingBookService.findReadingBookEntityId(readingBookId);
+        ReadingNote note = ReadingNoteMapper.toReadingNote(noteDto, book);
         noteRepository.save(note);
-        return ReadingNoteMapper.toBookshelfBookNoteResponseDto(note);
+        return ReadingNoteMapper.toReadingNoteResponseDto(note);
     }
 
-    public ReadingNoteResponseDto updateBookshelfBookNote(Long noteId, ReadingNoteMutationDto noteDto) {
-        ReadingNote note = findNoteEntityById(noteId);
+    public ReadingNoteResponseDto updateReadingNote(Long noteId, ReadingNoteMutationDto noteDto) {
+        ReadingNote note = findReadingNoteEntityById(noteId);
 
         Integer pageFrom = noteDto.pageFrom() == null
             ? note.getPageFrom()
@@ -50,27 +50,27 @@ public class ReadingNoteService {
         }
 
         noteRepository.save(note);
-        return ReadingNoteMapper.toBookshelfBookNoteResponseDto(note);
+        return ReadingNoteMapper.toReadingNoteResponseDto(note);
     }
 
-    public ReadingNoteResponseDto findBookshelfBookNoteById(Long noteId) {
-        ReadingNote note = findNoteEntityById(noteId);
-        return ReadingNoteMapper.toBookshelfBookNoteResponseDto(note);
+    public ReadingNoteResponseDto findReadingNoteById(Long noteId) {
+        ReadingNote note = findReadingNoteEntityById(noteId);
+        return ReadingNoteMapper.toReadingNoteResponseDto(note);
     }
 
-    public List<ReadingNoteResponseDto> findBookshelfBookNotes(Long bookshelfBookId) {
-        List<ReadingNote> notes = noteRepository.findBookshelfBookNotesByBookshelfBookId(bookshelfBookId);
+    public List<ReadingNoteResponseDto> findReadingNotes(Long readingBookId) {
+        List<ReadingNote> notes = noteRepository.findReadingNotesByReadingBookId(readingBookId);
         return notes
             .stream()
-            .map(ReadingNoteMapper::toBookshelfBookNoteResponseDto)
+            .map(ReadingNoteMapper::toReadingNoteResponseDto)
             .toList();
     }
 
-    public void deleteBookshelfBookNoteById(Long noteId) {
+    public void deleteReadingNoteById(Long noteId) {
         noteRepository.deleteById(noteId);
     }
 
-    private ReadingNote findNoteEntityById(Long noteId) {
+    private ReadingNote findReadingNoteEntityById(Long noteId) {
         Optional<ReadingNote> noteOpt = noteId == null
             ? Optional.empty()
             : noteRepository.findById(noteId);

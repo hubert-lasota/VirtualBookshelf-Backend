@@ -11,7 +11,7 @@ class ReadingNoteMapper {
     }
 
 
-    public static ReadingNoteResponseDto toBookshelfBookNoteResponseDto(ReadingNote note) {
+    public static ReadingNoteResponseDto toReadingNoteResponseDto(ReadingNote note) {
         ReadingNoteMutationDto dto = new ReadingNoteMutationDto(
             note.getTitle(),
             note.getContent(),
@@ -27,8 +27,8 @@ class ReadingNoteMapper {
         );
     }
 
-    public static ReadingNote toBookshelfBookNote(ReadingNoteMutationDto noteDto,
-                                                  ReadingBook readingBook) {
+    public static ReadingNote toReadingNote(ReadingNoteMutationDto noteDto,
+                                            ReadingBook readingBook) {
         return new ReadingNote(
             noteDto.title(),
             noteDto.content(),

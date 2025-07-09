@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.reading_note;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
-import org.hl.wirtualnyregalbackend.reading_note.dto.NoteWithBookshelfBookIdDto;
+import org.hl.wirtualnyregalbackend.reading_note.dto.NoteWithReadingBookIdDto;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteMutationDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,7 +14,7 @@ import java.net.URI;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/v1/bookshelf-book-notes")
+@RequestMapping("/v1/reading-notes")
 @AllArgsConstructor
 // TODO add preauthorize
 class ReadingNoteController {
@@ -23,18 +23,18 @@ class ReadingNoteController {
 
 
     @PostMapping
-    public ResponseEntity<?> createBookshelfBookNote(
+    public ResponseEntity<?> createReadingNote(
         @Validated(CreateGroup.class)
         @RequestBody
-        NoteWithBookshelfBookIdDto body,
+        NoteWithReadingBookIdDto body,
         UriComponentsBuilder uriBuilder
     ) {
-        Long bookshelfBookId = body.getBookshelfBookId();
+        Long bookshelfBookId = body.getReadingBookId();
         ReadingNoteMutationDto noteDto = body.getNoteDto();
-        var response = noteService.createBookshelfBookNote(bookshelfBookId, noteDto);
+        var response = noteService.createReadingNote(bookshelfBookId, noteDto);
 
         URI location = uriBuilder
-            .path("/v1/bookshelf-book-notes/{noteId}")
+            .path("/v1/reading-notes/{noteId}")
             .buildAndExpand(response.id())
             .toUri();
 
@@ -42,26 +42,26 @@ class ReadingNoteController {
     }
 
     @GetMapping("/{noteId}")
-    public ResponseEntity<?> findBookshelfBookNote(@PathVariable Long noteId) {
-        return ResponseEntity.ok(noteService.findBookshelfBookNoteById(noteId));
+    public ResponseEntity<?> findReadingNote(@PathVariable Long noteId) {
+        return ResponseEntity.ok(noteService.findReadingNoteById(noteId));
     }
 
     @GetMapping
-    public ResponseEntity<?> findBookshelfBookNotes(@RequestParam Long bookshelfBookId) {
-        var response = noteService.findBookshelfBookNotes(bookshelfBookId);
+    public ResponseEntity<?> findReadingNotes(@RequestParam Long readingBookId) {
+        var response = noteService.findReadingNotes(readingBookId);
         Map<String, Object> responseMap = Map.of("notes", response);
         return ResponseEntity.ok(responseMap);
     }
 
     @PatchMapping("/{noteId}")
-    public ResponseEntity<?> updateBookshelfBookNote(@PathVariable Long noteId, @Validated(UpdateGroup.class) @RequestBody ReadingNoteMutationDto noteDto) {
-        var response = noteService.updateBookshelfBookNote(noteId, noteDto);
+    public ResponseEntity<?> updateReadingNote(@PathVariable Long noteId, @Validated(UpdateGroup.class) @RequestBody ReadingNoteMutationDto noteDto) {
+        var response = noteService.updateReadingNote(noteId, noteDto);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{noteId}")
-    public ResponseEntity<?> deleteBookshelfBookNote(@PathVariable Long noteId) {
-        noteService.deleteBookshelfBookNoteById(noteId);
+    public ResponseEntity<?> deleteReadingNote(@PathVariable Long noteId) {
+        noteService.deleteReadingNoteById(noteId);
         return ResponseEntity.noContent().build();
     }
 

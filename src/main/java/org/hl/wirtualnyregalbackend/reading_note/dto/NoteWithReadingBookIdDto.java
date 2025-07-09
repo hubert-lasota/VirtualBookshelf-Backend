@@ -10,10 +10,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class NoteWithBookshelfBookIdDto {
+public class NoteWithReadingBookIdDto {
 
     @NotNull
-    private Long bookshelfBookId;
+    private Long readingBookId;
 
     @NotNull
     @Valid

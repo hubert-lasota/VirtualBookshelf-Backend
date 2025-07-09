@@ -9,12 +9,12 @@ public class ReadingNoteHelper {
 
     private final ReadingNoteRepository noteRepository;
 
-    public Long getTotalNotes(Long bookshelfBookId) {
-        return noteRepository.countNotes(bookshelfBookId);
+    public Long getTotalNotes(Long readingBookId) {
+        return noteRepository.countNotes(readingBookId);
     }
 
     public void deleteNotesByBookshelfBookId(Long bookshelfBookId) {
-        noteRepository.deleteNotesByBookshelfBookId(bookshelfBookId);
+        noteRepository.deleteNotesByReadingBookId(bookshelfBookId);
     }
 
 }
