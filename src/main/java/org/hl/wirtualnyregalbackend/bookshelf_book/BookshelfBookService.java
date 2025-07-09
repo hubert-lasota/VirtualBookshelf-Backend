@@ -13,11 +13,14 @@ import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.dto.BookshelfBookResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookReadingStatus;
 import org.hl.wirtualnyregalbackend.bookshelf_book.entity.BookshelfBook;
+import org.hl.wirtualnyregalbackend.bookshelf_book.event.BookshelfBookCreatedEvent;
+import org.hl.wirtualnyregalbackend.bookshelf_book.event.BookshelfBookDeletedEvent;
 import org.hl.wirtualnyregalbackend.bookshelf_book_note.BookshelfBookNoteHelper;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
 import org.hl.wirtualnyregalbackend.common.validation.RangeDateValidator;
 import org.hl.wirtualnyregalbackend.security.entity.User;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Nullable;
@@ -40,20 +43,17 @@ public class BookshelfBookService {
     private final BookService bookService;
     private final BookReviewService bookReviewService;
     private final BookshelfBookNoteHelper noteHelper;
+    private final ApplicationEventPublisher eventPublisher;
 
     public BookshelfBookResponseDto createBookshelfBook(Long bookshelfId, BookshelfBookMutationDto bookshelfBookDto, MultipartFile bookCover) {
         Bookshelf bookshelf = bookshelfService.findBookshelfById(bookshelfId);
-        BookshelfBook bookshelfBook = createBookshelfBookEntity(bookshelfBookDto, bookCover);
+        BookWithIdDto bookWithIdDto = bookshelfBookDto.getBook();
+        Book book = findOrCreateBook(bookWithIdDto.getId(), bookWithIdDto.getBookDto(), bookCover);
+        BookshelfBook bookshelfBook = BookshelfBookMapper.toBookshelfBook(bookshelfBookDto, book);
         bookshelfBook.setBookshelf(bookshelf);
         bookshelfBookRepository.save(bookshelfBook);
+        eventPublisher.publishEvent(new BookshelfBookCreatedEvent(bookshelfBook));
         return mapToBookshelfBookResponseDto(bookshelfBook);
-    }
-
-    public BookshelfBook createBookshelfBookEntity(BookshelfBookMutationDto bookshelfBookDto, MultipartFile bookCover) {
-        BookWithIdDto bookWithIdDto = bookshelfBookDto.getBook();
-        // TOdo add event
-        Book book = findOrCreateBook(bookWithIdDto.getId(), bookWithIdDto.getBookDto(), bookCover);
-        return BookshelfBookMapper.toBookshelfBook(bookshelfBookDto, book);
     }
 
     public BookshelfBookResponseDto updateBookshelfBook(Long bookshelfBookId, BookshelfBookMutationDto bookshelfBookDto) {
@@ -135,10 +135,9 @@ public class BookshelfBookService {
     @Transactional
     public void deleteBookshelfBook(Long bookshelfBookId) {
         BookshelfBook bookshelfBook = findBookshelfBookEntityId(bookshelfBookId);
+        eventPublisher.publishEvent(new BookshelfBookDeletedEvent(bookshelfBook));
         noteHelper.deleteNotesByBookshelfBookId(bookshelfBookId);
         bookshelfBookRepository.delete(bookshelfBook);
-        // TOdo add event
-        Book book = bookshelfBook.getBook();
     }
 
 

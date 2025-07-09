@@ -2,27 +2,25 @@ package org.hl.wirtualnyregalbackend.recommendation.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 
+import java.util.List;
+
 @Entity
-@Table(name = "book_recommendation")
+@Table(name = "user_reading_preferences")
+@Setter
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class BookRecommendation extends BaseEntity {
+public class UserReadingPreferences extends BaseEntity {
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @OneToMany(mappedBy = "readingPreferences", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserGenrePreferences> genrePreferences;
 
-    @Column
-    @Setter
-    private Float score;
 
 }
