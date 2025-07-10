@@ -27,13 +27,12 @@ class ReadingNoteMapper {
         );
     }
 
-    public static ReadingNote toReadingNote(ReadingNoteMutationDto noteDto,
-                                            ReadingBook readingBook) {
+    public static ReadingNote toReadingNote(ReadingNoteMutationDto noteDto, ReadingBook readingBook) {
         return new ReadingNote(
-            noteDto.title(),
-            noteDto.content(),
-            noteDto.pageFrom(),
-            noteDto.pageTo(),
+            noteDto.getTitle(),
+            noteDto.getContent(),
+            noteDto.getPageFrom(),
+            noteDto.getPageTo(),
             readingBook
         );
     }

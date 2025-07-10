@@ -217,6 +217,18 @@ CREATE TABLE reading_book
     updated_at          TIMESTAMPTZ
 );
 
+CREATE TABLE reading_session
+(
+    id                  BIGSERIAL PRIMARY KEY,
+    reading_book_id     BIGINT      NOT NULL REFERENCES reading_book (id),
+    page_from           INT         NOT NULL,
+    page_to             INT         NOT NULL,
+    started_reading_at  TIMESTAMPTZ NOT NULL,
+    finished_reading_at TIMESTAMPTZ NOT NULL,
+    created_at          TIMESTAMPTZ NOT NULL,
+    updated_at          TIMESTAMPTZ
+);
+
 CREATE TABLE reading_note
 (
     id              BIGSERIAL PRIMARY KEY,

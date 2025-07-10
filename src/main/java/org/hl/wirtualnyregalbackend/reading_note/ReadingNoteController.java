@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.reading_note;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
-import org.hl.wirtualnyregalbackend.reading_note.dto.NoteWithReadingBookIdDto;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteCreateDto;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteMutationDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,12 +26,10 @@ class ReadingNoteController {
     public ResponseEntity<?> createReadingNote(
         @Validated(CreateGroup.class)
         @RequestBody
-        NoteWithReadingBookIdDto body,
+        ReadingNoteCreateDto noteDto,
         UriComponentsBuilder uriBuilder
     ) {
-        Long bookshelfBookId = body.getReadingBookId();
-        ReadingNoteMutationDto noteDto = body.getNoteDto();
-        var response = noteService.createReadingNote(bookshelfBookId, noteDto);
+        var response = noteService.createReadingNote(noteDto);
 
         URI location = uriBuilder
             .path("/v1/reading-notes/{noteId}")

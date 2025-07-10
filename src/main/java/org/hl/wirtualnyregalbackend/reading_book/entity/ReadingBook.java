@@ -15,24 +15,23 @@ import java.time.Instant;
 @Entity
 @Table(name = "reading_book")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReadingBook extends BaseEntity {
 
     @Column
     @Enumerated(EnumType.STRING)
+    @Setter
     private ReadingStatus status;
 
     @Column
-    @Setter(AccessLevel.NONE)
     private Instant startedReadingAt;
 
     @Column
-    @Setter(AccessLevel.NONE)
     private Instant finishedReadingAt;
 
     @ManyToOne
     @JoinColumn(name = "bookshelf_id")
+    @Setter
     private Bookshelf bookshelf;
 
     @ManyToOne

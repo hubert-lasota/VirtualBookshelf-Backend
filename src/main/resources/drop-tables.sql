@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS notification;
 DROP TABLE IF EXISTS challenge_participant;
 DROP TABLE IF EXISTS challenge;
 DROP TABLE IF EXISTS reading_note;
+DROP TABLE IF EXISTS reading_session;
 DROP TABLE IF EXISTS reading_book;
 DROP TABLE IF EXISTS bookshelf;
 DROP TABLE IF EXISTS author_review;

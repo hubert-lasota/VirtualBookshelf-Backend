@@ -3,8 +3,9 @@ package org.hl.wirtualnyregalbackend.reading_note;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
-import org.hl.wirtualnyregalbackend.reading_book.ReadingBookService;
+import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteCreateDto;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteMutationDto;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponseDto;
 import org.hl.wirtualnyregalbackend.reading_note.entity.ReadingNote;
@@ -18,10 +19,10 @@ import java.util.Optional;
 public class ReadingNoteService {
 
     private final ReadingNoteRepository noteRepository;
-    private final ReadingBookService readingBookService;
+    private final ReadingBookHelper readingBookHelper;
 
-    public ReadingNoteResponseDto createReadingNote(Long readingBookId, ReadingNoteMutationDto noteDto) {
-        ReadingBook book = readingBookService.findReadingBookEntityId(readingBookId);
+    public ReadingNoteResponseDto createReadingNote(ReadingNoteCreateDto noteDto) {
+        ReadingBook book = readingBookHelper.findReadingBookEntityId(noteDto.getReadingBookId());
         ReadingNote note = ReadingNoteMapper.toReadingNote(noteDto, book);
         noteRepository.save(note);
         return ReadingNoteMapper.toReadingNoteResponseDto(note);
@@ -30,21 +31,24 @@ public class ReadingNoteService {
     public ReadingNoteResponseDto updateReadingNote(Long noteId, ReadingNoteMutationDto noteDto) {
         ReadingNote note = findReadingNoteEntityById(noteId);
 
-        Integer pageFrom = noteDto.pageFrom() == null
+        Integer dtoPageFrom = noteDto.getPageFrom();
+        Integer pageFrom = dtoPageFrom == null
             ? note.getPageFrom()
-            : noteDto.pageFrom();
-        Integer pageTo = noteDto.pageTo() == null
+            : dtoPageFrom;
+
+        Integer dtoPageTo = noteDto.getPageTo();
+        Integer pageTo = dtoPageTo == null
             ? note.getPageTo()
-            : noteDto.pageTo();
+            : dtoPageTo;
 
         note.setPageRange(pageFrom, pageTo);
 
-        String title = noteDto.title();
+        String title = noteDto.getTitle();
         if (title != null) {
             note.setTitle(title);
         }
 
-        String content = noteDto.content();
+        String content = noteDto.getContent();
         if (content != null) {
             note.setContent(content);
         }

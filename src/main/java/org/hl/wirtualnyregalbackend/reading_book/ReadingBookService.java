@@ -8,7 +8,6 @@ import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
 import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
-import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
 import org.hl.wirtualnyregalbackend.reading_book.dto.BookWithIdDto;
 import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookMutationDto;
@@ -30,13 +29,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class ReadingBookService {
 
     private final ReadingBookRepository readingBookRepository;
+    private final ReadingBookHelper readingBookHelper;
     private final BookshelfService bookshelfService;
     private final BookService bookService;
     private final BookReviewService bookReviewService;
@@ -56,7 +55,7 @@ public class ReadingBookService {
     }
 
     public ReadingBookResponseDto updateReadingBook(Long readingBookId, ReadingBookMutationDto readingBookDto) {
-        ReadingBook readingBook = findReadingBookEntityId(readingBookId);
+        ReadingBook readingBook = readingBookHelper.findReadingBookEntityId(readingBookId);
 
         ReadingStatus status = readingBookDto.getStatus();
         if (status != null) {
@@ -79,14 +78,14 @@ public class ReadingBookService {
 
     public ReadingBookResponseDto moveReadingBook(Long readingBookId, Long bookshelfId) {
         Bookshelf bookshelf = bookshelfService.findBookshelfById(bookshelfId);
-        ReadingBook readingBook = findReadingBookEntityId(readingBookId);
+        ReadingBook readingBook = readingBookHelper.findReadingBookEntityId(readingBookId);
         readingBook.setBookshelf(bookshelf);
         readingBookRepository.save(readingBook);
         return mapToReadingBookResponseDto(readingBook);
     }
 
     public ReadingBookResponseDto changeReadingBookStatus(Long bookshelfBookId, ReadingStatus status) {
-        ReadingBook book = findReadingBookEntityId(bookshelfBookId);
+        ReadingBook book = readingBookHelper.findReadingBookEntityId(bookshelfBookId);
         book.setStatus(status);
         readingBookRepository.save(book);
         return mapToReadingBookResponseDto(book);
@@ -106,18 +105,14 @@ public class ReadingBookService {
     }
 
     public ReadingBookResponseDto findReadingBookById(Long readingBookId) {
-        ReadingBook book = findReadingBookEntityId(readingBookId);
+        ReadingBook book = readingBookHelper.findReadingBookEntityId(readingBookId);
         return mapToReadingBookResponseDto(book);
     }
 
-    public ReadingBook findReadingBookEntityId(Long readingBookId) throws EntityNotFoundException {
-        Optional<ReadingBook> bookOpt = readingBookId != null ? readingBookRepository.findById(readingBookId) : Optional.empty();
-        return bookOpt.orElseThrow(() -> new EntityNotFoundException("ReadingBook with id: %d not found".formatted(readingBookId)));
-    }
 
     @Transactional
     public void deleteReadingBook(Long readingBookId) {
-        ReadingBook readingBook = findReadingBookEntityId(readingBookId);
+        ReadingBook readingBook = readingBookHelper.findReadingBookEntityId(readingBookId);
         eventPublisher.publishEvent(new ReadingBookDeletedEvent(readingBook));
         noteHelper.deleteNotesByBookshelfBookId(readingBookId);
         readingBookRepository.delete(readingBook);
