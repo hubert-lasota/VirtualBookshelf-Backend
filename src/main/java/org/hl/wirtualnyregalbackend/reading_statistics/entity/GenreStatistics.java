@@ -2,7 +2,6 @@ package org.hl.wirtualnyregalbackend.reading_statistics.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
@@ -12,7 +11,6 @@ import org.hl.wirtualnyregalbackend.security.entity.User;
 @Entity
 @Table(name = "genre_statistics")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Getter
 public class GenreStatistics extends BaseEntity {
 
@@ -20,16 +18,29 @@ public class GenreStatistics extends BaseEntity {
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    @Column(name = "genre_count")
-    private Long genreCount;
+    @Column(name = "book_count")
+    private Long bookCount;
+
+    @Column(name = "read_book_count")
+    private Long readBookCount;
 
     @JoinColumn(name = "user_id")
     @ManyToOne
     private User user;
 
+    public GenreStatistics(User user) {
+        this.user = user;
+        this.bookCount = 0L;
+        this.readBookCount = 0L;
+    }
 
-    public void incrementGenreCount() {
-        this.genreCount++;
+
+    public void incrementBookCount() {
+        this.bookCount++;
+    }
+
+    public void incrementReadBookCount() {
+        this.readBookCount++;
     }
 
 }

@@ -47,7 +47,7 @@ CREATE TABLE user_profile
     updated_at              TIMESTAMPTZ
 );
 
-
+-- BOOK
 CREATE TABLE book_format
 (
     id         BIGSERIAL PRIMARY KEY,
@@ -134,17 +134,7 @@ CREATE TABLE book_cover
 );
 
 
-CREATE TABLE book_review
-(
-    id         BIGSERIAL PRIMARY KEY,
-    user_id    BIGINT      NOT NULL REFERENCES users (id),
-    book_id    BIGINT      NOT NULL REFERENCES book (id),
-    rating     FLOAT       NOT NULL,
-    content    TEXT,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
-);
-
+-- AUTHOR
 CREATE TABLE author_profile_picture_binary
 (
     id          BIGSERIAL PRIMARY KEY,
@@ -182,6 +172,18 @@ CREATE TABLE book_author
     PRIMARY KEY (book_id, author_id)
 );
 
+-- REVIEW
+CREATE TABLE book_review
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT      NOT NULL REFERENCES users (id),
+    book_id    BIGINT      NOT NULL REFERENCES book (id),
+    rating     FLOAT       NOT NULL,
+    content    TEXT,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
 CREATE TABLE author_review
 (
     id         BIGSERIAL PRIMARY KEY,
@@ -193,7 +195,7 @@ CREATE TABLE author_review
     updated_at TIMESTAMPTZ
 );
 
-
+-- BOOKSHELF AND READING
 CREATE TABLE bookshelf
 (
     id          BIGSERIAL PRIMARY KEY,
@@ -241,6 +243,7 @@ CREATE TABLE reading_note
     updated_at      TIMESTAMPTZ
 );
 
+-- CHALLENGE
 CREATE TABLE challenge
 (
     id           BIGSERIAL PRIMARY KEY,
@@ -269,6 +272,7 @@ CREATE TABLE challenge_participant
 );
 
 -- TODO create notification types -> comment_notification etc
+-- NOTIFICATION
 CREATE TABLE notification
 (
     id         BIGSERIAL PRIMARY KEY,
@@ -280,10 +284,59 @@ CREATE TABLE notification
     updated_at TIMESTAMPTZ
 );
 
+-- STATISTICS AND RECOMMENDATION
+CREATE TABLE book_length_statistics
+(
+    id              BIGSERIAL PRIMARY KEY,
+    user_id         BIGINT REFERENCES users (id),
+    length          TEXT        NOT NULL,
+    book_count      BIGINT      NOT NULL,
+    read_book_count BIGINT      NOT NULL,
+    created_at      TIMESTAMPTZ NOT NULL,
+    updated_at      TIMESTAMPTZ NOT NULL
+);
+
+CREATE TABLE genre_statistics
+(
+    id              BIGSERIAL PRIMARY KEY,
+    user_id         BIGINT REFERENCES users (id),
+    genre_id        BIGINT REFERENCES genre (id),
+    book_count      BIGINT      NOT NULL,
+    read_book_count BIGINT      NOT NULL,
+    created_at      TIMESTAMPTZ NOT NULL,
+    updated_at      TIMESTAMPTZ NOT NULL
+);
+
+CREATE TABLE user_reading_statistics
+(
+    id                         BIGSERIAL PRIMARY KEY,
+    user_id                    BIGINT REFERENCES users (id),
+    total_read_books           BIGINT      NOT NULL,
+    total_read_pages           BIGINT      NOT NULL,
+    most_pages_read_in_session INTEGER     NOT NULL,
+    total_read_minutes         BIGINT      NOT NULL,
+    longest_read_minutes       INTEGER     NOT NULL,
+    current_reading_streak     INTEGER     NOT NULL,
+    longest_reading_streak     INTEGER     NOT NULL,
+    created_at                 TIMESTAMPTZ NOT NULL,
+    updated_at                 TIMESTAMPTZ
+);
+
+CREATE TABLE book_recommendation
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT      NOT NULL REFERENCES users (id),
+    book_id    BIGINT      NOT NULL REFERENCES book (id),
+    score      FLOAT       NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
 
 CREATE TABLE user_genre_preferences
 (
-    user_profile_id BIGINT REFERENCES user_profile (id),
-    genre_id        BIGINT REFERENCES genre (id),
-    PRIMARY KEY (user_profile_id, genre_id)
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT REFERENCES user_profile (id),
+    genre_id   BIGINT REFERENCES genre (id),
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
 );

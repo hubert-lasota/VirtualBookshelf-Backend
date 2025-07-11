@@ -13,8 +13,8 @@ public class ReadingNoteHelper {
         return noteRepository.countNotes(readingBookId);
     }
 
-    public void deleteNotesByBookshelfBookId(Long bookshelfBookId) {
-        noteRepository.deleteNotesByReadingBookId(bookshelfBookId);
+    public void deleteNotesByReadingBookId(Long readingBookId) {
+        noteRepository.deleteNotesByReadingBookId(readingBookId);
     }
 
 }

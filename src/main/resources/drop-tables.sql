@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS user_reading_statistics;
+DROP TABLE IF EXISTS genre_statistics;
+DROP TABLE IF EXISTS book_length_statistics;
 DROP TABLE IF EXISTS notification;
 DROP TABLE IF EXISTS challenge_participant;
 DROP TABLE IF EXISTS challenge;

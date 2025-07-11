@@ -27,16 +27,16 @@ public class ReadingBookController {
 
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasPermission(#body.bookshelfId, 'BOOKSHELF', 'CREATE')")
+    @PreAuthorize("hasPermission(#readingBookDto.bookshelfId, 'BOOKSHELF', 'CREATE')")
     public ResponseEntity<?> createReadingBook(
         @RequestPart("readingBook")
         @Validated(CreateGroup.class)
-        ReadingBookWithBookshelfIdDto body,
+        ReadingBookCreateDto readingBookDto,
         @RequestPart(value = "cover", required = false)
         MultipartFile cover,
         UriComponentsBuilder uriBuilder
     ) {
-        ReadingBookResponseDto response = readingBookService.createReadingBook(body.getBookshelfId(), body.getBookshelfBookDto(), cover);
+        ReadingBookResponseDto response = readingBookService.createReadingBook(readingBookDto, cover);
 
         URI location = uriBuilder
             .path("/v1/reading-books/{bookId}")
@@ -72,9 +72,9 @@ public class ReadingBookController {
         Long readingBookId,
         @RequestBody
         @Validated(UpdateGroup.class)
-        ReadingBookMutationDto bookshelfBookDto
+        ReadingBookMutationDto readingBookDto
     ) {
-        var response = readingBookService.updateReadingBook(readingBookId, bookshelfBookDto);
+        var response = readingBookService.updateReadingBook(readingBookId, readingBookDto);
         return ResponseEntity.ok(response);
     }
 

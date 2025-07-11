@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
+import org.hl.wirtualnyregalbackend.security.entity.User;
 
 @Entity
 @Table(name = "user_genre_preferences")
@@ -19,11 +20,11 @@ import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 public class UserGenrePreferences extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "user_reading_preferences_id")
-    private UserReadingPreferences readingPreferences;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "book_genre_id")
+    @JoinColumn(name = "genre_id")
     private Genre genre;
 
 }

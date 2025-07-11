@@ -10,12 +10,14 @@ import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
 import org.hl.wirtualnyregalbackend.reading_book.dto.BookWithIdDto;
+import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookCreateDto;
 import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookMutationDto;
 import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookResponseDto;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingStatus;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookCreatedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookDeletedEvent;
+import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookFinishedEvent;
 import org.hl.wirtualnyregalbackend.reading_note.ReadingNoteHelper;
 import org.hl.wirtualnyregalbackend.security.entity.User;
 import org.springframework.context.ApplicationEventPublisher;
@@ -42,10 +44,8 @@ public class ReadingBookService {
     private final ReadingNoteHelper noteHelper;
     private final ApplicationEventPublisher eventPublisher;
 
-    public ReadingBookResponseDto createReadingBook(Long bookshelfId,
-                                                    ReadingBookMutationDto readingBookDto,
-                                                    MultipartFile bookCover) {
-        Bookshelf bookshelf = bookshelfService.findBookshelfById(bookshelfId);
+    public ReadingBookResponseDto createReadingBook(ReadingBookCreateDto readingBookDto, MultipartFile bookCover) {
+        Bookshelf bookshelf = bookshelfService.findBookshelfById(readingBookDto.getBookshelfId());
         BookWithIdDto bookWithIdDto = readingBookDto.getBook();
         Book book = findOrCreateBook(bookWithIdDto.getId(), bookWithIdDto.getBookDto(), bookCover);
         ReadingBook readingBook = ReadingBookMapper.toReadingBook(readingBookDto, bookshelf, book);
@@ -84,9 +84,10 @@ public class ReadingBookService {
         return mapToReadingBookResponseDto(readingBook);
     }
 
-    public ReadingBookResponseDto changeReadingBookStatus(Long bookshelfBookId, ReadingStatus status) {
-        ReadingBook book = readingBookHelper.findReadingBookEntityId(bookshelfBookId);
+    public ReadingBookResponseDto changeReadingBookStatus(Long readingBookId, ReadingStatus status) {
+        ReadingBook book = readingBookHelper.findReadingBookEntityId(readingBookId);
         book.setStatus(status);
+        publishReadingBookFinishedEventIfRequired(book, status);
         readingBookRepository.save(book);
         return mapToReadingBookResponseDto(book);
     }
@@ -114,7 +115,8 @@ public class ReadingBookService {
     public void deleteReadingBook(Long readingBookId) {
         ReadingBook readingBook = readingBookHelper.findReadingBookEntityId(readingBookId);
         eventPublisher.publishEvent(new ReadingBookDeletedEvent(readingBook));
-        noteHelper.deleteNotesByBookshelfBookId(readingBookId);
+
+        noteHelper.deleteNotesByReadingBookId(readingBookId);
         readingBookRepository.delete(readingBook);
     }
 
@@ -124,6 +126,11 @@ public class ReadingBookService {
             .orElseGet(() -> bookService.createBookEntity(bookDto, cover));
     }
 
+    private void publishReadingBookFinishedEventIfRequired(ReadingBook readingBook, ReadingStatus status) {
+        if (ReadingStatus.READ.equals(status)) {
+            eventPublisher.publishEvent(new ReadingBookFinishedEvent(readingBook));
+        }
+    }
 
     private ReadingBookResponseDto mapToReadingBookResponseDto(ReadingBook readingBook) {
         ReviewStats stats = bookReviewService.getBookReviewStats(readingBook.getBook().getId());
