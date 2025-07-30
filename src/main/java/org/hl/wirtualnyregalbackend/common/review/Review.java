@@ -6,7 +6,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.security.entity.User;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 
 @MappedSuperclass
 @Getter

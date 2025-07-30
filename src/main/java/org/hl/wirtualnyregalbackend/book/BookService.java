@@ -21,7 +21,7 @@ import org.hl.wirtualnyregalbackend.genre.GenreService;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.publisher.PublisherService;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
-import org.hl.wirtualnyregalbackend.security.entity.User;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;

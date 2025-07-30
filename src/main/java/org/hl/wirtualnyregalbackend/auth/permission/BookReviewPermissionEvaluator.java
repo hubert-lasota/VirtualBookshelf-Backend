@@ -1,8 +1,8 @@
-package org.hl.wirtualnyregalbackend.security.permission;
+package org.hl.wirtualnyregalbackend.auth.permission;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
-import org.hl.wirtualnyregalbackend.security.entity.User;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 

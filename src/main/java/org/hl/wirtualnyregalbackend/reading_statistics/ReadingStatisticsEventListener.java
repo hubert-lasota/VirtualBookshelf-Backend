@@ -8,7 +8,7 @@ import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookCreatedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookFinishedEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadPagesEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadTodayEvent;
-import org.hl.wirtualnyregalbackend.security.entity.User;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.security.permission;
+package org.hl.wirtualnyregalbackend.auth.permission;
 
 public enum ResourceType {
     BOOK,

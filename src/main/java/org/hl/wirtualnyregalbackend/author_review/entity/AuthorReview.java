@@ -8,7 +8,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.common.review.Review;
-import org.hl.wirtualnyregalbackend.security.entity.User;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 
 import java.util.Objects;
 

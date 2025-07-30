@@ -1,8 +1,8 @@
-package org.hl.wirtualnyregalbackend.security;
+package org.hl.wirtualnyregalbackend.auth;
 
 import lombok.AllArgsConstructor;
-import org.hl.wirtualnyregalbackend.security.jwt.JwtFilter;
-import org.hl.wirtualnyregalbackend.security.permission.PermissionEvaluatorDispatcher;
+import org.hl.wirtualnyregalbackend.auth.jwt.JwtFilter;
+import org.hl.wirtualnyregalbackend.auth.permission.PermissionEvaluatorDispatcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;

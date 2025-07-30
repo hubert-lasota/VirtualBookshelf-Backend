@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.security;
+package org.hl.wirtualnyregalbackend.auth;
 
 import org.hl.wirtualnyregalbackend.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

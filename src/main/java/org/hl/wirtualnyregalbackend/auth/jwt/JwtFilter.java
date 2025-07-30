@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.security.jwt;
+package org.hl.wirtualnyregalbackend.auth.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static org.hl.wirtualnyregalbackend.security.SecurityConfig.EXCLUDED_PATHS;
+import static org.hl.wirtualnyregalbackend.auth.SecurityConfig.EXCLUDED_PATHS;
 
 @Component
 @AllArgsConstructor

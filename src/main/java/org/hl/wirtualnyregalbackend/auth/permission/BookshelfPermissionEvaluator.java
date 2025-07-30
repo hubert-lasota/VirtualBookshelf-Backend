@@ -1,7 +1,7 @@
-package org.hl.wirtualnyregalbackend.security.permission;
+package org.hl.wirtualnyregalbackend.auth.permission;
 
 import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
-import org.hl.wirtualnyregalbackend.security.entity.User;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 

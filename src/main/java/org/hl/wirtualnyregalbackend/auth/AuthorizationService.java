@@ -1,13 +1,13 @@
-package org.hl.wirtualnyregalbackend.security;
+package org.hl.wirtualnyregalbackend.auth;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
-import org.hl.wirtualnyregalbackend.security.dto.UserCredentialsDto;
-import org.hl.wirtualnyregalbackend.security.dto.UserSignInResponseDto;
-import org.hl.wirtualnyregalbackend.security.entity.Authority;
-import org.hl.wirtualnyregalbackend.security.entity.AuthorityName;
-import org.hl.wirtualnyregalbackend.security.entity.User;
-import org.hl.wirtualnyregalbackend.security.jwt.JwtService;
+import org.hl.wirtualnyregalbackend.auth.dto.UserCredentialsDto;
+import org.hl.wirtualnyregalbackend.auth.dto.UserSignInResponseDto;
+import org.hl.wirtualnyregalbackend.auth.entity.Authority;
+import org.hl.wirtualnyregalbackend.auth.entity.AuthorityName;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
+import org.hl.wirtualnyregalbackend.auth.jwt.JwtService;
 import org.hl.wirtualnyregalbackend.user.UserDefaultConfigurer;
 import org.hl.wirtualnyregalbackend.user.UserMapper;
 import org.hl.wirtualnyregalbackend.user.UserRepository;

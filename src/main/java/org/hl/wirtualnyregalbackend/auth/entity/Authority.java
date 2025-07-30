@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.security.entity;
+package org.hl.wirtualnyregalbackend.auth.entity;
 
 
 import jakarta.persistence.*;

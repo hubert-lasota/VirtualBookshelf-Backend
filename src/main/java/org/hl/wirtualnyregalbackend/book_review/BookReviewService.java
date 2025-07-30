@@ -10,7 +10,7 @@ import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.common.review.*;
-import org.hl.wirtualnyregalbackend.security.entity.User;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.user.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

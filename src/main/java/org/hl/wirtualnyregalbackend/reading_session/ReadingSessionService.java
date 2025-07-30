@@ -10,7 +10,7 @@ import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponseDt
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadPagesEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadTodayEvent;
-import org.hl.wirtualnyregalbackend.security.entity.User;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

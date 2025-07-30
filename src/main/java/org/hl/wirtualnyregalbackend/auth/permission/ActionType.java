@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.security.permission;
+package org.hl.wirtualnyregalbackend.auth.permission;
 
 public enum ActionType {
     CREATE, READ, UPDATE, DELETE;

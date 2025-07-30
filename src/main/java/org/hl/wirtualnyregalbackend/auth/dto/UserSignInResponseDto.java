@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.security.dto;
+package org.hl.wirtualnyregalbackend.auth.dto;
 
 import org.hl.wirtualnyregalbackend.user.dto.UserProfileDto;
 

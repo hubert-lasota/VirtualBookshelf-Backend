@@ -5,7 +5,7 @@ import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingStatus;
 import org.hl.wirtualnyregalbackend.reading_statistics.entity.BookLength;
 import org.hl.wirtualnyregalbackend.reading_statistics.entity.BookLengthStatistics;
-import org.hl.wirtualnyregalbackend.security.entity.User;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

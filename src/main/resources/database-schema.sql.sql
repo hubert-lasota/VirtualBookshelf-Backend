@@ -157,7 +157,6 @@ CREATE TABLE author_profile_picture
 CREATE TABLE author
 (
     id                        BIGSERIAL PRIMARY KEY,
-    user_id                   BIGINT REFERENCES users (id),
     author_profile_picture_id BIGINT REFERENCES author_profile_picture (id),
     full_name                 TEXT,
     description               TEXT,

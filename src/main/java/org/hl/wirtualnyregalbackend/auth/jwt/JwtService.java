@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.security.jwt;
+package org.hl.wirtualnyregalbackend.auth.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

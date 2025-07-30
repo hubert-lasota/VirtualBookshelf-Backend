@@ -19,7 +19,7 @@ import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookCreatedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookDeletedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookFinishedEvent;
 import org.hl.wirtualnyregalbackend.reading_note.ReadingNoteHelper;
-import org.hl.wirtualnyregalbackend.security.entity.User;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.jpa.domain.Specification;
