@@ -1,9 +1,9 @@
 package org.hl.wirtualnyregalbackend.book_review;
 
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.book_review.dto.BookReviewCreateDto;
 import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 
 public class BookReviewMapper {
 

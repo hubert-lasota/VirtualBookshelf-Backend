@@ -2,8 +2,8 @@ package org.hl.wirtualnyregalbackend.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
+import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 
 @Entity

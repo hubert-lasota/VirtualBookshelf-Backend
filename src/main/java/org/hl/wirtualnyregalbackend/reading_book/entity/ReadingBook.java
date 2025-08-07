@@ -51,7 +51,7 @@ public class ReadingBook extends BaseEntity {
     }
 
     public void setReadingPeriod(Instant startedReadingAt, Instant finishedReadingAt) {
-        if (startedReadingAt.isAfter(finishedReadingAt)) {
+        if (finishedReadingAt != null && startedReadingAt.isAfter(finishedReadingAt)) {
             throw new InvalidRequestException("Started reading time must be before finished reading time.");
         }
         this.startedReadingAt = startedReadingAt;

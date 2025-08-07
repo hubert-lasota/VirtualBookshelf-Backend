@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteCreateDto;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteMutationDto;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteUpdateDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +52,7 @@ class ReadingNoteController {
     }
 
     @PatchMapping("/{noteId}")
-    public ResponseEntity<?> updateReadingNote(@PathVariable Long noteId, @Validated(UpdateGroup.class) @RequestBody ReadingNoteMutationDto noteDto) {
+    public ResponseEntity<?> updateReadingNote(@PathVariable Long noteId, @Validated(UpdateGroup.class) @RequestBody ReadingNoteUpdateDto noteDto) {
         var response = noteService.updateReadingNote(noteId, noteDto);
         return ResponseEntity.ok(response);
     }

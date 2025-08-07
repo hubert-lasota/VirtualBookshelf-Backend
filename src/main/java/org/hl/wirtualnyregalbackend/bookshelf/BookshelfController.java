@@ -1,11 +1,11 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
 import lombok.AllArgsConstructor;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

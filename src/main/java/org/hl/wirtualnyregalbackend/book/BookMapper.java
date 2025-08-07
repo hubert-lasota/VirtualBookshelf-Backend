@@ -84,19 +84,19 @@ public class BookMapper {
         String coverUrl = cover != null ? cover.getUrl() : null;
 
         return new BookResponseDto(
+            book.getId(),
             book.getIsbn(),
             book.getTitle(),
-            book.getPublicationYear(),
-            book.getPageCount(),
-            book.getLanguage(),
-            book.getDescription(),
-            coverUrl,
-            publisherDto,
             authors,
-            genres,
-            book.getId(),
+            coverUrl,
             formatDto,
-            reviewStats
+            genres,
+            reviewStats,
+            publisherDto,
+            book.getPageCount(),
+            book.getPublicationYear(),
+            book.getLanguage(),
+            book.getDescription()
         );
     }
 

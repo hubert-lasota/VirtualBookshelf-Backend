@@ -3,7 +3,6 @@ package org.hl.wirtualnyregalbackend.author.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 
 @Entity
 @Table(name = "author")
@@ -22,9 +21,5 @@ public class Author extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "author_profile_picture_id")
     private AuthorProfilePicture AuthorProfilePicture;
-    // TODO do usuniecia user z autora
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
 }

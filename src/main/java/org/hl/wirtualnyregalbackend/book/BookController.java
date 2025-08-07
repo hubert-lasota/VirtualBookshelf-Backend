@@ -1,10 +1,10 @@
 package org.hl.wirtualnyregalbackend.book;
 
 import lombok.AllArgsConstructor;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +30,8 @@ class BookController {
         var response = bookService.createBook(bookMutationDto, coverFile);
 
         URI location = uriBuilder
-            .path("/v1/books/{}")
-            .buildAndExpand(response.getId())
+            .path("/v1/books/{bookId}")
+            .buildAndExpand(response.id())
             .toUri();
 
         return ResponseEntity.created(location).body(response);

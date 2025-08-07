@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 
 import java.time.Instant;
 import java.util.Objects;

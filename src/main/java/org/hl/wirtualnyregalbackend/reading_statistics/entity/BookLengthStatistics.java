@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
+import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 @Entity
 @Table(name = "book_length_statistics")

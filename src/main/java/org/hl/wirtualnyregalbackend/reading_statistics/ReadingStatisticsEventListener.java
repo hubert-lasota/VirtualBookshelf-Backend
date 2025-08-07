@@ -1,6 +1,7 @@
 package org.hl.wirtualnyregalbackend.reading_statistics;
 
 import lombok.AllArgsConstructor;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingStatus;
@@ -8,7 +9,6 @@ import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookCreatedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookFinishedEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadPagesEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadTodayEvent;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;

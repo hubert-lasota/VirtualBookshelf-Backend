@@ -2,9 +2,9 @@ package org.hl.wirtualnyregalbackend.challenge.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 
 import java.time.Instant;
 

@@ -1,9 +1,9 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 
 class BookshelfMapper {
 

@@ -3,6 +3,7 @@ package org.hl.wirtualnyregalbackend.bookshelf;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
@@ -10,7 +11,6 @@ import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 

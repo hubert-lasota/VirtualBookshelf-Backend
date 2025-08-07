@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReadingSessionCreateDto extends ReadingSessionMutationDto {
+public class ReadingSessionCreateDto extends ReadingSessionUpdateDto {
 
     @NotNull
     private Long readingBookId;

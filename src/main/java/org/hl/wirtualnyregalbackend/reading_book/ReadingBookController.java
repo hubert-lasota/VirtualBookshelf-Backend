@@ -2,10 +2,10 @@ package org.hl.wirtualnyregalbackend.reading_book;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.reading_book.dto.*;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,7 +40,7 @@ public class ReadingBookController {
 
         URI location = uriBuilder
             .path("/v1/reading-books/{bookId}")
-            .buildAndExpand(response.getId())
+            .buildAndExpand(response.id())
             .toUri();
 
         return ResponseEntity.created(location).body(response);
@@ -72,7 +72,7 @@ public class ReadingBookController {
         Long readingBookId,
         @RequestBody
         @Validated(UpdateGroup.class)
-        ReadingBookMutationDto readingBookDto
+        ReadingBookUpdateDto readingBookDto
     ) {
         var response = readingBookService.updateReadingBook(readingBookId, readingBookDto);
         return ResponseEntity.ok(response);
@@ -88,7 +88,7 @@ public class ReadingBookController {
 
     @PatchMapping("/{readingBookId}/change-status")
     @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'UPDATE')")
-    public ResponseEntity<?> markReadingBookAsRead(@PathVariable Long readingBookId, ChangeStatusRequestDto body) {
+    public ResponseEntity<?> markReadingBookAsRead(@PathVariable Long readingBookId, @RequestBody ChangeStatusRequestDto body) {
         var response = readingBookService.changeReadingBookStatus(readingBookId, body.status());
         return ResponseEntity.ok(response);
     }

@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 
 @Entity
 @Table(name = "genre_statistics")
@@ -28,7 +28,8 @@ public class GenreStatistics extends BaseEntity {
     @ManyToOne
     private User user;
 
-    public GenreStatistics(User user) {
+    public GenreStatistics(Genre genre, User user) {
+        this.genre = genre;
         this.user = user;
         this.bookCount = 0L;
         this.readBookCount = 0L;

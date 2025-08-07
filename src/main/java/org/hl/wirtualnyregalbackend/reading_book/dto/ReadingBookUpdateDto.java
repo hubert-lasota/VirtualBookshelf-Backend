@@ -10,7 +10,7 @@ import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReadingBookMutationDto extends BaseReadingBookDto {
+public class ReadingBookUpdateDto extends BaseReadingBookDto {
 
     @NotNull(groups = CreateGroup.class)
     @Valid

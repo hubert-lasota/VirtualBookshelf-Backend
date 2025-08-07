@@ -28,7 +28,7 @@ public class AuthorMapper {
     public static Author toAuthor(AuthorMutationDto authorDto) {
         String photoUrl = authorDto.getPhotoUrl();
         AuthorProfilePicture authorProfilePicture = photoUrl != null ? new AuthorProfilePicture(authorDto.getPhotoUrl()) : null;
-        return new Author(authorDto.getFullName(), authorDto.getDescription(), authorProfilePicture, null);
+        return new Author(authorDto.getFullName(), authorDto.getDescription(), authorProfilePicture);
     }
 
 }

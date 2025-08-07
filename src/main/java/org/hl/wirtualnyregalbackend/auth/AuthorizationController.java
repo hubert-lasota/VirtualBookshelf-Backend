@@ -1,8 +1,8 @@
 package org.hl.wirtualnyregalbackend.auth;
 
 import lombok.AllArgsConstructor;
-import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.auth.dto.UserCredentialsDto;
+import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

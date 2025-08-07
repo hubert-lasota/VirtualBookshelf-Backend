@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.reading_book.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +29,7 @@ abstract class BaseReadingBookDto {
     @JsonProperty
     protected Instant finishedReadingAt;
 
-
+    @JsonIgnore
     @AssertTrue(message = "startedReadingAt must be before finishedReadingAt")
     public boolean isValid() {
         return RangeDateValidator.isValid(startedReadingAt, finishedReadingAt);

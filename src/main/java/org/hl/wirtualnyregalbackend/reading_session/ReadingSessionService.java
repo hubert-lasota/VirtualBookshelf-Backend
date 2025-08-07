@@ -1,16 +1,16 @@
 package org.hl.wirtualnyregalbackend.reading_session;
 
 import lombok.AllArgsConstructor;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateDto;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionMutationDto;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponseDto;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionUpdateDto;
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadPagesEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadTodayEvent;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +43,7 @@ class ReadingSessionService {
         return ReadingSessionMapper.toReadingSessionResponseDto(session);
     }
 
-    public ReadingSessionResponseDto updateReadingSession(Long sessionId, ReadingSessionMutationDto sessionDto) {
+    public ReadingSessionResponseDto updateReadingSession(Long sessionId, ReadingSessionUpdateDto sessionDto) {
         ReadingSession session = findReadingSessionEntityById(sessionId);
 
         Integer pageFrom = sessionDto.getPageFrom();

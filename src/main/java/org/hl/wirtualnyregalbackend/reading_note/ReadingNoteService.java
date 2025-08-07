@@ -6,8 +6,8 @@ import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteCreateDto;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteMutationDto;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponseDto;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteUpdateDto;
 import org.hl.wirtualnyregalbackend.reading_note.entity.ReadingNote;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class ReadingNoteService {
         return ReadingNoteMapper.toReadingNoteResponseDto(note);
     }
 
-    public ReadingNoteResponseDto updateReadingNote(Long noteId, ReadingNoteMutationDto noteDto) {
+    public ReadingNoteResponseDto updateReadingNote(Long noteId, ReadingNoteUpdateDto noteDto) {
         ReadingNote note = findReadingNoteEntityById(noteId);
 
         Integer dtoPageFrom = noteDto.getPageFrom();

@@ -7,7 +7,7 @@ import java.time.Instant;
 public record ReadingNoteResponseDto(
     Long id,
     @JsonUnwrapped
-    ReadingNoteMutationDto dto,
+    ReadingNoteUpdateDto dtoToUnwrap,
     Instant createdAt,
     Instant updatedAt
 ) {

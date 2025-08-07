@@ -331,6 +331,17 @@ CREATE TABLE book_recommendation
     updated_at TIMESTAMPTZ
 );
 
+CREATE TABLE author_recommendation
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT      NOT NULL REFERENCES users (id),
+    author_id  BIGINT      NOT NULL REFERENCES author (id),
+    score      FLOAT       NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+
 CREATE TABLE user_genre_preferences
 (
     id         BIGSERIAL PRIMARY KEY,

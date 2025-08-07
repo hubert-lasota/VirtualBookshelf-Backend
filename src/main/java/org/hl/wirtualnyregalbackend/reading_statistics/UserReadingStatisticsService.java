@@ -1,8 +1,8 @@
 package org.hl.wirtualnyregalbackend.reading_statistics;
 
 import lombok.AllArgsConstructor;
-import org.hl.wirtualnyregalbackend.reading_statistics.entity.UserReadingStatistics;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
+import org.hl.wirtualnyregalbackend.reading_statistics.entity.UserReadingStatistics;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
