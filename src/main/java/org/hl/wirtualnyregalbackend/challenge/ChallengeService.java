@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class ChallengeService {
+class ChallengeService {
 
 
 }

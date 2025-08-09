@@ -2,10 +2,12 @@ package org.hl.wirtualnyregalbackend.book_format;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,10 +21,14 @@ public class BookFormatService {
     private final BookFormatRepository bookFormatRepository;
 
 
-    public List<BookFormatDto> findBookFormats() {
+    public List<BookFormatDto> findBookFormats(Boolean availableInBookshelf, User user) {
+        Specification<BookFormat> spec = availableInBookshelf != null
+            ? BookFormatSpecification.availableInBookshelf(availableInBookshelf, user)
+            : Specification.where(null);
+
         Locale locale = LocaleContextHolder.getLocale();
         return bookFormatRepository
-            .findAll()
+            .findAll(spec)
             .stream()
             .map(format -> BookFormatMapper.toBookFormatDto(format, locale))
             .toList();

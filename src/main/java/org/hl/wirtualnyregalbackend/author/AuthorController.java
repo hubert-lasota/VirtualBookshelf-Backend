@@ -1,10 +1,12 @@
 package org.hl.wirtualnyregalbackend.author;
 
 import lombok.AllArgsConstructor;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +25,10 @@ class AuthorController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findAuthors(Pageable pageable) {
-        var response = authorService.findAuthors(pageable);
+    public ResponseEntity<?> findAuthors(@RequestParam(required = false) Boolean availableInBookshelf,
+                                         @AuthenticationPrincipal User user,
+                                         Pageable pageable) {
+        var response = authorService.findAuthors(availableInBookshelf, user, pageable);
         return ResponseEntity.ok(response);
     }
 
