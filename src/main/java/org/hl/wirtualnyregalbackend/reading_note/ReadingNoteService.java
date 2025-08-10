@@ -6,6 +6,7 @@ import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteCreateDto;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteListResponseDto;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponseDto;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteUpdateDto;
 import org.hl.wirtualnyregalbackend.reading_note.entity.ReadingNote;
@@ -62,12 +63,14 @@ public class ReadingNoteService {
         return ReadingNoteMapper.toReadingNoteResponseDto(note);
     }
 
-    public List<ReadingNoteResponseDto> findReadingNotes(Long readingBookId) {
-        List<ReadingNote> notes = noteRepository.findReadingNotesByReadingBookId(readingBookId);
-        return notes
+    public ReadingNoteListResponseDto findReadingNotes(Long readingBookId) {
+        List<ReadingNoteResponseDto> notes = noteRepository
+            .findReadingNotesByReadingBookId(readingBookId)
             .stream()
             .map(ReadingNoteMapper::toReadingNoteResponseDto)
             .toList();
+
+        return new ReadingNoteListResponseDto(notes);
     }
 
     public void deleteReadingNoteById(Long noteId) {

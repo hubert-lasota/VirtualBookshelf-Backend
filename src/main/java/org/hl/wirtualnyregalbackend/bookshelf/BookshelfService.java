@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfListResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfMutationDto;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
@@ -84,12 +85,13 @@ public class BookshelfService {
         bookshelfRepository.deleteById(id);
     }
 
-    public List<BookshelfResponseDto> findUserBookshelves(Long userId) {
-        return bookshelfRepository
+    public BookshelfListResponseDto findUserBookshelves(Long userId) {
+        List<BookshelfResponseDto> bookshelves = bookshelfRepository
             .findByUserId(userId)
             .stream()
             .map(this::mapToBookshelfResponseDto)
             .toList();
+        return new BookshelfListResponseDto(bookshelves);
     }
 
     public boolean isUserBookshelfAuthor(Long bookshelfId, Long userId) {

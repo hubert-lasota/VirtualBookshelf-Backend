@@ -10,10 +10,7 @@ import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
 import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
-import org.hl.wirtualnyregalbackend.reading_book.dto.BookWithIdDto;
-import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookCreateDto;
-import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookResponseDto;
-import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookUpdateDto;
+import org.hl.wirtualnyregalbackend.reading_book.dto.*;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingStatus;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookCreatedEvent;
@@ -92,17 +89,18 @@ public class ReadingBookService {
         return mapToReadingBookResponseDto(book);
     }
 
-    public List<ReadingBookResponseDto> findUserReadingBooks(User user, @Nullable String query) {
+    public ReadingBookListResponseDto findUserReadingBooks(User user, @Nullable String query) {
         Specification<ReadingBook> spec = ReadingBookSpecification.byUser(user);
         if (query != null) {
             spec = spec.and(ReadingBookSpecification.byQuery(query));
         }
 
-        return readingBookRepository
+        List<ReadingBookResponseDto> books = readingBookRepository
             .findAll(spec)
             .stream()
             .map(this::mapToReadingBookResponseDto)
             .toList();
+        return new ReadingBookListResponseDto(books);
     }
 
     public ReadingBookResponseDto findReadingBookById(Long readingBookId) {

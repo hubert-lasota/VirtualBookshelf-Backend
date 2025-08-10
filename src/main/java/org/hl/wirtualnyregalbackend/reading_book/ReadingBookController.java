@@ -6,6 +6,7 @@ import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.reading_book.dto.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/reading-books")
@@ -28,7 +28,7 @@ public class ReadingBookController {
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasPermission(#readingBookDto.bookshelfId, 'BOOKSHELF', 'CREATE')")
-    public ResponseEntity<?> createReadingBook(
+    public ResponseEntity<ReadingBookResponseDto> createReadingBook(
         @RequestPart("readingBook")
         @Validated(CreateGroup.class)
         ReadingBookCreateDto readingBookDto,
@@ -48,56 +48,50 @@ public class ReadingBookController {
 
     @GetMapping("/{readingBookId}")
     @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'READ')")
-    public ResponseEntity<?> findReadingBook(@PathVariable Long readingBookId) {
-        var response = readingBookService.findReadingBookById(readingBookId);
-        return ResponseEntity.ok(response);
+    public ReadingBookResponseDto findReadingBook(@PathVariable Long readingBookId) {
+        return readingBookService.findReadingBookById(readingBookId);
     }
 
     @GetMapping
-    public ResponseEntity<?> findCurrentUserReadingBooks(
+    public ReadingBookListResponseDto findCurrentUserReadingBooks(
         @RequestParam(required = false)
         String query,
         @AuthenticationPrincipal
         User user
     ) {
-        var response = readingBookService.findUserReadingBooks(user, query);
-        Map<String, Object> responseMap = Map.of("readingBooks", response);
-        return ResponseEntity.ok(responseMap);
+        return readingBookService.findUserReadingBooks(user, query);
     }
 
     @PatchMapping("/{readingBookId}")
     @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'DELETE')")
-    public ResponseEntity<?> updateReadingBook(
+    public ReadingBookResponseDto updateReadingBook(
         @PathVariable
         Long readingBookId,
         @RequestBody
         @Validated(UpdateGroup.class)
         ReadingBookUpdateDto readingBookDto
     ) {
-        var response = readingBookService.updateReadingBook(readingBookId, readingBookDto);
-        return ResponseEntity.ok(response);
+        return readingBookService.updateReadingBook(readingBookId, readingBookDto);
     }
 
     @PatchMapping("/{readingBookId}/move")
     @PreAuthorize("hasPermission(#request.bookshelfId, 'BOOKSHELF', 'UPDATE')")
-    public ResponseEntity<?> moveReadingBook(@PathVariable Long readingBookId,
-                                             @Valid @RequestBody MoveReadingBookDto request) {
-        var response = readingBookService.moveReadingBook(readingBookId, request.bookshelfId());
-        return ResponseEntity.ok(response);
+    public ReadingBookResponseDto moveReadingBook(@PathVariable Long readingBookId,
+                                                  @Valid @RequestBody MoveReadingBookDto request) {
+        return readingBookService.moveReadingBook(readingBookId, request.bookshelfId());
     }
 
     @PatchMapping("/{readingBookId}/change-status")
     @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'UPDATE')")
-    public ResponseEntity<?> markReadingBookAsRead(@PathVariable Long readingBookId, @RequestBody ChangeStatusRequestDto body) {
-        var response = readingBookService.changeReadingBookStatus(readingBookId, body.status());
-        return ResponseEntity.ok(response);
+    public ReadingBookResponseDto markReadingBookAsRead(@PathVariable Long readingBookId, @RequestBody ChangeStatusRequestDto body) {
+        return readingBookService.changeReadingBookStatus(readingBookId, body.status());
     }
 
     @DeleteMapping("/{readingBookId}")
     @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'DELETE')")
-    public ResponseEntity<?> deleteReadingBook(@PathVariable Long readingBookId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReadingBook(@PathVariable Long readingBookId) {
         readingBookService.deleteReadingBook(readingBookId);
-        return ResponseEntity.noContent().build();
     }
 
 }

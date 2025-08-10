@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.author.AuthorService;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
-import org.hl.wirtualnyregalbackend.book.dto.AuthorWithIdDto;
-import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
-import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
-import org.hl.wirtualnyregalbackend.book.dto.PublisherWithIdDto;
+import org.hl.wirtualnyregalbackend.book.dto.*;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.book.event.BookFoundEvent;
 import org.hl.wirtualnyregalbackend.book_cover.BookCoverService;
@@ -16,7 +13,6 @@ import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_format.BookFormatService;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
 import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
-import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
 import org.hl.wirtualnyregalbackend.genre.GenreService;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
@@ -89,7 +85,7 @@ public class BookService {
         return book;
     }
 
-    public PageResponseDto<BookResponseDto> findBooks(String query, Pageable pageable) {
+    public BookPageResponseDto findBooks(String query, Pageable pageable) {
         Specification<Book> spec = Specification
             .where(BookSpecification.titleIgnoreCaseLike(query))
             .or(BookSpecification.authorFullNameIgnoreCaseLike(query))
@@ -113,7 +109,7 @@ public class BookService {
 
             return mapToBookResponseDto(book, stats);
         });
-        return new PageResponseDto<>(responsePage, "books");
+        return BookPageResponseDto.from(responsePage);
     }
 
     public BookResponseDto findBookById(Long bookId, User user) {

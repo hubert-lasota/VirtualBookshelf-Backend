@@ -4,11 +4,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorPageResponseDto;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorResponseDto;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
-import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -27,16 +27,17 @@ public class AuthorService {
         return AuthorMapper.toAuthorResponseDto(author);
     }
 
-    public PageResponseDto<AuthorResponseDto> findAuthors(Boolean availableInBookshelf,
-                                                          User user,
-                                                          Pageable pageable) {
+    public AuthorPageResponseDto findAuthors(Boolean availableInBookshelf,
+                                             User user,
+                                             Pageable pageable) {
         Specification<Author> spec = availableInBookshelf != null
             ? AuthorSpecification.availableInBookshelf(availableInBookshelf, user)
             : Specification.where(null);
 
-        Page<Author> authorPage = authorRepository.findAll(spec, pageable);
-        Page<AuthorResponseDto> authorDtoPage = authorPage.map(AuthorMapper::toAuthorResponseDto);
-        return new PageResponseDto<>(authorDtoPage, "authors");
+        Page<AuthorResponseDto> authorPage = authorRepository
+            .findAll(spec, pageable)
+            .map(AuthorMapper::toAuthorResponseDto);
+        return AuthorPageResponseDto.from(authorPage);
     }
 
     public Author findOrCreateAuthor(Long id, AuthorMutationDto authorMutationDto) {

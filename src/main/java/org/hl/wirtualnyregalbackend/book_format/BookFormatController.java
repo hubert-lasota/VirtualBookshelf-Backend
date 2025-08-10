@@ -1,32 +1,27 @@
 package org.hl.wirtualnyregalbackend.book_format;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
-import org.springframework.http.ResponseEntity;
+import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatListResponseDto;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/v1/book-formats")
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 class BookFormatController {
 
     private final BookFormatService bookFormatService;
 
 
     @GetMapping
-    public ResponseEntity<?> findBookFormats(@RequestParam(required = false) Boolean availableInBookshelf,
-                                             @AuthenticationPrincipal User user) {
-        List<BookFormatDto> formats = bookFormatService.findBookFormats(availableInBookshelf, user);
-        Map<String, List<BookFormatDto>> response = Map.of("formats", formats);
-        return ResponseEntity.ok(response);
+    public BookFormatListResponseDto findBookFormats(@RequestParam(required = false) Boolean availableInBookshelf,
+                                                     @AuthenticationPrincipal User user) {
+        return bookFormatService.findBookFormats(availableInBookshelf, user);
     }
 
 }

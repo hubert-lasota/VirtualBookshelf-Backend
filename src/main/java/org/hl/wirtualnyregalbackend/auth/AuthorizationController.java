@@ -1,7 +1,9 @@
 package org.hl.wirtualnyregalbackend.auth;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.dto.UserCredentialsDto;
+import org.hl.wirtualnyregalbackend.auth.dto.UserSignInResponseDto;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -11,22 +13,20 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/auth")
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 class AuthorizationController {
 
     private final AuthorizationService authorizationService;
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Validated(CreateGroup.class) @RequestBody UserCredentialsDto credentials) {
-        var response = authorizationService.registerUser(credentials);
-        return ResponseEntity.ok(response);
+    public UserSignInResponseDto registerUser(@Validated(CreateGroup.class) @RequestBody UserCredentialsDto credentials) {
+        return authorizationService.registerUser(credentials);
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<?> signIn(@RequestBody UserCredentialsDto credentials) {
-        var response = authorizationService.signIn(credentials);
-        return ResponseEntity.ok(response);
+    public UserSignInResponseDto signIn(@RequestBody UserCredentialsDto credentials) {
+        return authorizationService.signIn(credentials);
     }
 
     // TODO raczej do usuniecia

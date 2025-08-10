@@ -9,7 +9,6 @@ import org.hl.wirtualnyregalbackend.book_review.dto.BookReviewCreateDto;
 import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
-import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.common.review.*;
 import org.hl.wirtualnyregalbackend.user.UserService;
 import org.springframework.data.domain.Page;
@@ -70,10 +69,11 @@ public class BookReviewService {
         return ReviewUtils.roundAverage(raws);
     }
 
-    public PageResponseDto<ReviewResponseDto> findBookReviews(Long bookId, Pageable pageable) {
-        Page<BookReview> page = bookReviewRepository.findByBookId(bookId, pageable);
-        Page<ReviewResponseDto> response = page.map(ReviewMapper::toReviewResponseDto);
-        return new PageResponseDto<>(response, "reviews");
+    public ReviewPageResponseDto findBookReviews(Long bookId, Pageable pageable) {
+        Page<ReviewResponseDto> page = bookReviewRepository
+            .findByBookId(bookId, pageable)
+            .map(ReviewMapper::toReviewResponseDto);
+        return ReviewPageResponseDto.from(page);
     }
 
     public boolean isAuthor(Long bookRatingId, Long userId) {

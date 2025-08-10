@@ -6,6 +6,7 @@ import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateDto;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionListResponseDto;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponseDto;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionUpdateDto;
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
@@ -88,12 +89,11 @@ class ReadingSessionService {
     }
 
 
-    public List<ReadingSessionResponseDto> findReadingSessions(User user) {
-        List<ReadingSession> sessions = sessionRepository.findByUserId(user.getId());
-        return sessions
-            .stream()
+    public ReadingSessionListResponseDto findReadingSessions(User user) {
+        List<ReadingSessionResponseDto> sessions = sessionRepository.findByUserId(user.getId()).stream()
             .map(ReadingSessionMapper::toReadingSessionResponseDto)
             .toList();
+        return new ReadingSessionListResponseDto(sessions);
     }
 
 

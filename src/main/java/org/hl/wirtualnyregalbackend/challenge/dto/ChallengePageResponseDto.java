@@ -1,11 +1,18 @@
 package org.hl.wirtualnyregalbackend.challenge.dto;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
+
+import org.hl.wirtualnyregalbackend.common.model.PageMeta;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public record ChallengePageResponseDto(
-    @JsonUnwrapped
-    PageResponseDto<ChallengeResponseDto> page,
-    ChallengeStatistics challengeStatistics
+    List<ChallengeResponseDto> challenges,
+    PageMeta pageMeta
 ) {
+
+    public static ChallengePageResponseDto from(Page<ChallengeResponseDto> page) {
+        return new ChallengePageResponseDto(page.getContent(), PageMeta.from(page));
+    }
+
 }

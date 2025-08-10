@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
-import org.hl.wirtualnyregalbackend.common.model.PageResponseDto;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherMutationDto;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherPageResponseDto;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponseDto;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
 import org.springframework.data.domain.Page;
@@ -24,10 +24,11 @@ public class PublisherService {
         return PublisherMapper.toPublisherResponseDto(publisher);
     }
 
-    public PageResponseDto<PublisherResponseDto> findPublishers(Pageable pageable) {
-        Page<Publisher> publishers = publisherRepository.findAll(pageable);
-        Page<PublisherResponseDto> publisherDtos = publishers.map(PublisherMapper::toPublisherResponseDto);
-        return new PageResponseDto<>(publisherDtos, "publishers");
+    public PublisherPageResponseDto findPublishers(Pageable pageable) {
+        Page<PublisherResponseDto> page = publisherRepository
+            .findAll(pageable)
+            .map(PublisherMapper::toPublisherResponseDto);
+        return PublisherPageResponseDto.from(page);
     }
 
     public Publisher findOrCreatePublisher(Long id, PublisherMutationDto publisherDto) {
