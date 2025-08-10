@@ -13,8 +13,8 @@ public record PageMeta(
         return new PageMeta(
             page.getTotalPages(),
             page.getTotalElements(),
-            page.getNumberOfElements(),
-            page.getNumber()
+            page.getNumber(),
+            page.getNumberOfElements()
         );
     }
 }
