@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.challenge.entity;
+package org.hl.wirtualnyregalbackend.challenge.model;
 
 public enum ChallengeType {
     BOOK_COUNT,

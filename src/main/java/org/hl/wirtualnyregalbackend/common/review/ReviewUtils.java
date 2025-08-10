@@ -7,13 +7,13 @@ public class ReviewUtils {
     private ReviewUtils() {
     }
 
-    public static List<ReviewStats> roundAverage(List<ReviewStats> reviewStats) {
+    public static List<ReviewStatistics> roundAverage(List<ReviewStatistics> reviewStats) {
         return reviewStats.stream()
             .map(stats -> {
                 Double roundedAvg = stats.average() != null
                     ? Math.round(stats.average() * 10.0) / 10.0
                     : 0.0;
-                return new ReviewStats(stats.entityId(), roundedAvg, stats.total());
+                return new ReviewStatistics(stats.entityId(), roundedAvg, stats.total());
             })
             .toList();
     }

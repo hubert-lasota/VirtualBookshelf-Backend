@@ -3,6 +3,7 @@ package org.hl.wirtualnyregalbackend.book;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
+import org.hl.wirtualnyregalbackend.book.dto.BookDetailsResponseDto;
 import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
 import org.hl.wirtualnyregalbackend.book.dto.BookPageResponseDto;
 import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
@@ -47,9 +48,9 @@ class BookController {
     }
 
     @GetMapping("/{id}")
-    public BookResponseDto findBookById(@PathVariable Long id,
-                                        @AuthenticationPrincipal User user) {
-        return bookService.findBookById(id, user);
+    public BookDetailsResponseDto findBookDetailsById(@PathVariable Long id,
+                                                      @AuthenticationPrincipal User user) {
+        return bookService.findBookDetailsById(id, user);
     }
 
     @PatchMapping("/{id}")

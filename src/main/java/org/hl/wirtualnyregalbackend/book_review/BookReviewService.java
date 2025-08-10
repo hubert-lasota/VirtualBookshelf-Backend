@@ -56,16 +56,16 @@ public class BookReviewService {
         bookReviewRepository.delete(bookReview);
     }
 
-    public ReviewStats getBookReviewStats(Long bookId) {
-        List<ReviewStats> stats = getBookReviewStatsByBookIds(List.of(bookId));
+    public ReviewStatistics getBookReviewStats(Long bookId) {
+        List<ReviewStatistics> stats = getBookReviewStatsByBookIds(List.of(bookId));
         if (stats.isEmpty()) {
             return null;
         }
         return stats.get(0);
     }
 
-    public List<ReviewStats> getBookReviewStatsByBookIds(List<Long> bookIds) {
-        List<ReviewStats> raws = bookReviewRepository.getReviewStatsByBookIds(bookIds);
+    public List<ReviewStatistics> getBookReviewStatsByBookIds(List<Long> bookIds) {
+        List<ReviewStatistics> raws = bookReviewRepository.getReviewStatsByBookIds(bookIds);
         return ReviewUtils.roundAverage(raws);
     }
 

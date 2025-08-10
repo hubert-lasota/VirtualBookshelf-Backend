@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.author;
 
+import org.hl.wirtualnyregalbackend.author.dto.AuthorDetailsResponseDto;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorResponseDto;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
@@ -10,19 +11,28 @@ public class AuthorMapper {
     private AuthorMapper() {
     }
 
-    public static AuthorMutationDto toAuthorMutationDto(Author author) {
-        AuthorProfilePicture picture = author.getAuthorProfilePicture();
-        String url = picture != null ? picture.getUrl() : null;
-        return new AuthorMutationDto(
+    public static AuthorResponseDto toAuthorResponseDto(Author author) {
+        return new AuthorResponseDto(
+            author.getId(),
             author.getFullName(),
-            url,
-            author.getDescription()
+            getPhotoUrl(author)
         );
     }
 
-    public static AuthorResponseDto toAuthorResponseDto(Author author) {
-        AuthorMutationDto dto = toAuthorMutationDto(author);
-        return new AuthorResponseDto(author.getId(), dto, author.getCreatedAt(), author.getUpdatedAt());
+    public static AuthorDetailsResponseDto toAuthorDetailsResponseDto(Author author) {
+        return new AuthorDetailsResponseDto(
+            author.getId(),
+            author.getFullName(),
+            getPhotoUrl(author),
+            author.getDescription(),
+            author.getCreatedAt(),
+            author.getUpdatedAt()
+        );
+    }
+
+    private static String getPhotoUrl(Author author) {
+        AuthorProfilePicture profilePicture = author.getAuthorProfilePicture();
+        return profilePicture != null ? profilePicture.getUrl() : null;
     }
 
     public static Author toAuthor(AuthorMutationDto authorDto) {

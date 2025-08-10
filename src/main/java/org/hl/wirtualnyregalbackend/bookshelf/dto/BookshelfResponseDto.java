@@ -1,13 +1,14 @@
 package org.hl.wirtualnyregalbackend.bookshelf.dto;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
 
 import java.time.Instant;
 
 public record BookshelfResponseDto(
     Long id,
-    @JsonUnwrapped
-    BookshelfMutationDto dto,
+    String name,
+    BookshelfType type,
+    String description,
     Long totalBooks,
     Instant createdAt,
     Instant updatedAt

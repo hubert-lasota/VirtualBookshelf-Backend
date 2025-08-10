@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.reading_book;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingStatus;
+import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadPagesEvent;
 import org.springframework.context.event.EventListener;

@@ -20,15 +20,11 @@ class BookshelfMapper {
     }
 
     public static BookshelfResponseDto toBookshelfResponseDto(Bookshelf bookshelf, Long totalBooks) {
-        BookshelfMutationDto bookshelfDto = new BookshelfMutationDto(
-            bookshelf.getName(),
-            bookshelf.getType(),
-            bookshelf.getDescription()
-        );
-
         return new BookshelfResponseDto(
             bookshelf.getId(),
-            bookshelfDto,
+            bookshelf.getName(),
+            bookshelf.getType(),
+            bookshelf.getDescription(),
             totalBooks,
             bookshelf.getCreatedAt(),
             bookshelf.getUpdatedAt()

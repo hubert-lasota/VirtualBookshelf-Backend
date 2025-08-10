@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.RangeDateValidator;
-import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingStatus;
+import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
 
 import java.time.Instant;
 

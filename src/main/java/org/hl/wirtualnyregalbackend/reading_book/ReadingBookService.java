@@ -6,19 +6,16 @@ import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book.BookService;
 import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
-import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
 import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
-import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
 import org.hl.wirtualnyregalbackend.reading_book.dto.*;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingStatus;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookCreatedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookDeletedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookFinishedEvent;
+import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
 import org.hl.wirtualnyregalbackend.reading_note.ReadingNoteHelper;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -27,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -37,7 +33,6 @@ public class ReadingBookService {
     private final ReadingBookHelper readingBookHelper;
     private final BookshelfService bookshelfService;
     private final BookService bookService;
-    private final BookReviewService bookReviewService;
     private final ReadingNoteHelper noteHelper;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -131,11 +126,9 @@ public class ReadingBookService {
     }
 
     private ReadingBookResponseDto mapToReadingBookResponseDto(ReadingBook readingBook) {
-        ReviewStats stats = bookReviewService.getBookReviewStats(readingBook.getBook().getId());
         Long totalNotes = noteHelper.getTotalNotes(readingBook.getId());
-        Locale locale = LocaleContextHolder.getLocale();
         // TODO
-        return ReadingBookMapper.toReadingBookResponseDto(readingBook, stats, totalNotes, 0, 0F, locale);
+        return ReadingBookMapper.toReadingBookResponseDto(readingBook, totalNotes, 0, 0F);
     }
 
 

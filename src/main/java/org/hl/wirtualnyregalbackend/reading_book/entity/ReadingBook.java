@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
+import org.hl.wirtualnyregalbackend.common.validation.RangeDateValidator;
+import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
 
 import java.time.Instant;
 
@@ -51,9 +52,7 @@ public class ReadingBook extends BaseEntity {
     }
 
     public void setReadingPeriod(Instant startedReadingAt, Instant finishedReadingAt) {
-        if (finishedReadingAt != null && startedReadingAt.isAfter(finishedReadingAt)) {
-            throw new InvalidRequestException("Started reading time must be before finished reading time.");
-        }
+        RangeDateValidator.validate(startedReadingAt, finishedReadingAt, "startedReadingAt", "finishedReadingAt");
         this.startedReadingAt = startedReadingAt;
         this.finishedReadingAt = finishedReadingAt;
     }

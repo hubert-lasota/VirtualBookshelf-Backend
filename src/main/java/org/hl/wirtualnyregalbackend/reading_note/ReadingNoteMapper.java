@@ -12,16 +12,12 @@ class ReadingNoteMapper {
 
 
     public static ReadingNoteResponseDto toReadingNoteResponseDto(ReadingNote note) {
-        ReadingNoteUpdateDto dto = new ReadingNoteUpdateDto(
+        return new ReadingNoteResponseDto(
+            note.getId(),
             note.getTitle(),
             note.getContent(),
             note.getPageFrom(),
-            note.getPageTo()
-        );
-
-        return new ReadingNoteResponseDto(
-            note.getId(),
-            dto,
+            note.getPageTo(),
             note.getCreatedAt(),
             note.getUpdatedAt()
         );

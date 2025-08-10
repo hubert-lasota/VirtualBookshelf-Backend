@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.book_review;
 
 import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
-import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
+import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +19,7 @@ interface BookReviewRepository extends JpaRepository<BookReview, Long> {
     Page<BookReview> findByBookId(Long bookId, Pageable pageable);
 
     @Query("""
-        select new org.hl.wirtualnyregalbackend.common.review.ReviewStats(
+        select new org.hl.wirtualnyregalbackend.common.review.ReviewStatistics(
             b.book.id,
             avg(b.rating),
             count(b)
@@ -28,7 +28,7 @@ interface BookReviewRepository extends JpaRepository<BookReview, Long> {
         where b.book.id in :bookIds
         group by b.book.id
         """)
-    List<ReviewStats> getReviewStatsByBookIds(List<Long> bookIds);
+    List<ReviewStatistics> getReviewStatsByBookIds(List<Long> bookIds);
 
     @Query("select count(b) > 0 from BookReview b where b.book.id = :bookId and b.user.id = :userId")
     boolean existsByBookIdAndUserId(Long bookId, Long userId);

@@ -4,13 +4,10 @@ import org.hl.wirtualnyregalbackend.book.BookMapper;
 import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
-import org.hl.wirtualnyregalbackend.common.review.ReviewStats;
-import org.hl.wirtualnyregalbackend.reading_book.dto.BookshelfHeaderResponseDto;
+import org.hl.wirtualnyregalbackend.reading_book.dto.BookshelfSummaryResponseDto;
 import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookResponseDto;
 import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookUpdateDto;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-
-import java.util.Locale;
 
 public class ReadingBookMapper {
 
@@ -31,15 +28,13 @@ public class ReadingBookMapper {
     }
 
     public static ReadingBookResponseDto toReadingBookResponseDto(ReadingBook readingBook,
-                                                                  ReviewStats stats,
                                                                   Long totalNotes,
                                                                   Integer currentPage,
-                                                                  Float progressPercentage,
-                                                                  Locale locale) {
-        BookResponseDto book = BookMapper.toBookResponseDto(readingBook.getBook(), stats, locale);
+                                                                  Float progressPercentage) {
+        BookResponseDto book = BookMapper.toBookResponseDto(readingBook.getBook());
 
         Bookshelf bookshelf = readingBook.getBookshelf();
-        BookshelfHeaderResponseDto bookshelfDto = new BookshelfHeaderResponseDto(bookshelf.getId(), bookshelf.getName());
+        BookshelfSummaryResponseDto bookshelfDto = new BookshelfSummaryResponseDto(bookshelf.getId(), bookshelf.getName());
 
         return new ReadingBookResponseDto(
             readingBook.getId(),
