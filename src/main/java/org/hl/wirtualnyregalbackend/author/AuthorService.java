@@ -3,6 +3,7 @@ package org.hl.wirtualnyregalbackend.author;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorDetailsResponseDto;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorPageResponseDto;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorResponseDto;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -25,6 +28,11 @@ public class AuthorService {
     public AuthorResponseDto createAuthor(AuthorMutationDto authorDto) {
         Author author = createAuthorEntity(authorDto);
         return AuthorMapper.toAuthorResponseDto(author);
+    }
+
+    public AuthorDetailsResponseDto findAuthorDetailsById(Long authorId) {
+        Author author = findAuthorEntityById(authorId);
+        return AuthorMapper.toAuthorDetailsResponseDto(author);
     }
 
     public AuthorPageResponseDto findAuthors(Boolean availableInBookshelf,
@@ -42,8 +50,7 @@ public class AuthorService {
 
     public Author findOrCreateAuthor(Long id, AuthorMutationDto authorMutationDto) {
         if (id != null) {
-            return authorRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Author with id='%d' not found".formatted(id)));
+            return findAuthorEntityById(id);
         }
 
         return createAuthorEntity(authorMutationDto);
@@ -57,6 +64,11 @@ public class AuthorService {
         }
         Author author = AuthorMapper.toAuthor(authorDto);
         return authorRepository.save(author);
+    }
+
+    private Author findAuthorEntityById(Long id) {
+        Optional<Author> authorOpt = id != null ? authorRepository.findById(id) : Optional.empty();
+        return authorOpt.orElseThrow(() -> new EntityNotFoundException("Author with id='%d' not found".formatted(id)));
     }
 
 }
