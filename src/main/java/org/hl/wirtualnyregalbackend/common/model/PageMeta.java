@@ -11,10 +11,10 @@ public record PageMeta(
 
     public static PageMeta from(Page<?> page) {
         return new PageMeta(
-            page.getTotalPages(),
+            page.getNumberOfElements(),
             page.getTotalElements(),
             page.getNumber(),
-            page.getNumberOfElements()
+            page.getTotalPages()
         );
     }
 }
