@@ -19,8 +19,11 @@ import java.util.Objects;
 public class ChallengeParticipant extends BaseEntity {
 
     @Column
+    private Integer currentCount;
+
+    @Column
     @Enumerated(EnumType.STRING)
-    private ChallengeStatus status;
+    private ChallengeParticipantStatus status;
 
     @Column
     private Instant startedAt;
@@ -32,6 +35,7 @@ public class ChallengeParticipant extends BaseEntity {
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -39,25 +43,33 @@ public class ChallengeParticipant extends BaseEntity {
     public ChallengeParticipant(Challenge challenge, Instant startedAt, User user) {
         this.challenge = Objects.requireNonNull(challenge, "challenge cannot be null");
         this.user = Objects.requireNonNull(user, "user cannot be null");
-        this.status = ChallengeStatus.STARTED;
+        this.status = ChallengeParticipantStatus.ACTIVE;
         this.startedAt = startedAt;
+        this.currentCount = 0;
     }
 
-    public void won(Instant finishedAt) {
-        changeStatusToOtherThanStarted(ChallengeStatus.WON, finishedAt);
+    public void completed(Instant finishedAt) {
+        changeStatusToOtherThanActive(ChallengeParticipantStatus.COMPLETED, finishedAt);
     }
 
-    public void lost(Instant finishedAt) {
-        changeStatusToOtherThanStarted(ChallengeStatus.LOST, finishedAt);
+    public void uncompleted(Instant finishedAt) {
+        changeStatusToOtherThanActive(ChallengeParticipantStatus.UNCOMPLETED, finishedAt);
+    }
+
+    public void incrementCurrentCount() {
+        Integer targetCount = challenge.getTargetCount();
+        if (!targetCount.equals(currentCount)) {
+            this.currentCount++;
+        }
     }
 
 
-    private void changeStatusToOtherThanStarted(ChallengeStatus newStatus, Instant finishedAt) {
-        if (status == ChallengeStatus.STARTED) {
+    private void changeStatusToOtherThanActive(ChallengeParticipantStatus newStatus, Instant finishedAt) {
+        if (status == ChallengeParticipantStatus.ACTIVE) {
             this.status = newStatus;
             this.finishedAt = finishedAt;
         } else {
-            throw new InvalidRequestException("You can't change status to %s if status is not STARTED".formatted(newStatus.toString()));
+            throw new InvalidRequestException("You can't change status to %s if status is not ACTIVE".formatted(newStatus.toString()));
         }
     }
 

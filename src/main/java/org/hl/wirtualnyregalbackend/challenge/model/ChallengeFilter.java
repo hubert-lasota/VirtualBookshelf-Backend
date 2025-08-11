@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.challenge.model;
 
-public record ChallengeFilters(
-
+public record ChallengeFilter(
+    Boolean participating
 ) {
 }

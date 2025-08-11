@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.user;
 
 import org.hl.wirtualnyregalbackend.auth.dto.UserSignInResponseDto;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.user.dto.UserHeaderResponseDto;
+import org.hl.wirtualnyregalbackend.user.dto.UserResponseDto;
 import org.hl.wirtualnyregalbackend.user.dto.UserProfileDto;
 import org.hl.wirtualnyregalbackend.user.entity.UserProfile;
 import org.hl.wirtualnyregalbackend.user.entity.UserProfilePicture;
@@ -12,14 +12,14 @@ public class UserMapper {
     private UserMapper() {
     }
 
-    public static UserHeaderResponseDto toUserHeaderResponseDto(User user) {
+    public static UserResponseDto toUserResponseDto(User user) {
         UserProfileDto profile = toUserProfileDto(user.getUserProfile());
-        return new UserHeaderResponseDto(user.getId(), user.getUsername(), profile);
+        return new UserResponseDto(user.getId(), user.getUsername(), profile);
     }
 
     public static UserSignInResponseDto toUserSignInResponseDto(User user, String jwt) {
         UserProfile profile = user.getUserProfile();
-        UserProfileDto profileDto = profile != null ? UserMapper.toUserProfileDto(user.getUserProfile()) : null;
+        UserProfileDto profileDto = profile != null ? toUserProfileDto(user.getUserProfile()) : null;
         return new UserSignInResponseDto(
             user.getId(),
             user.getUsername(),
@@ -28,7 +28,7 @@ public class UserMapper {
         );
     }
 
-    public static UserProfileDto toUserProfileDto(UserProfile profile) {
+    private static UserProfileDto toUserProfileDto(UserProfile profile) {
         UserProfilePicture profilePicture = profile.getProfilePicture();
         String pictureUrl = profilePicture != null ? profilePicture.getUrl() : null;
         return new UserProfileDto(

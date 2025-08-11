@@ -260,14 +260,15 @@ CREATE TABLE challenge
 
 CREATE TABLE challenge_participant
 (
-    id           BIGSERIAL PRIMARY KEY,
-    challenge_id BIGINT      NOT NULL REFERENCES challenge (id),
-    user_id      BIGINT      NOT NULL REFERENCES users (id),
-    status       VARCHAR(50),
-    started_at   TIMESTAMPTZ NOT NULL,
-    finished_at  TIMESTAMPTZ,
-    created_at   TIMESTAMPTZ NOT NULL,
-    updated_at   TIMESTAMPTZ
+    id            BIGSERIAL PRIMARY KEY,
+    challenge_id  BIGINT      NOT NULL REFERENCES challenge (id),
+    user_id       BIGINT      NOT NULL REFERENCES users (id),
+    current_count INTEGER     NOT NULL,
+    status        VARCHAR(50),
+    started_at    TIMESTAMPTZ NOT NULL,
+    finished_at   TIMESTAMPTZ,
+    created_at    TIMESTAMPTZ NOT NULL,
+    updated_at    TIMESTAMPTZ
 );
 
 -- TODO create notification types -> comment_notification etc

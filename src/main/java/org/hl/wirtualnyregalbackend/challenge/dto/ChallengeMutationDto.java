@@ -15,9 +15,11 @@ public record ChallengeMutationDto(
     @NotNull(groups = CreateGroup.class)
     @StringConstraints
     @Max(75)
+    @Min(1)
     String title,
     @NotNull(groups = CreateGroup.class)
-    @Max(1000)
+    @Max(500)
+    @Min(1)
     String description,
     @NotNull(groups = CreateGroup.class)
     ChallengeType type,

@@ -7,7 +7,9 @@ import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeMutationDto;
 import org.hl.wirtualnyregalbackend.challenge.dto.ChallengePageResponseDto;
 import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeResponseDto;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
+import org.hl.wirtualnyregalbackend.challenge.model.ChallengeFilter;
 import org.hl.wirtualnyregalbackend.challenge_participant.ChallengeParticipantHelper;
+import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengeParticipant;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
 import org.hl.wirtualnyregalbackend.genre.GenreService;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
@@ -16,7 +18,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
@@ -36,6 +37,7 @@ class ChallengeService {
             : genreService.findGenreById(challengeDto.genreId());
         Challenge challenge = ChallengeMapper.toChallenge(challengeDto, genre, user);
         challengeRepository.save(challenge);
+        participantHelper.createChallengeParticipant(challenge);
         return mapToChallengeResponseDto(challenge);
     }
 
@@ -69,9 +71,9 @@ class ChallengeService {
         return challengeOpt.orElseThrow(() -> new IllegalArgumentException("Challenge with id = '%d' not found.".formatted(challengeId)));
     }
 
-    public ChallengePageResponseDto findChallenges(@Nullable User participant, Pageable pageable) {
+    public ChallengePageResponseDto findChallenges(ChallengeFilter filter, User participant, Pageable pageable) {
         Specification<Challenge> spec = Specification.where(null);
-        if (participant != null) {
+        if (filter.participating() != null) {
             spec = ChallengeSpecification.byParticipant(participant);
         }
 
@@ -92,7 +94,8 @@ class ChallengeService {
             ? null
             : GenreMapper.toGenreResponseDto(challenge.getGenre(), locale);
         Long totalParticipants = participantHelper.findTotalParticipantsByChallengeId(challenge.getId());
-        return ChallengeMapper.toChallengeResponseDto(challenge, genreDto, totalParticipants);
+        ChallengeParticipant participant = participantHelper.findCurrentUserParticipant(challenge.getId());
+        return ChallengeMapper.toChallengeResponseDto(challenge, participant, genreDto, totalParticipants);
     }
 
 }

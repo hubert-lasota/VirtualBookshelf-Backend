@@ -25,9 +25,7 @@ class BookshelfMapper {
             bookshelf.getName(),
             bookshelf.getType(),
             bookshelf.getDescription(),
-            totalBooks,
-            bookshelf.getCreatedAt(),
-            bookshelf.getUpdatedAt()
+            totalBooks
         );
     }
 
