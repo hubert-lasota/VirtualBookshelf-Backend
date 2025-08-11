@@ -10,6 +10,7 @@ import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.challenge.model.ChallengeFilter;
 import org.hl.wirtualnyregalbackend.challenge_participant.ChallengeParticipantHelper;
 import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengeParticipant;
+import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
 import org.hl.wirtualnyregalbackend.genre.GenreService;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
@@ -84,8 +85,12 @@ class ChallengeService {
         return ChallengePageResponseDto.from(page);
     }
 
-    public void deleteChallenge(Long challengeId) {
-        challengeRepository.deleteById(challengeId);
+    public void quitChallenge(Long challengeId) {
+        ChallengeParticipant participant = participantHelper.findCurrentUserParticipant(challengeId);
+        if (participant == null) {
+            throw new EntityNotFoundException("ChallengeParticipant not found for challengeId: %d and and current usr".formatted(challengeId));
+        }
+        participantHelper.deleteParticipant(participant);
     }
 
     private ChallengeResponseDto mapToChallengeResponseDto(Challenge challenge) {

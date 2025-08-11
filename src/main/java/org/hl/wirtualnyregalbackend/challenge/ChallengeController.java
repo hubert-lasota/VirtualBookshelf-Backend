@@ -48,4 +48,10 @@ public class ChallengeController {
         return challengeService.findChallenges(filter, user, pageable);
     }
 
+    @DeleteMapping("/{challengeId}/quit")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void quitChallenge(@PathVariable Long challengeId) {
+        challengeService.quitChallenge(challengeId);
+    }
+
 }
