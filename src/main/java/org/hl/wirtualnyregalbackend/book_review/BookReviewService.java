@@ -10,12 +10,11 @@ import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.review.*;
-import org.hl.wirtualnyregalbackend.user.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,7 +23,6 @@ public class BookReviewService {
 
     private final BookReviewRepository bookReviewRepository;
     private final BookHelper bookHelper;
-    private final UserService userService;
 
 
     public ReviewResponseDto createBookReview(BookReviewCreateDto reviewDto, User user) {
@@ -38,7 +36,7 @@ public class BookReviewService {
     }
 
     public ReviewResponseDto updateBookReview(Long bookReviewId, ReviewDto reviewDto) {
-        BookReview bookReview = findBookReviewEntityById(bookReviewId);
+        BookReview bookReview = findBookReviewById(bookReviewId);
         Float rating = reviewDto.getRating();
         if (rating != null) {
             bookReview.setRating(rating);
@@ -52,21 +50,15 @@ public class BookReviewService {
     }
 
     public void deleteBookReview(Long bookReviewId) {
-        BookReview bookReview = findBookReviewEntityById(bookReviewId);
+        BookReview bookReview = findBookReviewById(bookReviewId);
         bookReviewRepository.delete(bookReview);
     }
 
-    public ReviewStatistics getBookReviewStats(Long bookId) {
-        List<ReviewStatistics> stats = getBookReviewStatsByBookIds(List.of(bookId));
-        if (stats.isEmpty()) {
-            return null;
-        }
-        return stats.get(0);
-    }
 
-    public List<ReviewStatistics> getBookReviewStatsByBookIds(List<Long> bookIds) {
-        List<ReviewStatistics> raws = bookReviewRepository.getReviewStatsByBookIds(bookIds);
-        return ReviewUtils.roundAverage(raws);
+    public ReviewStatistics getBookReviewStatistics(Long bookId) {
+        return bookReviewRepository
+            .getReviewStatsByBookId(bookId)
+            .orElse(new ReviewStatistics(bookId, 0D, 0L));
     }
 
     public ReviewPageResponseDto findBookReviews(Long bookId, Pageable pageable) {
@@ -80,9 +72,14 @@ public class BookReviewService {
         return bookReviewRepository.isAuthor(bookRatingId, userId);
     }
 
-    public BookReview findBookReviewEntityById(Long id) throws EntityNotFoundException {
+    private BookReview findBookReviewById(Long id) throws EntityNotFoundException {
+        return bookReviewRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("BookReview not found for id: %d".formatted(id)));
+    }
+
+    @Nullable
+    public BookReview findBookReviewEntityById(Long id) {
         Optional<BookReview> reviewOpt = id != null ? bookReviewRepository.findById(id) : Optional.empty();
-        return reviewOpt.orElseThrow(() -> new EntityNotFoundException("BookReview with id = '%d' not found.".formatted(id)));
+        return reviewOpt.orElse(null);
     }
 
 }

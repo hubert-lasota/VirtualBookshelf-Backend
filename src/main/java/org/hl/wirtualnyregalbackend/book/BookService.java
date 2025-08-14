@@ -13,6 +13,7 @@ import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_format.BookFormatService;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
 import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
+import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.hl.wirtualnyregalbackend.genre.GenreService;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
@@ -101,9 +102,10 @@ public class BookService {
         Book book = bookHelper.findBookById(bookId);
         BookFoundEvent event = new BookFoundEvent(book, user);
         eventPublisher.publishEvent(event);
-        ReviewStatistics reviewStats = bookReviewService.getBookReviewStats(bookId);
+        ReviewStatistics reviewStats = bookReviewService.getBookReviewStatistics(bookId);
+        BookReview review = bookReviewService.findBookReviewEntityById(bookId);
         Locale locale = LocaleContextHolder.getLocale();
-        return BookMapper.toBookDetailsResponseDto(book, reviewStats, locale);
+        return BookMapper.toBookDetailsResponseDto(book, reviewStats, review, locale);
     }
 
     @Transactional

@@ -8,8 +8,11 @@ import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorPageResponseDto;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorResponseDto;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
+import org.hl.wirtualnyregalbackend.author_review.AuthorReviewService;
+import org.hl.wirtualnyregalbackend.author_review.entity.AuthorReview;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,7 +26,7 @@ import java.util.Optional;
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
-
+    private final AuthorReviewService reviewService;
 
     public AuthorResponseDto createAuthor(AuthorMutationDto authorDto) {
         Author author = createAuthorEntity(authorDto);
@@ -32,7 +35,9 @@ public class AuthorService {
 
     public AuthorDetailsResponseDto findAuthorDetailsById(Long authorId) {
         Author author = findAuthorEntityById(authorId);
-        return AuthorMapper.toAuthorDetailsResponseDto(author);
+        ReviewStatistics stats = reviewService.getAuthorReviewStats(authorId);
+        AuthorReview review = reviewService.findAuthorReviewEntityById(authorId);
+        return AuthorMapper.toAuthorDetailsResponseDto(author, stats, review);
     }
 
     public AuthorPageResponseDto findAuthors(Boolean availableInBookshelf,

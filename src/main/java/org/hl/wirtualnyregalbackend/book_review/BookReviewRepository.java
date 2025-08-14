@@ -8,13 +8,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 interface BookReviewRepository extends JpaRepository<BookReview, Long> {
 
-    @Query("select count(b) > 0 from BookReview b where b.id = :bookRatingId and b.user.id = :userId")
-    boolean isAuthor(Long bookRatingId, Long userId);
+    @Query("select count(b) > 0 from BookReview b where b.id = :bookReviewId and b.user.id = :userId")
+    boolean isAuthor(Long bookReviewId, Long userId);
 
     Page<BookReview> findByBookId(Long bookId, Pageable pageable);
 
@@ -25,10 +25,10 @@ interface BookReviewRepository extends JpaRepository<BookReview, Long> {
             count(b)
         )
         from BookReview b
-        where b.book.id in :bookIds
+        where b.book.id in :bookId
         group by b.book.id
         """)
-    List<ReviewStatistics> getReviewStatsByBookIds(List<Long> bookIds);
+    Optional<ReviewStatistics> getReviewStatsByBookId(Long bookId);
 
     @Query("select count(b) > 0 from BookReview b where b.book.id = :bookId and b.user.id = :userId")
     boolean existsByBookIdAndUserId(Long bookId, Long userId);

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorResponseDto;
 import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
 import org.hl.wirtualnyregalbackend.common.json.LocaleDeserializer;
+import org.hl.wirtualnyregalbackend.common.review.ReviewResponseDto;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponseDto;
@@ -21,6 +22,7 @@ public record BookDetailsResponseDto(
     BookFormatDto format,
     List<GenreResponseDto> genres,
     ReviewStatistics reviewStatistics,
+    ReviewResponseDto review,
     PublisherResponseDto publisher,
     Integer pageCount,
     Integer publicationYear,

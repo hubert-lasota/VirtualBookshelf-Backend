@@ -11,6 +11,9 @@ import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_format.BookFormatMapper;
 import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
+import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
+import org.hl.wirtualnyregalbackend.common.review.ReviewMapper;
+import org.hl.wirtualnyregalbackend.common.review.ReviewResponseDto;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
@@ -18,6 +21,7 @@ import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.publisher.PublisherMapper;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponseDto;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 import java.util.Locale;
@@ -69,6 +73,7 @@ public class BookMapper {
 
     public static BookDetailsResponseDto toBookDetailsResponseDto(Book book,
                                                                   ReviewStatistics reviewStats,
+                                                                  @Nullable BookReview review,
                                                                   Locale locale) {
         BookFormat format = book.getFormat();
         BookFormatDto formatDto = format != null ? BookFormatMapper.toBookFormatDto(format, locale) : null;
@@ -93,6 +98,7 @@ public class BookMapper {
         BookCover cover = book.getCover();
         String coverUrl = cover != null ? cover.getUrl() : null;
 
+        ReviewResponseDto reviewDto = review != null ? ReviewMapper.toReviewResponseDto(review) : null;
         return new BookDetailsResponseDto(
             book.getId(),
             book.getIsbn(),
@@ -102,6 +108,7 @@ public class BookMapper {
             formatDto,
             genres,
             reviewStats,
+            reviewDto,
             publisherDto,
             book.getPageCount(),
             book.getPublicationYear(),
