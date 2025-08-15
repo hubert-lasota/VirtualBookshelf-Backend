@@ -19,6 +19,8 @@ import org.hl.wirtualnyregalbackend.genre.GenreService;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.publisher.PublisherService;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
+import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
+import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -53,6 +55,7 @@ public class BookService {
     private final AuthorService authorService;
     private final PublisherService publisherService;
     private final BookReviewService bookReviewService;
+    private final ReadingBookHelper readingBookHelper;
 
 
     public BookResponseDto createBook(BookMutationDto bookMutationDto, MultipartFile coverFile) {
@@ -105,7 +108,8 @@ public class BookService {
         ReviewStatistics reviewStats = bookReviewService.getBookReviewStatistics(bookId);
         BookReview review = bookReviewService.findBookReviewEntityById(bookId);
         Locale locale = LocaleContextHolder.getLocale();
-        return BookMapper.toBookDetailsResponseDto(book, reviewStats, review, locale);
+        ReadingBook rb = readingBookHelper.findUserReadingBookByBookId(bookId, user);
+        return BookMapper.toBookDetailsResponseDto(book, reviewStats, review, locale, rb);
     }
 
     @Transactional

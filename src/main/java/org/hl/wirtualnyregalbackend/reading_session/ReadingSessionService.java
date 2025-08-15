@@ -31,7 +31,7 @@ class ReadingSessionService {
 
     @Transactional
     public ReadingSessionResponseDto createReadingSession(ReadingSessionCreateDto sessionDto) {
-        ReadingBook rb = readingBookHelper.findReadingBookEntityId(sessionDto.getReadingBookId());
+        ReadingBook rb = readingBookHelper.findReadingBookEntityById(sessionDto.getReadingBookId());
         ReadingSession session = ReadingSessionMapper.toReadingSession(sessionDto, rb);
         sessionRepository.save(session);
 

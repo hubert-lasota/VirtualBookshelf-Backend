@@ -47,7 +47,7 @@ public class ReadingBookService {
     }
 
     public ReadingBookResponseDto updateReadingBook(Long readingBookId, ReadingBookUpdateDto readingBookDto) {
-        ReadingBook readingBook = readingBookHelper.findReadingBookEntityId(readingBookId);
+        ReadingBook readingBook = readingBookHelper.findReadingBookEntityById(readingBookId);
 
         ReadingStatus status = readingBookDto.getStatus();
         if (status != null) {
@@ -70,14 +70,14 @@ public class ReadingBookService {
 
     public ReadingBookResponseDto moveReadingBook(Long readingBookId, Long bookshelfId) {
         Bookshelf bookshelf = bookshelfService.findBookshelfById(bookshelfId);
-        ReadingBook readingBook = readingBookHelper.findReadingBookEntityId(readingBookId);
+        ReadingBook readingBook = readingBookHelper.findReadingBookEntityById(readingBookId);
         readingBook.setBookshelf(bookshelf);
         readingBookRepository.save(readingBook);
         return mapToReadingBookResponseDto(readingBook);
     }
 
     public ReadingBookResponseDto changeReadingBookStatus(Long readingBookId, ReadingStatus status) {
-        ReadingBook book = readingBookHelper.findReadingBookEntityId(readingBookId);
+        ReadingBook book = readingBookHelper.findReadingBookEntityById(readingBookId);
         book.setStatus(status);
         publishReadingBookFinishedEventIfRequired(book, status);
         readingBookRepository.save(book);
@@ -99,14 +99,14 @@ public class ReadingBookService {
     }
 
     public ReadingBookResponseDto findReadingBookById(Long readingBookId) {
-        ReadingBook book = readingBookHelper.findReadingBookEntityId(readingBookId);
+        ReadingBook book = readingBookHelper.findReadingBookEntityById(readingBookId);
         return mapToReadingBookResponseDto(book);
     }
 
 
     @Transactional
     public void deleteReadingBook(Long readingBookId) {
-        ReadingBook readingBook = readingBookHelper.findReadingBookEntityId(readingBookId);
+        ReadingBook readingBook = readingBookHelper.findReadingBookEntityById(readingBookId);
         eventPublisher.publishEvent(new ReadingBookDeletedEvent(readingBook));
 
         noteHelper.deleteNotesByReadingBookId(readingBookId);

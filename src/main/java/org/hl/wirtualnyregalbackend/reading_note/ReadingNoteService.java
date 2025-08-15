@@ -23,7 +23,7 @@ public class ReadingNoteService {
     private final ReadingBookHelper readingBookHelper;
 
     public ReadingNoteResponseDto createReadingNote(ReadingNoteCreateDto noteDto) {
-        ReadingBook book = readingBookHelper.findReadingBookEntityId(noteDto.getReadingBookId());
+        ReadingBook book = readingBookHelper.findReadingBookEntityById(noteDto.getReadingBookId());
         ReadingNote note = ReadingNoteMapper.toReadingNote(noteDto, book);
         noteRepository.save(note);
         return ReadingNoteMapper.toReadingNoteResponseDto(note);

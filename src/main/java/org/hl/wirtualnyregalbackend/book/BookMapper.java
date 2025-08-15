@@ -12,6 +12,7 @@ import org.hl.wirtualnyregalbackend.book_format.BookFormatMapper;
 import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
 import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
+import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.common.review.ReviewMapper;
 import org.hl.wirtualnyregalbackend.common.review.ReviewResponseDto;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
@@ -21,6 +22,8 @@ import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.publisher.PublisherMapper;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponseDto;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
+import org.hl.wirtualnyregalbackend.reading_book.dto.BookshelfSummaryResponseDto;
+import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
@@ -74,7 +77,8 @@ public class BookMapper {
     public static BookDetailsResponseDto toBookDetailsResponseDto(Book book,
                                                                   ReviewStatistics reviewStats,
                                                                   @Nullable BookReview review,
-                                                                  Locale locale) {
+                                                                  Locale locale,
+                                                                  @Nullable ReadingBook readingBook) {
         BookFormat format = book.getFormat();
         BookFormatDto formatDto = format != null ? BookFormatMapper.toBookFormatDto(format, locale) : null;
 
@@ -99,6 +103,11 @@ public class BookMapper {
         String coverUrl = cover != null ? cover.getUrl() : null;
 
         ReviewResponseDto reviewDto = review != null ? ReviewMapper.toReviewResponseDto(review) : null;
+        BookshelfSummaryResponseDto bookshelf = null;
+        if (readingBook != null) {
+            Bookshelf b = readingBook.getBookshelf();
+            bookshelf = new BookshelfSummaryResponseDto(b.getId(), b.getName());
+        }
         return new BookDetailsResponseDto(
             book.getId(),
             book.getIsbn(),
@@ -113,7 +122,8 @@ public class BookMapper {
             book.getPageCount(),
             book.getPublicationYear(),
             book.getLanguage(),
-            book.getDescription()
+            book.getDescription(),
+            bookshelf
         );
     }
 

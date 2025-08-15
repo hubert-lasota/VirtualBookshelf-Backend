@@ -9,6 +9,7 @@ import org.hl.wirtualnyregalbackend.common.review.ReviewResponseDto;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponseDto;
+import org.hl.wirtualnyregalbackend.reading_book.dto.BookshelfSummaryResponseDto;
 
 import java.util.List;
 import java.util.Locale;
@@ -29,6 +30,7 @@ public record BookDetailsResponseDto(
     @JsonDeserialize(using = LocaleDeserializer.class)
     @JsonProperty("languageCode")
     Locale language,
-    String description
+    String description,
+    BookshelfSummaryResponseDto bookshelf
 ) {
 }
