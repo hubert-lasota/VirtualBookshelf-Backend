@@ -5,8 +5,9 @@ import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateDto;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionListResponseDto;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionPageResponseDto;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponseDto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -26,8 +27,8 @@ class ReadingSessionController {
     }
 
     @GetMapping
-    public ReadingSessionListResponseDto findCurrentUserReadingSessions(@AuthenticationPrincipal User user) {
-        return sessionService.findReadingSessions(user);
+    public ReadingSessionPageResponseDto findCurrentUserReadingSessions(@AuthenticationPrincipal User user, Pageable pageable) {
+        return sessionService.findReadingSessions(user, pageable);
     }
 
     @PatchMapping("/{sessionId}")

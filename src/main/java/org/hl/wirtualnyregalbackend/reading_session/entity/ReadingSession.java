@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
@@ -28,6 +29,10 @@ public class ReadingSession extends BaseEntity {
     @Column(name = "finished_reading_at")
     private Instant finishedReadingAt;
 
+    @Column
+    @Setter
+    private String description;
+
     @ManyToOne
     @JoinColumn(name = "reading_book_id")
     private ReadingBook readingBook;
@@ -37,8 +42,10 @@ public class ReadingSession extends BaseEntity {
                           Integer pageTo,
                           Instant startedReadingAt,
                           Instant finishedReadingAt,
+                          String description,
                           ReadingBook readingBook) {
         this.readingBook = readingBook;
+        this.description = description;
         setPageRange(pageFrom, pageTo);
         setReadingPeriod(startedReadingAt, finishedReadingAt);
     }

@@ -17,4 +17,5 @@ public record PageMeta(
             page.getTotalPages()
         );
     }
+
 }

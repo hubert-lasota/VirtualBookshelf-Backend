@@ -6,18 +6,19 @@ import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateDto;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionListResponseDto;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionPageResponseDto;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponseDto;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionUpdateDto;
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadPagesEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadTodayEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,6 +47,11 @@ class ReadingSessionService {
 
     public ReadingSessionResponseDto updateReadingSession(Long sessionId, ReadingSessionUpdateDto sessionDto) {
         ReadingSession session = findReadingSessionEntityById(sessionId);
+
+        String description = sessionDto.getDescription();
+        if (description != null) {
+            session.setDescription(description);
+        }
 
         Integer pageFrom = sessionDto.getPageFrom();
         Integer currentPageFrom = session.getPageFrom();
@@ -89,18 +95,17 @@ class ReadingSessionService {
     }
 
 
-    public ReadingSessionListResponseDto findReadingSessions(User user) {
-        List<ReadingSessionResponseDto> sessions = sessionRepository.findByUserId(user.getId()).stream()
-            .map(ReadingSessionMapper::toReadingSessionResponseDto)
-            .toList();
-        return new ReadingSessionListResponseDto(sessions);
+    public ReadingSessionPageResponseDto findReadingSessions(User user, Pageable pageable) {
+        Page<ReadingSessionResponseDto> page = sessionRepository
+            .findByUserId(user.getId(), pageable)
+            .map(ReadingSessionMapper::toReadingSessionResponseDto);
+        return ReadingSessionPageResponseDto.from(page);
     }
 
 
     public void deleteReadingSession(Long sessionId) {
         ReadingSession rs = findReadingSessionEntityById(sessionId);
         sessionRepository.delete(rs);
-        // TODO delete notes
     }
 
     private ReadingSession findReadingSessionEntityById(Long id) throws EntityNotFoundException {

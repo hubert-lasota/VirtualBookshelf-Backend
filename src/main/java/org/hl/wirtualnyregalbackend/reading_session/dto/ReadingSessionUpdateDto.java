@@ -21,12 +21,16 @@ public class ReadingSessionUpdateDto {
     @NotNull(groups = CreateGroup.class)
     @Min(1)
     protected Integer pageFrom;
+
     @Min(1)
     @NotNull(groups = CreateGroup.class)
     protected Integer pageTo;
+
     @NotNull(groups = CreateGroup.class)
     protected Instant startedReadingAt;
+
     @NotNull(groups = CreateGroup.class)
     protected Instant finishedReadingAt;
 
+    protected String description;
 }

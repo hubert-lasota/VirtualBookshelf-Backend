@@ -226,6 +226,7 @@ CREATE TABLE reading_session
     page_to             INT         NOT NULL,
     started_reading_at  TIMESTAMPTZ NOT NULL,
     finished_reading_at TIMESTAMPTZ NOT NULL,
+    description         TEXT,
     created_at          TIMESTAMPTZ NOT NULL,
     updated_at          TIMESTAMPTZ
 );
