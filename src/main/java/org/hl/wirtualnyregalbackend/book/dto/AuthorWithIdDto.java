@@ -7,7 +7,7 @@ import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorRequest;
 import org.springframework.stereotype.Service;
 
 @Getter
@@ -20,12 +20,12 @@ public class AuthorWithIdDto {
 
     @JsonUnwrapped
     @Valid
-    private AuthorMutationDto authorDto;
+    private AuthorRequest authorRequest;
 
     @JsonIgnore
     @AssertTrue(message = "Provide either author ID or author details.")
     public boolean isValid() {
-        return (id != null) && (authorDto != null);
+        return (id != null) && (authorRequest != null);
     }
 
 }

@@ -3,22 +3,27 @@ package org.hl.wirtualnyregalbackend.reading_session;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
+import org.hl.wirtualnyregalbackend.common.model.PageRange;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateDto;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionPageResponseDto;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponseDto;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionUpdateDto;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateRequest;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionPageResponse;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponse;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionUpdateRequest;
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadPagesEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadTodayEvent;
+import org.hl.wirtualnyregalbackend.reading_session.model.ReadingRange;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.*;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -31,75 +36,54 @@ class ReadingSessionService {
     private final Clock clock;
 
     @Transactional
-    public ReadingSessionResponseDto createReadingSession(ReadingSessionCreateDto sessionDto) {
-        ReadingBook rb = readingBookHelper.findReadingBookEntityById(sessionDto.getReadingBookId());
-        ReadingSession session = ReadingSessionMapper.toReadingSession(sessionDto, rb);
+    public ReadingSessionResponse createReadingSession(ReadingSessionCreateRequest sessionRequest) {
+        ReadingBook rb = readingBookHelper.findReadingBookEntityById(sessionRequest.getReadingBookId());
+        ReadingSession session = ReadingSessionMapper.toReadingSession(sessionRequest, rb);
         sessionRepository.save(session);
 
         publishReadTodayEventIfRequired(rb.getBookshelf().getUser());
 
-        Integer readPages = sessionDto.getPageTo() - sessionDto.getPageFrom();
-        Integer readMinutes = calculateReadMinutes(sessionDto.getStartedReadingAt(), sessionDto.getFinishedReadingAt());
-        eventPublisher.publishEvent(new ReadPagesEvent(readPages, readMinutes, session));
+        eventPublisher.publishEvent(
+            new ReadPagesEvent(session.getPageRange().getReadPages(), session.getReadingRange().getReadMinutes(), session)
+        );
 
         return ReadingSessionMapper.toReadingSessionResponseDto(session);
     }
 
-    public ReadingSessionResponseDto updateReadingSession(Long sessionId, ReadingSessionUpdateDto sessionDto) {
+    public ReadingSessionResponse updateReadingSession(Long sessionId, ReadingSessionUpdateRequest sessionRequest) {
         ReadingSession session = findReadingSessionEntityById(sessionId);
 
-        String description = sessionDto.getDescription();
+        String description = sessionRequest.getDescription();
         if (description != null) {
             session.setDescription(description);
         }
 
-        Integer pageFrom = sessionDto.getPageFrom();
-        Integer currentPageFrom = session.getPageFrom();
-        Integer newPageFrom = pageFrom == null
-            ? currentPageFrom
-            : pageFrom;
+        PageRange oldPr = session.getPageRange();
+        PageRange newPr = sessionRequest.getPageRange();
+        PageRange pr = PageRange.merge(oldPr, newPr);
+        session.setPageRange(pr);
 
-        Integer pageTo = sessionDto.getPageTo();
-        Integer currentPageTo = session.getPageTo();
-        Integer newPageTo = pageTo == null
-            ? currentPageTo
-            : pageTo;
-
-        session.setPageRange(newPageFrom, newPageTo);
-
-        Instant startedReadingAt = sessionDto.getStartedReadingAt();
-        Instant currentStartedReadingAt = session.getStartedReadingAt();
-        Instant newStartedReadingAt = startedReadingAt == null
-            ? currentStartedReadingAt
-            : startedReadingAt;
-
-        Instant finishedReadingAt = sessionDto.getFinishedReadingAt();
-        Instant currentFinishedReadingAt = session.getFinishedReadingAt();
-        Instant newFinishedReadingAt = finishedReadingAt == null
-            ? currentFinishedReadingAt
-            : finishedReadingAt;
-
-        session.setReadingPeriod(newStartedReadingAt, newFinishedReadingAt);
+        ReadingRange oldRr = session.getReadingRange();
+        ReadingRange newRr = sessionRequest.getReadingRange();
+        ReadingRange rr = ReadingRange.merge(oldRr, newRr);
+        session.setReadingRange(rr);
 
         // Check if the reading period or page range has changed and publish event with the difference in read pages and minutes.
-        if ((!currentPageFrom.equals(newPageFrom) || !currentPageTo.equals(newPageTo))
-            || (!currentStartedReadingAt.equals(newStartedReadingAt) || !currentFinishedReadingAt.equals(newFinishedReadingAt))) {
-            Integer readPages = newPageTo - newPageFrom;
-            Integer currentReadPages = currentPageTo - currentPageFrom;
-            Integer readMinutes = calculateReadMinutes(newStartedReadingAt, newFinishedReadingAt);
-            Integer currentReadMinutes = calculateReadMinutes(currentStartedReadingAt, currentFinishedReadingAt);
-            eventPublisher.publishEvent(new ReadPagesEvent(readPages - currentReadPages, readMinutes - currentReadMinutes, session));
+        if ((!oldPr.equals(pr)) || (!oldRr.equals(rr))) {
+            Integer readPages = pr.getReadPages() - oldPr.getReadPages();
+            Integer readMinutes = rr.getReadMinutes() - oldRr.getReadMinutes();
+            eventPublisher.publishEvent(new ReadPagesEvent(readPages, readMinutes, session));
         }
 
         return ReadingSessionMapper.toReadingSessionResponseDto(session);
     }
 
 
-    public ReadingSessionPageResponseDto findReadingSessions(User user, Pageable pageable) {
-        Page<ReadingSessionResponseDto> page = sessionRepository
+    public ReadingSessionPageResponse findReadingSessions(User user, Pageable pageable) {
+        Page<ReadingSessionResponse> page = sessionRepository
             .findByUserId(user.getId(), pageable)
             .map(ReadingSessionMapper::toReadingSessionResponseDto);
-        return ReadingSessionPageResponseDto.from(page);
+        return ReadingSessionPageResponse.from(page);
     }
 
 
@@ -117,7 +101,9 @@ class ReadingSessionService {
     private void publishReadTodayEventIfRequired(User user) {
         Optional<ReadingSession> lastSessionOpt = sessionRepository.findLastByUserId(user.getId());
         if (!checkIfUserReadToday(lastSessionOpt)) {
-            Instant lastReadAt = lastSessionOpt.map(ReadingSession::getStartedReadingAt).orElse(null);
+            Instant lastReadAt = lastSessionOpt
+                .map((session) -> session.getReadingRange().startedAt())
+                .orElse(null);
             eventPublisher.publishEvent(new ReadTodayEvent(lastReadAt, user));
         }
     }
@@ -126,15 +112,12 @@ class ReadingSessionService {
         if (lastSessionOpt.isPresent()) {
             ZoneId zoneId = clock.getZone();
             LocalDate today = LocalDate.now(zoneId);
-            Instant lastReadAt = lastSessionOpt.get().getStartedReadingAt();
+            Instant lastReadAt = lastSessionOpt.get().getReadingRange().startedAt();
             LocalDate lastReadDate = lastReadAt.atZone(zoneId).toLocalDate();
             return today.equals(lastReadDate);
         }
         return false;
     }
 
-    private Integer calculateReadMinutes(Instant startedReadingAt, Instant finishedReadingAt) {
-        return (int) Duration.between(startedReadingAt, finishedReadingAt).toMinutes();
-    }
 
 }

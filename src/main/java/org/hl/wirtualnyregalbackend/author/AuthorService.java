@@ -3,10 +3,10 @@ package org.hl.wirtualnyregalbackend.author;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.author.dto.AuthorDetailsResponseDto;
-import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
-import org.hl.wirtualnyregalbackend.author.dto.AuthorPageResponseDto;
-import org.hl.wirtualnyregalbackend.author.dto.AuthorResponseDto;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorDetailsResponse;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorPageResponse;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorRequest;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorResponse;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.author_review.AuthorReviewService;
 import org.hl.wirtualnyregalbackend.author_review.entity.AuthorReview;
@@ -28,46 +28,46 @@ public class AuthorService {
     private final AuthorRepository authorRepository;
     private final AuthorReviewService reviewService;
 
-    public AuthorResponseDto createAuthor(AuthorMutationDto authorDto) {
-        Author author = createAuthorEntity(authorDto);
-        return AuthorMapper.toAuthorResponseDto(author);
+    public AuthorResponse createAuthor(AuthorRequest authorRequest) {
+        Author author = createAuthorEntity(authorRequest);
+        return AuthorMapper.toAuthorResponse(author);
     }
 
-    public AuthorDetailsResponseDto findAuthorDetailsById(Long authorId) {
+    public AuthorDetailsResponse findAuthorDetailsById(Long authorId) {
         Author author = findAuthorEntityById(authorId);
         ReviewStatistics stats = reviewService.getAuthorReviewStats(authorId);
         AuthorReview review = reviewService.findAuthorReviewEntityById(authorId);
-        return AuthorMapper.toAuthorDetailsResponseDto(author, stats, review);
+        return AuthorMapper.toAuthorDetailsResponse(author, stats, review);
     }
 
-    public AuthorPageResponseDto findAuthors(Boolean availableInBookshelf,
-                                             User user,
-                                             Pageable pageable) {
+    public AuthorPageResponse findAuthors(Boolean availableInBookshelf,
+                                          User user,
+                                          Pageable pageable) {
         Specification<Author> spec = availableInBookshelf != null
             ? AuthorSpecification.availableInBookshelf(availableInBookshelf, user)
             : Specification.where(null);
 
-        Page<AuthorResponseDto> authorPage = authorRepository
+        Page<AuthorResponse> authorPage = authorRepository
             .findAll(spec, pageable)
-            .map(AuthorMapper::toAuthorResponseDto);
-        return AuthorPageResponseDto.from(authorPage);
+            .map(AuthorMapper::toAuthorResponse);
+        return AuthorPageResponse.from(authorPage);
     }
 
-    public Author findOrCreateAuthor(Long id, AuthorMutationDto authorMutationDto) {
+    public Author findOrCreateAuthor(Long id, AuthorRequest authorRequest) {
         if (id != null) {
             return findAuthorEntityById(id);
         }
 
-        return createAuthorEntity(authorMutationDto);
+        return createAuthorEntity(authorRequest);
     }
 
-    private Author createAuthorEntity(AuthorMutationDto authorDto) {
-        String fullName = authorDto.getFullName();
+    private Author createAuthorEntity(AuthorRequest authorRequest) {
+        String fullName = authorRequest.fullName();
         boolean exists = authorRepository.existsByFullName(fullName);
         if (exists) {
             throw new InvalidRequestException("Author with this full name = %s already exists".formatted(fullName));
         }
-        Author author = AuthorMapper.toAuthor(authorDto);
+        Author author = AuthorMapper.toAuthor(authorRequest);
         return authorRepository.save(author);
     }
 

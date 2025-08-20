@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengeParticipant;
+import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantDurationRange;
+import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -31,7 +33,14 @@ public class ChallengeParticipantHelper {
     }
 
     public void createChallengeParticipant(Challenge challenge) {
-        ChallengeParticipant participant = new ChallengeParticipant(challenge, Instant.now(clock), challenge.getUser());
+        var durationRange = new ChallengeParticipantDurationRange(Instant.now(clock), null);
+        ChallengeParticipant participant = new ChallengeParticipant(
+            0,
+            ChallengeParticipantStatus.ACTIVE,
+            durationRange,
+            challenge,
+            challenge.getUser()
+        );
         participantRepository.save(participant);
     }
 

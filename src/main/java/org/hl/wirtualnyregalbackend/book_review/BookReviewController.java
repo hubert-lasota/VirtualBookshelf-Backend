@@ -2,9 +2,9 @@ package org.hl.wirtualnyregalbackend.book_review;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.book_review.dto.BookReviewCreateDto;
-import org.hl.wirtualnyregalbackend.common.review.ReviewPageResponseDto;
-import org.hl.wirtualnyregalbackend.common.review.ReviewResponseDto;
+import org.hl.wirtualnyregalbackend.book_review.dto.BookReviewCreateRequest;
+import org.hl.wirtualnyregalbackend.common.review.ReviewPageResponse;
+import org.hl.wirtualnyregalbackend.common.review.ReviewResponse;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +23,10 @@ class BookReviewController {
 
 
     @PostMapping
-    public ReviewResponseDto createBookReview(
+    public ReviewResponse createBookReview(
         @Validated(CreateGroup.class)
         @RequestBody
-        BookReviewCreateDto reviewDto,
+        BookReviewCreateRequest reviewDto,
         @AuthenticationPrincipal
         User user
     ) {
@@ -34,17 +34,17 @@ class BookReviewController {
     }
 
     @GetMapping
-    public ReviewPageResponseDto findBookReviews(@RequestParam Long bookId, Pageable pageable) {
+    public ReviewPageResponse findBookReviews(@RequestParam Long bookId, Pageable pageable) {
         return bookReviewService.findBookReviews(bookId, pageable);
     }
 
     @PatchMapping("/{bookReviewId}")
-    public ReviewResponseDto updateBookReview(
+    public ReviewResponse updateBookReview(
         @PathVariable
         Long bookReviewId,
         @Validated(UpdateGroup.class)
         @RequestBody
-        BookReviewCreateDto reviewDto
+        BookReviewCreateRequest reviewDto
     ) {
         return bookReviewService.updateBookReview(bookReviewId, reviewDto);
     }

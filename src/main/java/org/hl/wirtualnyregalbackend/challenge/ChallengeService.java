@@ -3,9 +3,9 @@ package org.hl.wirtualnyregalbackend.challenge;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeMutationDto;
-import org.hl.wirtualnyregalbackend.challenge.dto.ChallengePageResponseDto;
-import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeResponseDto;
+import org.hl.wirtualnyregalbackend.challenge.dto.ChallengePageResponse;
+import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeRequest;
+import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeResponse;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.challenge.model.ChallengeFilter;
 import org.hl.wirtualnyregalbackend.challenge_participant.ChallengeParticipantHelper;
@@ -13,7 +13,7 @@ import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengePartic
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
 import org.hl.wirtualnyregalbackend.genre.GenreService;
-import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
+import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -32,35 +32,35 @@ class ChallengeService {
     private final ChallengeParticipantHelper participantHelper;
     private final GenreService genreService;
 
-    public ChallengeResponseDto createChallenge(ChallengeMutationDto challengeDto, User user) {
-        Genre genre = challengeDto.genreId() == null
+    public ChallengeResponse createChallenge(ChallengeRequest challengeRequest, User user) {
+        Genre genre = challengeRequest.genreId() == null
             ? null
-            : genreService.findGenreById(challengeDto.genreId());
-        Challenge challenge = ChallengeMapper.toChallenge(challengeDto, genre, user);
+            : genreService.findGenreById(challengeRequest.genreId());
+        Challenge challenge = ChallengeMapper.toChallenge(challengeRequest, genre, user);
         challengeRepository.save(challenge);
         participantHelper.createChallengeParticipant(challenge);
         return mapToChallengeResponseDto(challenge);
     }
 
-    public ChallengeResponseDto updateChallenge(Long challengeId, ChallengeMutationDto challengeDto) {
+    public ChallengeResponse updateChallenge(Long challengeId, ChallengeRequest challengeRequest) {
         Challenge challenge = findChallengeById(challengeId);
-        String title = challengeDto.title();
+        String title = challengeRequest.title();
         if (title != null) {
             challenge.setTitle(title);
         }
-        String description = challengeDto.description();
+        String description = challengeRequest.description();
         if (description != null) {
             challenge.setDescription(description);
         }
-        Long genreId = challengeDto.genreId();
+        Long genreId = challengeRequest.genreId();
         if (genreId != null) {
             Genre genre = genreService.findGenreById(genreId);
             challenge.setGenre(genre);
         }
 
-        Integer targetCount = challengeDto.targetCount();
-        if (targetCount != null) {
-            challenge.setTargetCount(targetCount);
+        Integer goalValue = challengeRequest.goalValue();
+        if (goalValue != null) {
+            challenge.setGoalValue(goalValue);
         }
         return mapToChallengeResponseDto(challenge);
     }
@@ -72,17 +72,17 @@ class ChallengeService {
         return challengeOpt.orElseThrow(() -> new IllegalArgumentException("Challenge with id = '%d' not found.".formatted(challengeId)));
     }
 
-    public ChallengePageResponseDto findChallenges(ChallengeFilter filter, User participant, Pageable pageable) {
+    public ChallengePageResponse findChallenges(ChallengeFilter filter, User participant, Pageable pageable) {
         Specification<Challenge> spec = Specification.where(null);
         if (filter.participating() != null) {
             spec = ChallengeSpecification.byParticipant(participant);
         }
 
-        Page<ChallengeResponseDto> page = challengeRepository
+        Page<ChallengeResponse> page = challengeRepository
             .findAll(spec, pageable)
             .map(this::mapToChallengeResponseDto);
 
-        return ChallengePageResponseDto.from(page);
+        return ChallengePageResponse.from(page);
     }
 
     public void quitChallenge(Long challengeId) {
@@ -93,14 +93,14 @@ class ChallengeService {
         participantHelper.deleteParticipant(participant);
     }
 
-    private ChallengeResponseDto mapToChallengeResponseDto(Challenge challenge) {
+    private ChallengeResponse mapToChallengeResponseDto(Challenge challenge) {
         Locale locale = LocaleContextHolder.getLocale();
-        GenreResponseDto genreDto = challenge.getGenre() == null
+        GenreResponse genreDto = challenge.getGenre() == null
             ? null
-            : GenreMapper.toGenreResponseDto(challenge.getGenre(), locale);
+            : GenreMapper.toGenreResponse(challenge.getGenre(), locale);
         Long totalParticipants = participantHelper.findTotalParticipantsByChallengeId(challenge.getId());
         ChallengeParticipant participant = participantHelper.findCurrentUserParticipant(challenge.getId());
-        return ChallengeMapper.toChallengeResponseDto(challenge, participant, genreDto, totalParticipants);
+        return ChallengeMapper.toChallengeResponse(challenge, participant, genreDto, totalParticipants);
     }
 
 }

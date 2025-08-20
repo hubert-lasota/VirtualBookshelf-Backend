@@ -3,9 +3,9 @@ package org.hl.wirtualnyregalbackend.challenge;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeMutationDto;
-import org.hl.wirtualnyregalbackend.challenge.dto.ChallengePageResponseDto;
-import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeResponseDto;
+import org.hl.wirtualnyregalbackend.challenge.dto.ChallengePageResponse;
+import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeRequest;
+import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeResponse;
 import org.hl.wirtualnyregalbackend.challenge.model.ChallengeFilter;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
@@ -24,27 +24,27 @@ public class ChallengeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ChallengeResponseDto createChallenge(@Validated(CreateGroup.class)
-                                                @RequestBody
-                                                ChallengeMutationDto challengeDto,
-                                                @AuthenticationPrincipal
-                                                User user) {
-        return challengeService.createChallenge(challengeDto, user);
+    public ChallengeResponse createChallenge(@Validated(CreateGroup.class)
+                                             @RequestBody
+                                             ChallengeRequest challengeRequest,
+                                             @AuthenticationPrincipal
+                                             User user) {
+        return challengeService.createChallenge(challengeRequest, user);
     }
 
     @PatchMapping("/{challengeId}")
-    public ChallengeResponseDto updateChallenge(@PathVariable
-                                                Long challengeId,
-                                                @Validated(UpdateGroup.class)
-                                                @RequestBody
-                                                ChallengeMutationDto challengeDto) {
-        return challengeService.updateChallenge(challengeId, challengeDto);
+    public ChallengeResponse updateChallenge(@PathVariable
+                                             Long challengeId,
+                                             @Validated(UpdateGroup.class)
+                                             @RequestBody
+                                             ChallengeRequest challengeRequest) {
+        return challengeService.updateChallenge(challengeId, challengeRequest);
     }
 
     @GetMapping
-    public ChallengePageResponseDto findChallenges(ChallengeFilter filter,
-                                                   Pageable pageable,
-                                                   @AuthenticationPrincipal User user) {
+    public ChallengePageResponse findChallenges(ChallengeFilter filter,
+                                                Pageable pageable,
+                                                @AuthenticationPrincipal User user) {
         return challengeService.findChallenges(filter, user, pageable);
     }
 

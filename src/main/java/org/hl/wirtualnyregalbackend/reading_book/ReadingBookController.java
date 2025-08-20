@@ -27,16 +27,16 @@ public class ReadingBookController {
 
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasPermission(#readingBookDto.bookshelfId, 'BOOKSHELF', 'CREATE')")
-    public ResponseEntity<ReadingBookResponseDto> createReadingBook(
+    @PreAuthorize("hasPermission(#readingBookRequest.bookshelfId, 'BOOKSHELF', 'CREATE')")
+    public ResponseEntity<ReadingBookResponse> createReadingBook(
         @RequestPart("readingBook")
         @Validated(CreateGroup.class)
-        ReadingBookCreateDto readingBookDto,
+        ReadingBookCreateRequest readingBookRequest,
         @RequestPart(value = "cover", required = false)
         MultipartFile cover,
         UriComponentsBuilder uriBuilder
     ) {
-        ReadingBookResponseDto response = readingBookService.createReadingBook(readingBookDto, cover);
+        ReadingBookResponse response = readingBookService.createReadingBook(readingBookRequest, cover);
 
         URI location = uriBuilder
             .path("/v1/reading-books/{bookId}")
@@ -48,12 +48,12 @@ public class ReadingBookController {
 
     @GetMapping("/{readingBookId}")
     @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'READ')")
-    public ReadingBookResponseDto findReadingBook(@PathVariable Long readingBookId) {
+    public ReadingBookResponse findReadingBook(@PathVariable Long readingBookId) {
         return readingBookService.findReadingBookById(readingBookId);
     }
 
     @GetMapping
-    public ReadingBookListResponseDto findCurrentUserReadingBooks(
+    public ReadingBookListResponse findCurrentUserReadingBooks(
         @RequestParam(required = false)
         String query,
         @AuthenticationPrincipal
@@ -64,26 +64,26 @@ public class ReadingBookController {
 
     @PatchMapping("/{readingBookId}")
     @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'DELETE')")
-    public ReadingBookResponseDto updateReadingBook(
+    public ReadingBookResponse updateReadingBook(
         @PathVariable
         Long readingBookId,
         @RequestBody
         @Validated(UpdateGroup.class)
-        ReadingBookUpdateDto readingBookDto
+        ReadingBookUpdateRequest readingBookUpdateRequest
     ) {
-        return readingBookService.updateReadingBook(readingBookId, readingBookDto);
+        return readingBookService.updateReadingBook(readingBookId, readingBookUpdateRequest);
     }
 
     @PatchMapping("/{readingBookId}/move")
     @PreAuthorize("hasPermission(#request.bookshelfId, 'BOOKSHELF', 'UPDATE')")
-    public ReadingBookResponseDto moveReadingBook(@PathVariable Long readingBookId,
-                                                  @Valid @RequestBody MoveReadingBookDto request) {
+    public ReadingBookResponse moveReadingBook(@PathVariable Long readingBookId,
+                                               @Valid @RequestBody MoveReadingBookRequest request) {
         return readingBookService.moveReadingBook(readingBookId, request.bookshelfId());
     }
 
     @PatchMapping("/{readingBookId}/change-status")
     @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'UPDATE')")
-    public ReadingBookResponseDto markReadingBookAsRead(@PathVariable Long readingBookId, @RequestBody ChangeStatusRequestDto body) {
+    public ReadingBookResponse markReadingBookAsRead(@PathVariable Long readingBookId, @RequestBody ChangeStatusRequest body) {
         return readingBookService.changeReadingBookStatus(readingBookId, body.status());
     }
 

@@ -1,8 +1,8 @@
 package org.hl.wirtualnyregalbackend.bookshelf;
 
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfMutationDto;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfRequest;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponse;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 
 class BookshelfMapper {
@@ -10,17 +10,17 @@ class BookshelfMapper {
     private BookshelfMapper() {
     }
 
-    public static Bookshelf toBookshelf(BookshelfMutationDto bookshelfDto, User user) {
+    public static Bookshelf toBookshelf(BookshelfRequest bookshelfRequest, User user) {
         return new Bookshelf(
-            bookshelfDto.name(),
-            bookshelfDto.type(),
-            bookshelfDto.description(),
+            bookshelfRequest.name(),
+            bookshelfRequest.type(),
+            bookshelfRequest.description(),
             user
         );
     }
 
-    public static BookshelfResponseDto toBookshelfResponseDto(Bookshelf bookshelf, Long totalBooks) {
-        return new BookshelfResponseDto(
+    public static BookshelfResponse toBookshelfResponse(Bookshelf bookshelf, Long totalBooks) {
+        return new BookshelfResponse(
             bookshelf.getId(),
             bookshelf.getName(),
             bookshelf.getType(),

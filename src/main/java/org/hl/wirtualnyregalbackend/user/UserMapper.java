@@ -1,9 +1,9 @@
 package org.hl.wirtualnyregalbackend.user;
 
-import org.hl.wirtualnyregalbackend.auth.dto.UserSignInResponseDto;
+import org.hl.wirtualnyregalbackend.auth.dto.UserSignInResponse;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.user.dto.UserProfileDto;
-import org.hl.wirtualnyregalbackend.user.dto.UserResponseDto;
+import org.hl.wirtualnyregalbackend.user.dto.UserResponse;
 import org.hl.wirtualnyregalbackend.user.entity.UserProfile;
 import org.hl.wirtualnyregalbackend.user.entity.UserProfilePicture;
 
@@ -12,15 +12,15 @@ public class UserMapper {
     private UserMapper() {
     }
 
-    public static UserResponseDto toUserResponseDto(User user) {
+    public static UserResponse toUserResponse(User user) {
         UserProfileDto profile = toUserProfileDto(user.getUserProfile());
-        return new UserResponseDto(user.getId(), user.getUsername(), profile);
+        return new UserResponse(user.getId(), user.getUsername(), profile);
     }
 
-    public static UserSignInResponseDto toUserSignInResponseDto(User user, String jwt) {
+    public static UserSignInResponse toUserSignInResponse(User user, String jwt) {
         UserProfile profile = user.getUserProfile();
         UserProfileDto profileDto = profile != null ? toUserProfileDto(user.getUserProfile()) : null;
-        return new UserSignInResponseDto(
+        return new UserSignInResponse(
             user.getId(),
             user.getUsername(),
             jwt,

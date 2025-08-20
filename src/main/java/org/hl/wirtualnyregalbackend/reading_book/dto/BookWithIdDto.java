@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookRequest;
 
 @Getter
 @Setter
@@ -19,11 +19,11 @@ public class BookWithIdDto {
 
     @JsonUnwrapped
     @Valid
-    private BookMutationDto bookDto;
+    private BookRequest bookRequest;
 
     @AssertTrue(message = "Provide either book ID or book details.")
     public boolean isValid() {
-        return (id != null) || (bookDto != null);
+        return (id != null) || (bookRequest != null);
     }
 
 }

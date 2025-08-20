@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.genre;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import org.hl.wirtualnyregalbackend.genre.dto.GenrePageResponseDto;
+import org.hl.wirtualnyregalbackend.genre.dto.GenrePageResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +17,7 @@ class GenreController {
 
 
     @GetMapping
-    public GenrePageResponseDto findGenres(Pageable pageable) {
+    public GenrePageResponse findGenres(Pageable pageable) {
         return genreService.findGenres(pageable);
     }
 

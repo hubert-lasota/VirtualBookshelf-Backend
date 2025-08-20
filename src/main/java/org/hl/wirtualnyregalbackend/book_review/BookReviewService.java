@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book.BookHelper;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
-import org.hl.wirtualnyregalbackend.book_review.dto.BookReviewCreateDto;
+import org.hl.wirtualnyregalbackend.book_review.dto.BookReviewCreateRequest;
 import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
@@ -25,28 +25,28 @@ public class BookReviewService {
     private final BookHelper bookHelper;
 
 
-    public ReviewResponseDto createBookReview(BookReviewCreateDto reviewDto, User user) {
+    public ReviewResponse createBookReview(BookReviewCreateRequest reviewDto, User user) {
         Book book = bookHelper.findBookById(reviewDto.getBookId());
         if (bookReviewRepository.existsByBookIdAndUserId(reviewDto.getBookId(), user.getId())) {
             throw new InvalidRequestException("Review already exists for book '%d' and user '%d'".formatted(reviewDto.getBookId(), user.getId()));
         }
         BookReview bookReview = BookReviewMapper.toBookReview(reviewDto, book, user);
         bookReviewRepository.save(bookReview);
-        return ReviewMapper.toReviewResponseDto(bookReview);
+        return ReviewMapper.toReviewResponse(bookReview);
     }
 
-    public ReviewResponseDto updateBookReview(Long bookReviewId, ReviewDto reviewDto) {
+    public ReviewResponse updateBookReview(Long bookReviewId, ReviewRequest reviewRequest) {
         BookReview bookReview = findBookReviewById(bookReviewId);
-        Float rating = reviewDto.getRating();
+        Float rating = reviewRequest.getRating();
         if (rating != null) {
             bookReview.setRating(rating);
         }
-        String content = reviewDto.getContent();
+        String content = reviewRequest.getContent();
         if (content != null) {
             bookReview.setContent(content);
         }
         bookReviewRepository.save(bookReview);
-        return ReviewMapper.toReviewResponseDto(bookReview);
+        return ReviewMapper.toReviewResponse(bookReview);
     }
 
     public void deleteBookReview(Long bookReviewId) {
@@ -61,11 +61,11 @@ public class BookReviewService {
             .orElse(new ReviewStatistics(bookId, 0D, 0L));
     }
 
-    public ReviewPageResponseDto findBookReviews(Long bookId, Pageable pageable) {
-        Page<ReviewResponseDto> page = bookReviewRepository
+    public ReviewPageResponse findBookReviews(Long bookId, Pageable pageable) {
+        Page<ReviewResponse> page = bookReviewRepository
             .findByBookId(bookId, pageable)
-            .map(ReviewMapper::toReviewResponseDto);
-        return ReviewPageResponseDto.from(page);
+            .map(ReviewMapper::toReviewResponse);
+        return ReviewPageResponse.from(page);
     }
 
     public boolean isAuthor(Long bookRatingId, Long userId) {

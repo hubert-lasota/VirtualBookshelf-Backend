@@ -22,7 +22,7 @@ class ReadingBookEventListener {
         ReadingSession session = event.readingSession();
         ReadingBook readingBook = session.getReadingBook();
         Book book = readingBook.getBook();
-        Integer pageTo = session.getPageTo();
+        Integer pageTo = session.getPageRange().to();
         if (book.getPageCount().equals(pageTo)) {
             readingBookService.changeReadingBookStatus(readingBook.getId(), ReadingStatus.READ);
         }

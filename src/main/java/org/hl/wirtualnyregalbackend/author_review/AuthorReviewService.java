@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.author.AuthorHelper;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
-import org.hl.wirtualnyregalbackend.author_review.dto.AuthorReviewCreateDto;
+import org.hl.wirtualnyregalbackend.author_review.dto.AuthorReviewCreateRequest;
 import org.hl.wirtualnyregalbackend.author_review.entity.AuthorReview;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
@@ -24,7 +24,7 @@ public class AuthorReviewService {
     private final AuthorHelper authorHelper;
 
 
-    public ReviewResponseDto createAuthorReview(AuthorReviewCreateDto reviewDto, User user) {
+    public ReviewResponse createAuthorReview(AuthorReviewCreateRequest reviewDto, User user) {
         Long authorId = reviewDto.getAuthorId();
         Author author = authorHelper.findAuthorById(authorId);
         if (authorReviewRepository.existsByAuthorIdAndUserId(authorId, user.getId())) {
@@ -32,25 +32,25 @@ public class AuthorReviewService {
         }
         AuthorReview authorReview = AuthorReviewMapper.toAuthorReview(reviewDto, author, user);
         authorReviewRepository.save(authorReview);
-        return ReviewMapper.toReviewResponseDto(authorReview);
+        return ReviewMapper.toReviewResponse(authorReview);
     }
 
-    public ReviewResponseDto updateBookReview(Long bookReviewId, ReviewDto reviewDto) {
-        AuthorReview authorReview = findAuthorReviewById(bookReviewId);
-        Float rating = reviewDto.getRating();
+    public ReviewResponse updateAuthorReview(Long authorReviewId, ReviewRequest reviewRequest) {
+        AuthorReview authorReview = findAuthorReviewById(authorReviewId);
+        Float rating = reviewRequest.getRating();
         if (rating != null) {
             authorReview.setRating(rating);
         }
-        String content = reviewDto.getContent();
+        String content = reviewRequest.getContent();
         if (content != null) {
             authorReview.setContent(content);
         }
         authorReviewRepository.save(authorReview);
-        return ReviewMapper.toReviewResponseDto(authorReview);
+        return ReviewMapper.toReviewResponse(authorReview);
     }
 
-    public void deleteBookReview(Long bookReviewId) {
-        AuthorReview authorReview = findAuthorReviewById(bookReviewId);
+    public void deleteAuthorReview(Long authorReviewId) {
+        AuthorReview authorReview = findAuthorReviewById(authorReviewId);
         authorReviewRepository.delete(authorReview);
     }
 
@@ -60,15 +60,15 @@ public class AuthorReviewService {
             .orElse(new ReviewStatistics(authorId, 0D, 0L));
     }
 
-    public ReviewPageResponseDto findAuthorReviews(Long authorId, Pageable pageable) {
-        Page<ReviewResponseDto> page = authorReviewRepository
+    public ReviewPageResponse findAuthorReviews(Long authorId, Pageable pageable) {
+        Page<ReviewResponse> page = authorReviewRepository
             .findByAuthorId(authorId, pageable)
-            .map(ReviewMapper::toReviewResponseDto);
-        return ReviewPageResponseDto.from(page);
+            .map(ReviewMapper::toReviewResponse);
+        return ReviewPageResponse.from(page);
     }
 
-    public boolean isAuthor(Long bookRatingId, Long userId) {
-        return authorReviewRepository.isAuthor(bookRatingId, userId);
+    public boolean isAuthor(Long authorReviewId, Long userId) {
+        return authorReviewRepository.isAuthor(authorReviewId, userId);
     }
 
     private AuthorReview findAuthorReviewById(Long id) throws EntityNotFoundException {

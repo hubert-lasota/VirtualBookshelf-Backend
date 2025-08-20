@@ -1,8 +1,8 @@
 package org.hl.wirtualnyregalbackend.genre;
 
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
-import org.hl.wirtualnyregalbackend.genre.dto.GenrePageResponseDto;
-import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
+import org.hl.wirtualnyregalbackend.genre.dto.GenrePageResponse;
+import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -27,12 +27,12 @@ public class GenreService {
         return genreRepository.findByIds(ids);
     }
 
-    public GenrePageResponseDto findGenres(Pageable pageable) {
+    public GenrePageResponse findGenres(Pageable pageable) {
         Locale locale = LocaleContextHolder.getLocale();
-        Page<GenreResponseDto> page = genreRepository
+        Page<GenreResponse> page = genreRepository
             .findAll(pageable)
-            .map((genre) -> GenreMapper.toGenreResponseDto(genre, locale));
-        return GenrePageResponseDto.from(page);
+            .map((genre) -> GenreMapper.toGenreResponse(genre, locale));
+        return GenrePageResponse.from(page);
     }
 
     public Genre findGenreById(Long genreId) throws EntityNotFoundException {

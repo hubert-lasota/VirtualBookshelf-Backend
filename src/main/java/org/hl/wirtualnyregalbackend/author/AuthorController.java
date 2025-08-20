@@ -3,10 +3,10 @@ package org.hl.wirtualnyregalbackend.author;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.author.dto.AuthorDetailsResponseDto;
-import org.hl.wirtualnyregalbackend.author.dto.AuthorMutationDto;
-import org.hl.wirtualnyregalbackend.author.dto.AuthorPageResponseDto;
-import org.hl.wirtualnyregalbackend.author.dto.AuthorResponseDto;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorDetailsResponse;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorPageResponse;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorRequest;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorResponse;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +26,11 @@ class AuthorController {
 
 
     @PostMapping
-    public ResponseEntity<AuthorResponseDto> createAuthor(@RequestBody
-                                                          @Validated(CreateGroup.class)
-                                                          AuthorMutationDto authorDto,
-                                                          UriComponentsBuilder uriBuilder) {
-        AuthorResponseDto response = authorService.createAuthor(authorDto);
+    public ResponseEntity<AuthorResponse> createAuthor(@RequestBody
+                                                       @Validated(CreateGroup.class)
+                                                       AuthorRequest authorRequest,
+                                                       UriComponentsBuilder uriBuilder) {
+        AuthorResponse response = authorService.createAuthor(authorRequest);
 
         URI location = uriBuilder
             .path("/v1/authors/{id}")
@@ -41,14 +41,14 @@ class AuthorController {
     }
 
     @GetMapping("/{authorId}")
-    public AuthorDetailsResponseDto findAuthorDetailsById(@PathVariable Long authorId) {
+    public AuthorDetailsResponse findAuthorDetailsById(@PathVariable Long authorId) {
         return authorService.findAuthorDetailsById(authorId);
     }
 
     @GetMapping
-    public AuthorPageResponseDto findAuthors(@RequestParam(required = false) Boolean availableInBookshelf,
-                                             @AuthenticationPrincipal User user,
-                                             Pageable pageable) {
+    public AuthorPageResponse findAuthors(@RequestParam(required = false) Boolean availableInBookshelf,
+                                          @AuthenticationPrincipal User user,
+                                          Pageable pageable) {
         return authorService.findAuthors(availableInBookshelf, user, pageable);
     }
 

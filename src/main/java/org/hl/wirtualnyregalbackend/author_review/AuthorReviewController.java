@@ -2,10 +2,10 @@ package org.hl.wirtualnyregalbackend.author_review;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.author_review.dto.AuthorReviewCreateDto;
-import org.hl.wirtualnyregalbackend.book_review.dto.BookReviewCreateDto;
-import org.hl.wirtualnyregalbackend.common.review.ReviewPageResponseDto;
-import org.hl.wirtualnyregalbackend.common.review.ReviewResponseDto;
+import org.hl.wirtualnyregalbackend.author_review.dto.AuthorReviewCreateRequest;
+import org.hl.wirtualnyregalbackend.common.review.ReviewPageResponse;
+import org.hl.wirtualnyregalbackend.common.review.ReviewRequest;
+import org.hl.wirtualnyregalbackend.common.review.ReviewResponse;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.springframework.data.domain.Pageable;
@@ -22,36 +22,36 @@ class AuthorReviewController {
     private final AuthorReviewService authorReviewService;
 
     @PostMapping
-    public ReviewResponseDto createAuthorReview(
+    public ReviewResponse createAuthorReview(
         @Validated(CreateGroup.class)
         @RequestBody
-        AuthorReviewCreateDto reviewDto,
+        AuthorReviewCreateRequest reviewCreateRequest,
         @AuthenticationPrincipal
         User user
     ) {
-        return authorReviewService.createAuthorReview(reviewDto, user);
+        return authorReviewService.createAuthorReview(reviewCreateRequest, user);
     }
 
     @GetMapping
-    public ReviewPageResponseDto findBookReviews(@RequestParam Long authorId, Pageable pageable) {
+    public ReviewPageResponse findAuthorReviews(@RequestParam Long authorId, Pageable pageable) {
         return authorReviewService.findAuthorReviews(authorId, pageable);
     }
 
     @PatchMapping("/{authorReviewId}")
-    public ReviewResponseDto updateBookReview(
+    public ReviewResponse updateAuthorReview(
         @PathVariable
         Long authorReviewId,
         @Validated(UpdateGroup.class)
         @RequestBody
-        BookReviewCreateDto reviewDto
+        ReviewRequest reviewRequest
     ) {
-        return authorReviewService.updateBookReview(authorReviewId, reviewDto);
+        return authorReviewService.updateAuthorReview(authorReviewId, reviewRequest);
     }
 
     @DeleteMapping("/{authorReviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBookReview(@PathVariable Long authorReviewId) {
-        authorReviewService.deleteBookReview(authorReviewId);
+    public void deleteAuthorReview(@PathVariable Long authorReviewId) {
+        authorReviewService.deleteAuthorReview(authorReviewId);
     }
 
 }

@@ -1,69 +1,32 @@
 package org.hl.wirtualnyregalbackend.reading_session.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
+import org.hl.wirtualnyregalbackend.common.model.PageRange;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-
-import java.time.Instant;
+import org.hl.wirtualnyregalbackend.reading_session.model.ReadingRange;
 
 @Entity
 @Table(name = "reading_session")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ReadingSession extends BaseEntity {
 
-    @Column(name = "page_from")
-    private Integer pageFrom;
+    @Embedded
+    private PageRange pageRange;
 
-    @Column(name = "page_to")
-    private Integer pageTo;
-
-    @Column(name = "started_reading_at")
-    private Instant startedReadingAt;
-
-    @Column(name = "finished_reading_at")
-    private Instant finishedReadingAt;
+    @Embedded
+    private ReadingRange readingRange;
 
     @Column
-    @Setter
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "reading_book_id")
+    @Setter(AccessLevel.NONE)
     private ReadingBook readingBook;
-
-
-    public ReadingSession(Integer pageFrom,
-                          Integer pageTo,
-                          Instant startedReadingAt,
-                          Instant finishedReadingAt,
-                          String description,
-                          ReadingBook readingBook) {
-        this.readingBook = readingBook;
-        this.description = description;
-        setPageRange(pageFrom, pageTo);
-        setReadingPeriod(startedReadingAt, finishedReadingAt);
-    }
-
-    public void setPageRange(Integer pageFrom, Integer pageTo) {
-        if (pageFrom > pageTo) {
-            throw new InvalidRequestException("Page from cannot be greater than page to");
-        }
-        this.pageFrom = pageFrom;
-        this.pageTo = pageTo;
-    }
-
-    public void setReadingPeriod(Instant startedReadingAt, Instant finishedReadingAt) {
-        if (finishedReadingAt != null && startedReadingAt.isAfter(finishedReadingAt)) {
-            throw new InvalidRequestException("Started reading time must be before finished reading time.");
-        }
-        this.startedReadingAt = startedReadingAt;
-        this.finishedReadingAt = finishedReadingAt;
-    }
 
 }

@@ -1,8 +1,8 @@
 package org.hl.wirtualnyregalbackend.reading_note;
 
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponseDto;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteUpdateDto;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponse;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteUpdateRequest;
 import org.hl.wirtualnyregalbackend.reading_note.entity.ReadingNote;
 
 class ReadingNoteMapper {
@@ -11,24 +11,22 @@ class ReadingNoteMapper {
     }
 
 
-    public static ReadingNoteResponseDto toReadingNoteResponseDto(ReadingNote note) {
-        return new ReadingNoteResponseDto(
+    public static ReadingNoteResponse toReadingNoteResponse(ReadingNote note) {
+        return new ReadingNoteResponse(
             note.getId(),
             note.getTitle(),
             note.getContent(),
-            note.getPageFrom(),
-            note.getPageTo(),
+            note.getPageRange(),
             note.getCreatedAt(),
             note.getUpdatedAt()
         );
     }
 
-    public static ReadingNote toReadingNote(ReadingNoteUpdateDto noteDto, ReadingBook readingBook) {
+    public static ReadingNote toReadingNote(ReadingNoteUpdateRequest noteDto, ReadingBook readingBook) {
         return new ReadingNote(
             noteDto.getTitle(),
             noteDto.getContent(),
-            noteDto.getPageFrom(),
-            noteDto.getPageTo(),
+            noteDto.getPageRange(),
             readingBook
         );
     }

@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfListResponseDto;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfMutationDto;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfListResponse;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfRequest;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponse;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
@@ -52,27 +52,27 @@ public class BookshelfService {
     }
 
 
-    public BookshelfResponseDto createBookshelf(BookshelfMutationDto bookshelfDto, User user) {
-        Bookshelf bookshelf = BookshelfMapper.toBookshelf(bookshelfDto, user);
+    public BookshelfResponse createBookshelf(BookshelfRequest bookshelfRequest, User user) {
+        Bookshelf bookshelf = BookshelfMapper.toBookshelf(bookshelfRequest, user);
         bookshelfRepository.save(bookshelf);
         return mapToBookshelfResponseDto(bookshelf);
     }
 
 
-    public BookshelfResponseDto updateBookshelf(Long id, BookshelfMutationDto bookshelfDto) {
+    public BookshelfResponse updateBookshelf(Long id, BookshelfRequest bookshelfRequest) {
         Bookshelf bookshelf = findBookshelfById(id);
 
-        String name = bookshelfDto.name();
+        String name = bookshelfRequest.name();
         if (name != null) {
             bookshelf.setName(name);
         }
 
-        BookshelfType type = bookshelfDto.type();
+        BookshelfType type = bookshelfRequest.type();
         if (type != null) {
             bookshelf.setType(type);
         }
 
-        String description = bookshelfDto.description();
+        String description = bookshelfRequest.description();
         if (description != null) {
             bookshelf.setDescription(description);
         }
@@ -85,13 +85,13 @@ public class BookshelfService {
         bookshelfRepository.deleteById(id);
     }
 
-    public BookshelfListResponseDto findUserBookshelves(Long userId) {
-        List<BookshelfResponseDto> bookshelves = bookshelfRepository
+    public BookshelfListResponse findUserBookshelves(Long userId) {
+        List<BookshelfResponse> bookshelves = bookshelfRepository
             .findByUserId(userId)
             .stream()
             .map(this::mapToBookshelfResponseDto)
             .toList();
-        return new BookshelfListResponseDto(bookshelves);
+        return new BookshelfListResponse(bookshelves);
     }
 
     public boolean isUserBookshelfAuthor(Long bookshelfId, Long userId) {
@@ -104,9 +104,9 @@ public class BookshelfService {
     }
 
 
-    private BookshelfResponseDto mapToBookshelfResponseDto(Bookshelf bookshelf) {
+    private BookshelfResponse mapToBookshelfResponseDto(Bookshelf bookshelf) {
         Long totalBooks = readingBookHelper.getTotalBooks(bookshelf.getId());
-        return BookshelfMapper.toBookshelfResponseDto(bookshelf, totalBooks);
+        return BookshelfMapper.toBookshelfResponse(bookshelf, totalBooks);
     }
 
 }

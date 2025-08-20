@@ -1,15 +1,13 @@
 package org.hl.wirtualnyregalbackend.challenge.dto;
 
-import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengeParticipantStatus;
-
-import java.time.Instant;
+import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantDurationRange;
+import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantStatus;
 
 public record ChallengeParticipation(
     boolean participates,
-    Integer currentCount,
+    Integer currentGoalValue,
     Float progressPercentage,
     ChallengeParticipantStatus status,
-    Instant startedAt,
-    Instant finishedAt
+    ChallengeParticipantDurationRange durationRange
 ) {
 }

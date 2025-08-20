@@ -3,10 +3,10 @@ package org.hl.wirtualnyregalbackend.reading_note;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteCreateDto;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteListResponseDto;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponseDto;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteUpdateDto;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteCreateRequest;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteListResponse;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponse;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteUpdateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,13 +25,13 @@ class ReadingNoteController {
 
 
     @PostMapping
-    public ResponseEntity<ReadingNoteResponseDto> createReadingNote(
+    public ResponseEntity<ReadingNoteResponse> createReadingNote(
         @Validated(CreateGroup.class)
         @RequestBody
-        ReadingNoteCreateDto noteDto,
+        ReadingNoteCreateRequest noteRequest,
         UriComponentsBuilder uriBuilder
     ) {
-        ReadingNoteResponseDto response = noteService.createReadingNote(noteDto);
+        ReadingNoteResponse response = noteService.createReadingNote(noteRequest);
 
         URI location = uriBuilder
             .path("/v1/reading-notes/{noteId}")
@@ -42,21 +42,21 @@ class ReadingNoteController {
     }
 
     @GetMapping("/{noteId}")
-    public ReadingNoteResponseDto findReadingNote(@PathVariable Long noteId) {
+    public ReadingNoteResponse findReadingNote(@PathVariable Long noteId) {
         return noteService.findReadingNoteById(noteId);
     }
 
     @GetMapping
-    public ReadingNoteListResponseDto findReadingNotes(@RequestParam Long readingBookId) {
+    public ReadingNoteListResponse findReadingNotes(@RequestParam Long readingBookId) {
         return noteService.findReadingNotes(readingBookId);
     }
 
     @PatchMapping("/{noteId}")
-    public ReadingNoteResponseDto updateReadingNote(@PathVariable
-                                                    Long noteId,
-                                                    @Validated(UpdateGroup.class)
-                                                    @RequestBody
-                                                    ReadingNoteUpdateDto noteDto) {
+    public ReadingNoteResponse updateReadingNote(@PathVariable
+                                                 Long noteId,
+                                                 @Validated(UpdateGroup.class)
+                                                 @RequestBody
+                                                 ReadingNoteUpdateRequest noteDto) {
         return noteService.updateReadingNote(noteId, noteDto);
     }
 

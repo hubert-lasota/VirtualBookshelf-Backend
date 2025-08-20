@@ -1,12 +1,12 @@
 package org.hl.wirtualnyregalbackend.reading_book;
 
 import org.hl.wirtualnyregalbackend.book.BookMapper;
-import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookResponse;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
-import org.hl.wirtualnyregalbackend.reading_book.dto.BookshelfSummaryResponseDto;
-import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookResponseDto;
-import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookUpdateDto;
+import org.hl.wirtualnyregalbackend.reading_book.dto.BookshelfSummaryResponse;
+import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookResponse;
+import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookUpdateRequest;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 
 public class ReadingBookMapper {
@@ -15,7 +15,7 @@ public class ReadingBookMapper {
     }
 
 
-    public static ReadingBook toReadingBook(ReadingBookUpdateDto readingBookDto,
+    public static ReadingBook toReadingBook(ReadingBookUpdateRequest readingBookDto,
                                             Bookshelf bookshelf,
                                             Book book) {
         return new ReadingBook(
@@ -27,16 +27,16 @@ public class ReadingBookMapper {
         );
     }
 
-    public static ReadingBookResponseDto toReadingBookResponseDto(ReadingBook readingBook,
-                                                                  Long totalNotes,
-                                                                  Integer currentPage,
-                                                                  Float progressPercentage) {
-        BookResponseDto book = BookMapper.toBookResponseDto(readingBook.getBook());
+    public static ReadingBookResponse toReadingBookResponse(ReadingBook readingBook,
+                                                            Long totalNotes,
+                                                            Integer currentPage,
+                                                            Float progressPercentage) {
+        BookResponse book = BookMapper.toBookResponse(readingBook.getBook());
 
         Bookshelf bookshelf = readingBook.getBookshelf();
-        BookshelfSummaryResponseDto bookshelfDto = new BookshelfSummaryResponseDto(bookshelf.getId(), bookshelf.getName());
+        BookshelfSummaryResponse bookshelfDto = new BookshelfSummaryResponse(bookshelf.getId(), bookshelf.getName());
 
-        return new ReadingBookResponseDto(
+        return new ReadingBookResponse(
             readingBook.getId(),
             progressPercentage,
             currentPage,

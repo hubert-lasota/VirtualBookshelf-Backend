@@ -4,10 +4,10 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherDetailsResponseDto;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherMutationDto;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherPageResponseDto;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponseDto;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherDetailsResponse;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherPageResponse;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherRequest;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponse;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,37 +22,37 @@ public class PublisherService {
     private final PublisherRepository publisherRepository;
 
 
-    public PublisherResponseDto createPublisher(PublisherMutationDto publisherDto) {
-        Publisher publisher = createPublisherEntity(publisherDto);
+    public PublisherResponse createPublisher(PublisherRequest publisherRequest) {
+        Publisher publisher = createPublisherEntity(publisherRequest);
         return PublisherMapper.toPublisherResponseDto(publisher);
     }
 
-    public PublisherPageResponseDto findPublishers(Pageable pageable) {
-        Page<PublisherResponseDto> page = publisherRepository
+    public PublisherPageResponse findPublishers(Pageable pageable) {
+        Page<PublisherResponse> page = publisherRepository
             .findAll(pageable)
             .map(PublisherMapper::toPublisherResponseDto);
-        return PublisherPageResponseDto.from(page);
+        return PublisherPageResponse.from(page);
     }
 
-    public PublisherDetailsResponseDto findPublisherDetailsById(Long publisherId) {
+    public PublisherDetailsResponse findPublisherDetailsById(Long publisherId) {
         Publisher publisher = findPublisherEntityById(publisherId);
         return PublisherMapper.toPublisherDetailsResponseDto(publisher);
     }
 
-    public Publisher findOrCreatePublisher(Long id, PublisherMutationDto publisherDto) {
+    public Publisher findOrCreatePublisher(Long id, PublisherRequest publisherDto) {
         if (id != null) {
             return findPublisherEntityById(id);
         }
         return createPublisherEntity(publisherDto);
     }
 
-    private Publisher createPublisherEntity(PublisherMutationDto publisherDto) {
-        String name = publisherDto.getName();
+    private Publisher createPublisherEntity(PublisherRequest publisherRequest) {
+        String name = publisherRequest.name();
         boolean exists = publisherRepository.existsByNameIgnoreCase(name);
         if (exists) {
             throw new InvalidRequestException("Publisher with %s name already exists".formatted(name));
         }
-        Publisher publisher = PublisherMapper.toPublisher(publisherDto);
+        Publisher publisher = PublisherMapper.toPublisher(publisherRequest);
         return publisherRepository.save(publisher);
     }
 

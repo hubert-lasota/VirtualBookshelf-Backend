@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.auth;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.dto.UserCredentialsDto;
-import org.hl.wirtualnyregalbackend.auth.dto.UserSignInResponseDto;
+import org.hl.wirtualnyregalbackend.auth.dto.UserSignInResponse;
 import org.hl.wirtualnyregalbackend.auth.entity.Authority;
 import org.hl.wirtualnyregalbackend.auth.entity.AuthorityName;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
@@ -35,7 +35,7 @@ class AuthorizationService {
     private final UserDefaultConfigurer userDefaultConfigurer;
 
 
-    public UserSignInResponseDto registerUser(UserCredentialsDto credentials) {
+    public UserSignInResponse registerUser(UserCredentialsDto credentials) {
         if (userRepository.existsByUsername(credentials.username())) {
             throw new InvalidRequestException("Username: %s is already in database".formatted(credentials.username()));
         }
@@ -47,10 +47,10 @@ class AuthorizationService {
         userRepository.save(user);
         userDefaultConfigurer.configure(user);
         String jwt = jwtService.generateToken(user);
-        return UserMapper.toUserSignInResponseDto(user, jwt);
+        return UserMapper.toUserSignInResponse(user, jwt);
     }
 
-    public UserSignInResponseDto signIn(UserCredentialsDto credentials) {
+    public UserSignInResponse signIn(UserCredentialsDto credentials) {
         UsernamePasswordAuthenticationToken authToken =
             new UsernamePasswordAuthenticationToken(credentials.username(), credentials.password());
 
@@ -64,7 +64,7 @@ class AuthorizationService {
         User user = (User) authResult.getPrincipal();
 
         String jwt = jwtService.generateToken(user);
-        return UserMapper.toUserSignInResponseDto(user, jwt);
+        return UserMapper.toUserSignInResponse(user, jwt);
     }
 
     public boolean isJwtValid(String jwt) {

@@ -1,11 +1,11 @@
 package org.hl.wirtualnyregalbackend.book;
 
 import org.hl.wirtualnyregalbackend.author.AuthorMapper;
-import org.hl.wirtualnyregalbackend.author.dto.AuthorResponseDto;
+import org.hl.wirtualnyregalbackend.author.dto.AuthorResponse;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
-import org.hl.wirtualnyregalbackend.book.dto.BookDetailsResponseDto;
-import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
-import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookDetailsResponse;
+import org.hl.wirtualnyregalbackend.book.dto.BookRequest;
+import org.hl.wirtualnyregalbackend.book.dto.BookResponse;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_format.BookFormatMapper;
@@ -14,15 +14,15 @@ import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
 import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.common.review.ReviewMapper;
-import org.hl.wirtualnyregalbackend.common.review.ReviewResponseDto;
+import org.hl.wirtualnyregalbackend.common.review.ReviewResponse;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
-import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
+import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.publisher.PublisherMapper;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponseDto;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponse;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
-import org.hl.wirtualnyregalbackend.reading_book.dto.BookshelfSummaryResponseDto;
+import org.hl.wirtualnyregalbackend.reading_book.dto.BookshelfSummaryResponse;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.springframework.lang.Nullable;
 
@@ -37,19 +37,19 @@ public class BookMapper {
     }
 
 
-    public static Book toBook(BookMutationDto bookDto,
+    public static Book toBook(BookRequest bookDto,
                               BookCover cover,
                               BookFormat format,
                               Publisher publisher,
                               Set<Author> authors,
                               Set<Genre> genres) {
         return new Book(
-            bookDto.getIsbn(),
-            bookDto.getTitle(),
-            bookDto.getPublicationYear(),
-            bookDto.getLanguage(),
-            bookDto.getPageCount(),
-            bookDto.getDescription(),
+            bookDto.isbn(),
+            bookDto.title(),
+            bookDto.publicationYear(),
+            bookDto.language(),
+            bookDto.pageCount(),
+            bookDto.description(),
             cover,
             format,
             publisher,
@@ -58,14 +58,14 @@ public class BookMapper {
         );
     }
 
-    public static BookResponseDto toBookResponseDto(Book book) {
-        List<AuthorResponseDto> authors = book
+    public static BookResponse toBookResponse(Book book) {
+        List<AuthorResponse> authors = book
             .getAuthors()
             .stream()
-            .map(AuthorMapper::toAuthorResponseDto)
+            .map(AuthorMapper::toAuthorResponse)
             .toList();
 
-        return new BookResponseDto(
+        return new BookResponse(
             book.getId(),
             book.getIsbn(),
             book.getTitle(),
@@ -74,41 +74,41 @@ public class BookMapper {
         );
     }
 
-    public static BookDetailsResponseDto toBookDetailsResponseDto(Book book,
-                                                                  ReviewStatistics reviewStats,
-                                                                  @Nullable BookReview review,
-                                                                  Locale locale,
-                                                                  @Nullable ReadingBook readingBook) {
+    public static BookDetailsResponse toBookDetailsResponse(Book book,
+                                                            ReviewStatistics reviewStats,
+                                                            @Nullable BookReview review,
+                                                            Locale locale,
+                                                            @Nullable ReadingBook readingBook) {
         BookFormat format = book.getFormat();
         BookFormatDto formatDto = format != null ? BookFormatMapper.toBookFormatDto(format, locale) : null;
 
         Publisher publisher = book.getPublisher();
-        PublisherResponseDto publisherDto = book.getPublisher() != null
+        PublisherResponse publisherResponse = book.getPublisher() != null
             ? PublisherMapper.toPublisherResponseDto(publisher)
             : null;
 
-        List<AuthorResponseDto> authors = book
+        List<AuthorResponse> authors = book
             .getAuthors()
             .stream()
-            .map(AuthorMapper::toAuthorResponseDto)
+            .map(AuthorMapper::toAuthorResponse)
             .toList();
 
-        List<GenreResponseDto> genres = book
+        List<GenreResponse> genres = book
             .getGenres()
             .stream()
-            .map(genre -> GenreMapper.toGenreResponseDto(genre, locale))
+            .map(genre -> GenreMapper.toGenreResponse(genre, locale))
             .toList();
 
         BookCover cover = book.getCover();
         String coverUrl = cover != null ? cover.getUrl() : null;
 
-        ReviewResponseDto reviewDto = review != null ? ReviewMapper.toReviewResponseDto(review) : null;
-        BookshelfSummaryResponseDto bookshelf = null;
+        ReviewResponse reviewResponse = review != null ? ReviewMapper.toReviewResponse(review) : null;
+        BookshelfSummaryResponse bookshelf = null;
         if (readingBook != null) {
             Bookshelf b = readingBook.getBookshelf();
-            bookshelf = new BookshelfSummaryResponseDto(b.getId(), b.getName());
+            bookshelf = new BookshelfSummaryResponse(b.getId(), b.getName());
         }
-        return new BookDetailsResponseDto(
+        return new BookDetailsResponse(
             book.getId(),
             book.getIsbn(),
             book.getTitle(),
@@ -117,8 +117,8 @@ public class BookMapper {
             formatDto,
             genres,
             reviewStats,
-            reviewDto,
-            publisherDto,
+            reviewResponse,
+            publisherResponse,
             book.getPageCount(),
             book.getPublicationYear(),
             book.getLanguage(),

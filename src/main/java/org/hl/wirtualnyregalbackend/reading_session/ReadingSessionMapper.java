@@ -1,10 +1,10 @@
 package org.hl.wirtualnyregalbackend.reading_session;
 
 import org.hl.wirtualnyregalbackend.book.BookMapper;
-import org.hl.wirtualnyregalbackend.book.dto.BookResponseDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookResponse;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateDto;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponseDto;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateRequest;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponse;
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 
 class ReadingSessionMapper {
@@ -12,26 +12,21 @@ class ReadingSessionMapper {
     private ReadingSessionMapper() {
     }
 
-    public static ReadingSession toReadingSession(ReadingSessionCreateDto sessionDto, ReadingBook book) {
+    public static ReadingSession toReadingSession(ReadingSessionCreateRequest sessionDto, ReadingBook book) {
         return new ReadingSession(
-            sessionDto.getPageFrom(),
-            sessionDto.getPageTo(),
-            sessionDto.getStartedReadingAt(),
-            sessionDto.getFinishedReadingAt(),
+            sessionDto.getPageRange(),
+            sessionDto.getReadingRange(),
             sessionDto.getDescription(),
             book
         );
     }
 
-    public static ReadingSessionResponseDto toReadingSessionResponseDto(ReadingSession session) {
-        BookResponseDto book = BookMapper.toBookResponseDto(session.getReadingBook().getBook());
-        return new ReadingSessionResponseDto(
+    public static ReadingSessionResponse toReadingSessionResponseDto(ReadingSession session) {
+        BookResponse book = BookMapper.toBookResponse(session.getReadingBook().getBook());
+        return new ReadingSessionResponse(
             session.getId(),
-            session.getPageFrom(),
-            session.getPageTo(),
-            session.getDescription(),
-            session.getStartedReadingAt(),
-            session.getFinishedReadingAt(),
+            session.getPageRange(),
+            session.getReadingRange(),
             book
         );
     }

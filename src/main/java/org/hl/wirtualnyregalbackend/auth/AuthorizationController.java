@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.auth;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.dto.UserCredentialsDto;
-import org.hl.wirtualnyregalbackend.auth.dto.UserSignInResponseDto;
+import org.hl.wirtualnyregalbackend.auth.dto.UserSignInResponse;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,12 +20,12 @@ class AuthorizationController {
 
 
     @PostMapping("/register")
-    public UserSignInResponseDto registerUser(@Validated(CreateGroup.class) @RequestBody UserCredentialsDto credentials) {
+    public UserSignInResponse registerUser(@Validated(CreateGroup.class) @RequestBody UserCredentialsDto credentials) {
         return authorizationService.registerUser(credentials);
     }
 
     @PostMapping("/sign-in")
-    public UserSignInResponseDto signIn(@RequestBody UserCredentialsDto credentials) {
+    public UserSignInResponse signIn(@RequestBody UserCredentialsDto credentials) {
         return authorizationService.signIn(credentials);
     }
 

@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book.BookService;
-import org.hl.wirtualnyregalbackend.book.dto.BookMutationDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookRequest;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
@@ -36,30 +36,30 @@ public class ReadingBookService {
     private final ReadingNoteHelper noteHelper;
     private final ApplicationEventPublisher eventPublisher;
 
-    public ReadingBookResponseDto createReadingBook(ReadingBookCreateDto readingBookDto, MultipartFile bookCover) {
-        Bookshelf bookshelf = bookshelfService.findBookshelfById(readingBookDto.getBookshelfId());
-        BookWithIdDto bookWithIdDto = readingBookDto.getBook();
-        Book book = findOrCreateBook(bookWithIdDto.getId(), bookWithIdDto.getBookDto(), bookCover);
-        ReadingBook readingBook = ReadingBookMapper.toReadingBook(readingBookDto, bookshelf, book);
+    public ReadingBookResponse createReadingBook(ReadingBookCreateRequest readingBookRequest, MultipartFile bookCover) {
+        Bookshelf bookshelf = bookshelfService.findBookshelfById(readingBookRequest.getBookshelfId());
+        BookWithIdDto bookWithIdDto = readingBookRequest.getBook();
+        Book book = findOrCreateBook(bookWithIdDto.getId(), bookWithIdDto.getBookRequest(), bookCover);
+        ReadingBook readingBook = ReadingBookMapper.toReadingBook(readingBookRequest, bookshelf, book);
         readingBookRepository.save(readingBook);
         eventPublisher.publishEvent(new ReadingBookCreatedEvent(readingBook));
         return mapToReadingBookResponseDto(readingBook);
     }
 
-    public ReadingBookResponseDto updateReadingBook(Long readingBookId, ReadingBookUpdateDto readingBookDto) {
+    public ReadingBookResponse updateReadingBook(Long readingBookId, ReadingBookUpdateRequest readingBookRequest) {
         ReadingBook readingBook = readingBookHelper.findReadingBookEntityById(readingBookId);
 
-        ReadingStatus status = readingBookDto.getStatus();
+        ReadingStatus status = readingBookRequest.getStatus();
         if (status != null) {
             readingBook.setStatus(status);
         }
 
-        Instant startedReadingAt = readingBookDto.getStartedReadingAt() != null
-            ? readingBookDto.getStartedReadingAt()
+        Instant startedReadingAt = readingBookRequest.getStartedReadingAt() != null
+            ? readingBookRequest.getStartedReadingAt()
             : readingBook.getStartedReadingAt();
 
-        Instant finishedReadingAt = readingBookDto.getFinishedReadingAt() != null
-            ? readingBookDto.getFinishedReadingAt()
+        Instant finishedReadingAt = readingBookRequest.getFinishedReadingAt() != null
+            ? readingBookRequest.getFinishedReadingAt()
             : readingBook.getFinishedReadingAt();
 
         readingBook.setReadingPeriod(startedReadingAt, finishedReadingAt);
@@ -68,7 +68,7 @@ public class ReadingBookService {
         return mapToReadingBookResponseDto(readingBook);
     }
 
-    public ReadingBookResponseDto moveReadingBook(Long readingBookId, Long bookshelfId) {
+    public ReadingBookResponse moveReadingBook(Long readingBookId, Long bookshelfId) {
         Bookshelf bookshelf = bookshelfService.findBookshelfById(bookshelfId);
         ReadingBook readingBook = readingBookHelper.findReadingBookEntityById(readingBookId);
         readingBook.setBookshelf(bookshelf);
@@ -76,7 +76,7 @@ public class ReadingBookService {
         return mapToReadingBookResponseDto(readingBook);
     }
 
-    public ReadingBookResponseDto changeReadingBookStatus(Long readingBookId, ReadingStatus status) {
+    public ReadingBookResponse changeReadingBookStatus(Long readingBookId, ReadingStatus status) {
         ReadingBook book = readingBookHelper.findReadingBookEntityById(readingBookId);
         book.setStatus(status);
         publishReadingBookFinishedEventIfRequired(book, status);
@@ -84,21 +84,21 @@ public class ReadingBookService {
         return mapToReadingBookResponseDto(book);
     }
 
-    public ReadingBookListResponseDto findUserReadingBooks(User user, @Nullable String query) {
+    public ReadingBookListResponse findUserReadingBooks(User user, @Nullable String query) {
         Specification<ReadingBook> spec = ReadingBookSpecification.byUser(user);
         if (query != null) {
             spec = spec.and(ReadingBookSpecification.byQuery(query));
         }
 
-        List<ReadingBookResponseDto> books = readingBookRepository
+        List<ReadingBookResponse> books = readingBookRepository
             .findAll(spec)
             .stream()
             .map(this::mapToReadingBookResponseDto)
             .toList();
-        return new ReadingBookListResponseDto(books);
+        return new ReadingBookListResponse(books);
     }
 
-    public ReadingBookResponseDto findReadingBookById(Long readingBookId) {
+    public ReadingBookResponse findReadingBookById(Long readingBookId) {
         ReadingBook book = readingBookHelper.findReadingBookEntityById(readingBookId);
         return mapToReadingBookResponseDto(book);
     }
@@ -114,7 +114,7 @@ public class ReadingBookService {
     }
 
 
-    private Book findOrCreateBook(Long bookId, BookMutationDto bookDto, MultipartFile cover) {
+    private Book findOrCreateBook(Long bookId, BookRequest bookDto, MultipartFile cover) {
         return bookService.findBookOptById(bookId)
             .orElseGet(() -> bookService.createBookEntity(bookDto, cover));
     }
@@ -125,10 +125,10 @@ public class ReadingBookService {
         }
     }
 
-    private ReadingBookResponseDto mapToReadingBookResponseDto(ReadingBook readingBook) {
+    private ReadingBookResponse mapToReadingBookResponseDto(ReadingBook readingBook) {
         Long totalNotes = noteHelper.getTotalNotes(readingBook.getId());
         // TODO
-        return ReadingBookMapper.toReadingBookResponseDto(readingBook, totalNotes, 0, 0F);
+        return ReadingBookMapper.toReadingBookResponse(readingBook, totalNotes, 0, 0F);
     }
 
 

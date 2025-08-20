@@ -1,15 +1,15 @@
 package org.hl.wirtualnyregalbackend.challenge;
 
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeMutationDto;
 import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeParticipation;
-import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeResponseDto;
+import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeRequest;
+import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeResponse;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengeParticipant;
-import org.hl.wirtualnyregalbackend.genre.dto.GenreResponseDto;
+import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.user.UserMapper;
-import org.hl.wirtualnyregalbackend.user.dto.UserResponseDto;
+import org.hl.wirtualnyregalbackend.user.dto.UserResponse;
 import org.springframework.lang.Nullable;
 
 class ChallengeMapper {
@@ -17,34 +17,34 @@ class ChallengeMapper {
     private ChallengeMapper() {
     }
 
-    public static Challenge toChallenge(ChallengeMutationDto challengeDto,
+    public static Challenge toChallenge(ChallengeRequest challengeRequest,
                                         Genre genre,
                                         User user) {
         return new Challenge(
-            challengeDto.title(),
-            challengeDto.description(),
-            challengeDto.startAt(),
-            challengeDto.endAt(),
-            challengeDto.type(),
-            challengeDto.targetCount(),
+            challengeRequest.title(),
+            challengeRequest.description(),
+            challengeRequest.startAt(),
+            challengeRequest.endAt(),
+            challengeRequest.type(),
+            challengeRequest.goalValue(),
             genre,
             user
         );
     }
 
-    public static ChallengeResponseDto toChallengeResponseDto(Challenge challenge,
-                                                              @Nullable ChallengeParticipant currentUserParticipant,
-                                                              @Nullable GenreResponseDto genreDto,
-                                                              Long totalParticipants) {
-        Integer targetCount = challenge.getTargetCount();
-        ChallengeParticipation participation = toChallengeParticipation(currentUserParticipant, targetCount);
-        UserResponseDto user = UserMapper.toUserResponseDto(challenge.getUser());
-        return new ChallengeResponseDto(
+    public static ChallengeResponse toChallengeResponse(Challenge challenge,
+                                                        @Nullable ChallengeParticipant currentUserParticipant,
+                                                        @Nullable GenreResponse genreDto,
+                                                        Long totalParticipants) {
+        Integer goalValue = challenge.getGoalValue();
+        ChallengeParticipation participation = toChallengeParticipation(currentUserParticipant, goalValue);
+        UserResponse user = UserMapper.toUserResponse(challenge.getUser());
+        return new ChallengeResponse(
             challenge.getId(),
             challenge.getTitle(),
             challenge.getDescription(),
             challenge.getType(),
-            targetCount,
+            goalValue,
             challenge.getStartAt(),
             challenge.getEndAt(),
             genreDto,
@@ -54,26 +54,25 @@ class ChallengeMapper {
         );
     }
 
-    private static ChallengeParticipation toChallengeParticipation(@Nullable ChallengeParticipant participant, Integer targetCount) {
+    private static ChallengeParticipation toChallengeParticipation(@Nullable ChallengeParticipant participant, Integer challengeGoalValue) {
         if (participant == null) {
-            return new ChallengeParticipation(false, null, null, null, null, null);
+            return new ChallengeParticipation(false, null, null, null, null);
         }
-        Integer currentCount = participant.getCurrentCount();
+        Integer currentGoalValue = participant.getCurrentGoalValue();
         return new ChallengeParticipation(
             true,
-            currentCount,
-            calculateProgressPercentage(currentCount, targetCount),
+            currentGoalValue,
+            calculateProgressPercentage(currentGoalValue, challengeGoalValue),
             participant.getStatus(),
-            participant.getStartedAt(),
-            participant.getFinishedAt()
+            participant.getDurationRange()
         );
     }
 
-    private static Float calculateProgressPercentage(Integer currentCount, Integer targetCount) {
-        if (currentCount.equals(0)) {
+    private static Float calculateProgressPercentage(Integer currentGoalValue, Integer challengeGoalValue) {
+        if (currentGoalValue.equals(0)) {
             return 0F;
         }
-        return ((float) currentCount) / targetCount * 100F;
+        return ((float) currentGoalValue) / challengeGoalValue * 100F;
     }
 
 }

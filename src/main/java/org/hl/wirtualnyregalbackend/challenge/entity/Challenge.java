@@ -33,7 +33,7 @@ public class Challenge extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ChallengeType type;
 
-    private Integer targetCount;
+    private Integer goalValue;
 
     @ManyToOne
     @JoinColumn(name = "genre_id")

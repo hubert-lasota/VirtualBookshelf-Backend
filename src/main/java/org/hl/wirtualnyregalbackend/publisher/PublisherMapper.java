@@ -1,8 +1,8 @@
 package org.hl.wirtualnyregalbackend.publisher;
 
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherDetailsResponseDto;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherMutationDto;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponseDto;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherDetailsResponse;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherRequest;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponse;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
 
 public class PublisherMapper {
@@ -11,12 +11,12 @@ public class PublisherMapper {
     }
 
 
-    public static PublisherResponseDto toPublisherResponseDto(Publisher publisher) {
-        return new PublisherResponseDto(publisher.getId(), publisher.getName());
+    public static PublisherResponse toPublisherResponseDto(Publisher publisher) {
+        return new PublisherResponse(publisher.getId(), publisher.getName());
     }
 
-    public static PublisherDetailsResponseDto toPublisherDetailsResponseDto(Publisher publisher) {
-        return new PublisherDetailsResponseDto(
+    public static PublisherDetailsResponse toPublisherDetailsResponseDto(Publisher publisher) {
+        return new PublisherDetailsResponse(
             publisher.getId(),
             publisher.getName(),
             publisher.getCreatedAt(),
@@ -24,8 +24,8 @@ public class PublisherMapper {
         );
     }
 
-    public static Publisher toPublisher(PublisherMutationDto publisherDto) {
-        return new Publisher(publisherDto.getName());
+    public static Publisher toPublisher(PublisherRequest publisherDto) {
+        return new Publisher(publisherDto.name());
     }
 
 }

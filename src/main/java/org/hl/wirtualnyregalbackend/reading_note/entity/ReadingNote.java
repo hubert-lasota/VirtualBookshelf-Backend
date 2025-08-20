@@ -1,12 +1,9 @@
 package org.hl.wirtualnyregalbackend.reading_note.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
+import org.hl.wirtualnyregalbackend.common.model.PageRange;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 
 @Entity
@@ -14,6 +11,7 @@ import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ReadingNote extends BaseEntity {
 
     @Column
@@ -22,35 +20,11 @@ public class ReadingNote extends BaseEntity {
     @Column
     private String content;
 
-    @Column(name = "page_from")
-    @Setter(AccessLevel.NONE)
-    private Integer pageFrom;
-
-    @Column(name = "page_to")
-    @Setter(AccessLevel.NONE)
-    private Integer pageTo;
+    @Embedded
+    private PageRange pageRange;
 
     @ManyToOne
     @JoinColumn(name = "reading_book_id")
     private ReadingBook readingBook;
-
-    public ReadingNote(String title,
-                       String content,
-                       Integer pageFrom,
-                       Integer pageTo,
-                       ReadingBook readingBook) {
-        this.title = title;
-        this.content = content;
-        this.readingBook = readingBook;
-        setPageRange(pageFrom, pageTo);
-    }
-
-    public void setPageRange(Integer pageFrom, Integer pageTo) {
-        if (pageFrom > pageTo) {
-            throw new InvalidRequestException("Page from cannot be greater than page to");
-        }
-        this.pageFrom = pageFrom;
-        this.pageTo = pageTo;
-    }
 
 }

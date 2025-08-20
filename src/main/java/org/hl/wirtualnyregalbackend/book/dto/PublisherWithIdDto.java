@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherMutationDto;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherRequest;
 
 @Getter
 @Setter
@@ -20,7 +20,7 @@ public class PublisherWithIdDto {
 
     @JsonUnwrapped
     @Valid
-    private PublisherMutationDto publisherDto;
+    private PublisherRequest publisherDto;
 
     @JsonIgnore
     @AssertTrue(message = "Provide either publisher ID or publisher details.")

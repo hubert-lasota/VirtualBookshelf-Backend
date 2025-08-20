@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.book_format;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatListResponseDto;
+import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatListResponse;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +19,8 @@ class BookFormatController {
 
 
     @GetMapping
-    public BookFormatListResponseDto findBookFormats(@RequestParam(required = false) Boolean availableInBookshelf,
-                                                     @AuthenticationPrincipal User user) {
+    public BookFormatListResponse findBookFormats(@RequestParam(required = false) Boolean availableInBookshelf,
+                                                  @AuthenticationPrincipal User user) {
         return bookFormatService.findBookFormats(availableInBookshelf, user);
     }
 

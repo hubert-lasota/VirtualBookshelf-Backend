@@ -6,11 +6,11 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public record BookPageResponseDto(
-    List<BookResponseDto> books,
+    List<BookResponse> books,
     PageMeta pageMeta
 ) {
 
-    public static BookPageResponseDto from(Page<BookResponseDto> page) {
+    public static BookPageResponseDto from(Page<BookResponse> page) {
         return new BookPageResponseDto(page.getContent(), PageMeta.from(page));
     }
 

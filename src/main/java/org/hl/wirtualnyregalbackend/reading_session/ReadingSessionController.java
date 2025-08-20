@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateDto;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionPageResponseDto;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponseDto;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateRequest;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionPageResponse;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,24 +22,27 @@ class ReadingSessionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ReadingSessionResponseDto createReadingSession(@Validated(CreateGroup.class) @RequestBody ReadingSessionCreateDto sessionDto) {
-        return sessionService.createReadingSession(sessionDto);
+    public ReadingSessionResponse createReadingSession(@Validated(CreateGroup.class)
+                                                       @RequestBody
+                                                       ReadingSessionCreateRequest sessionRequest) {
+        return sessionService.createReadingSession(sessionRequest);
     }
 
     @GetMapping
-    public ReadingSessionPageResponseDto findCurrentUserReadingSessions(@AuthenticationPrincipal User user, Pageable pageable) {
+    public ReadingSessionPageResponse findCurrentUserReadingSessions(@AuthenticationPrincipal User user,
+                                                                     Pageable pageable) {
         return sessionService.findReadingSessions(user, pageable);
     }
 
     @PatchMapping("/{sessionId}")
-    public ReadingSessionResponseDto updateReadingSession(
+    public ReadingSessionResponse updateReadingSession(
         @PathVariable
         Long sessionId,
         @Validated(UpdateGroup.class)
         @RequestBody
-        ReadingSessionCreateDto sessionDto
+        ReadingSessionCreateRequest sessionRequest
     ) {
-        return sessionService.updateReadingSession(sessionId, sessionDto);
+        return sessionService.updateReadingSession(sessionId, sessionRequest);
     }
 
     @DeleteMapping("/{sessionId}")

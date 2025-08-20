@@ -2,10 +2,10 @@ package org.hl.wirtualnyregalbackend.publisher;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherDetailsResponseDto;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherMutationDto;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherPageResponseDto;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponseDto;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherDetailsResponse;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherPageResponse;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherRequest;
+import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,11 +23,11 @@ class PublisherController {
 
 
     @PostMapping
-    public ResponseEntity<PublisherResponseDto> createPublisher(@RequestBody
-                                                                @Validated(CreateGroup.class)
-                                                                PublisherMutationDto publisherDto,
-                                                                UriComponentsBuilder uriBuilder) {
-        PublisherResponseDto response = publisherService.createPublisher(publisherDto);
+    public ResponseEntity<PublisherResponse> createPublisher(@RequestBody
+                                                             @Validated(CreateGroup.class)
+                                                             PublisherRequest publisherRequest,
+                                                             UriComponentsBuilder uriBuilder) {
+        PublisherResponse response = publisherService.createPublisher(publisherRequest);
 
         URI location = uriBuilder
             .path("/v1/books/{id}")
@@ -38,12 +38,12 @@ class PublisherController {
     }
 
     @GetMapping("/{publisherId}")
-    public PublisherDetailsResponseDto findPublisherDetailsById(@PathVariable Long publisherId) {
+    public PublisherDetailsResponse findPublisherDetailsById(@PathVariable Long publisherId) {
         return publisherService.findPublisherDetailsById(publisherId);
     }
 
     @GetMapping
-    public PublisherPageResponseDto findPublishers(Pageable pageable) {
+    public PublisherPageResponse findPublishers(Pageable pageable) {
         return publisherService.findPublishers(pageable);
     }
 

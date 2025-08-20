@@ -3,9 +3,9 @@ package org.hl.wirtualnyregalbackend.bookshelf;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfListResponseDto;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfMutationDto;
-import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponseDto;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfListResponse;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfRequest;
+import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponse;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.springframework.http.HttpStatus;
@@ -27,14 +27,14 @@ class BookshelfController {
 
 
     @PostMapping
-    public ResponseEntity<BookshelfResponseDto> createBookshelf(
+    public ResponseEntity<BookshelfResponse> createBookshelf(
         @Validated(CreateGroup.class)
         @RequestBody
-        BookshelfMutationDto bookshelfDto,
+        BookshelfRequest bookshelfRequest,
         @AuthenticationPrincipal User user,
         UriComponentsBuilder uriBuilder
     ) {
-        BookshelfResponseDto response = bookshelfService.createBookshelf(bookshelfDto, user);
+        BookshelfResponse response = bookshelfService.createBookshelf(bookshelfRequest, user);
 
         URI location = uriBuilder
             .path("/v1/bookshelves/{bookshelfId}")
@@ -45,20 +45,20 @@ class BookshelfController {
     }
 
     @GetMapping
-    public BookshelfListResponseDto findCurrentUserBookshelves(@AuthenticationPrincipal User user) {
+    public BookshelfListResponse findCurrentUserBookshelves(@AuthenticationPrincipal User user) {
         return bookshelfService.findUserBookshelves(user.getId());
     }
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasPermission(#id, 'BOOKSHELF', 'CREATE')")
-    public BookshelfResponseDto updateBookshelf(
+    public BookshelfResponse updateBookshelf(
         @PathVariable
         Long id,
         @RequestBody
         @Validated(UpdateGroup.class)
-        BookshelfMutationDto bookshelfDto
+        BookshelfRequest bookshelfRequest
     ) {
-        return bookshelfService.updateBookshelf(id, bookshelfDto);
+        return bookshelfService.updateBookshelf(id, bookshelfRequest);
     }
 
 
