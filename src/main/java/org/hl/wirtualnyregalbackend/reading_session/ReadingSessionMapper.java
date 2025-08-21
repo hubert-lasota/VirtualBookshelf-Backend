@@ -15,7 +15,7 @@ class ReadingSessionMapper {
     public static ReadingSession toReadingSession(ReadingSessionCreateRequest sessionDto, ReadingBook book) {
         return new ReadingSession(
             sessionDto.getPageRange(),
-            sessionDto.getReadingRange(),
+            sessionDto.getDurationRange(),
             sessionDto.getDescription(),
             book
         );
@@ -26,7 +26,7 @@ class ReadingSessionMapper {
         return new ReadingSessionResponse(
             session.getId(),
             session.getPageRange(),
-            session.getReadingRange(),
+            session.getDurationRange(),
             book
         );
     }

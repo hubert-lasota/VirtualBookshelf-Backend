@@ -5,7 +5,7 @@ import lombok.*;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.common.model.ReadingRange;
+import org.hl.wirtualnyregalbackend.common.model.ReadingDurationRange;
 import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
 
 @Entity
@@ -21,7 +21,7 @@ public class ReadingBook extends BaseEntity {
     private ReadingStatus status;
 
     @Embedded
-    private ReadingRange readingRange;
+    private ReadingDurationRange durationRange;
 
     @ManyToOne
     @JoinColumn(name = "bookshelf_id")

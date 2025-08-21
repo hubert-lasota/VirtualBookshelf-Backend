@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.common.error;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.hl.wirtualnyregalbackend.common.error.exception.InvalidPageRangeException;
-import org.hl.wirtualnyregalbackend.common.error.exception.InvalidReadingRangeException;
+import org.hl.wirtualnyregalbackend.common.error.exception.InvalidReadingDurationRangeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -52,8 +52,8 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
-    @ExceptionHandler(InvalidReadingRangeException.class)
-    public ProblemDetail handleInvalidReadingRangeException(InvalidReadingRangeException ex) {
+    @ExceptionHandler(InvalidReadingDurationRangeException.class)
+    public ProblemDetail handleInvalidReadingDurationRangeException(InvalidReadingDurationRangeException ex) {
         List<FieldValidationError> errors = List.of(ex.getError());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Validation Failed");
         problemDetail.setProperty("errors", errors);

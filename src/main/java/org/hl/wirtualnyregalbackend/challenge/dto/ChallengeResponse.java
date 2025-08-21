@@ -10,7 +10,7 @@ public record ChallengeResponse(
     String title,
     String description,
     ChallengeType type,
-    Integer targetCount,
+    Integer goalValue,
     ChallengeDurationRange durationRange,
     GenreResponse genre,
     Long totalParticipants,

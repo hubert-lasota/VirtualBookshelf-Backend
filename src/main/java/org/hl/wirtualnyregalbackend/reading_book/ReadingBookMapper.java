@@ -20,7 +20,7 @@ public class ReadingBookMapper {
                                             Book book) {
         return new ReadingBook(
             readingBookDto.getStatus(),
-            readingBookDto.getReadingRange(),
+            readingBookDto.getDurationRange(),
             bookshelf,
             book
         );
@@ -40,7 +40,7 @@ public class ReadingBookMapper {
             progressPercentage,
             currentPage,
             totalNotes,
-            readingBook.getReadingRange(),
+            readingBook.getDurationRange(),
             readingBook.getStatus(),
             book,
             bookshelfDto

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hl.wirtualnyregalbackend.common.model.PageRange;
-import org.hl.wirtualnyregalbackend.common.model.ReadingRange;
+import org.hl.wirtualnyregalbackend.common.model.ReadingDurationRange;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.NotAllFieldsNull;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
@@ -26,7 +26,7 @@ public class ReadingSessionUpdateRequest {
 
     @Valid
     @NotNull(groups = CreateGroup.class)
-    protected ReadingRange readingRange;
+    protected ReadingDurationRange durationRange;
 
     @Nullable
     protected String description;
