@@ -2,8 +2,8 @@ package org.hl.wirtualnyregalbackend.reading_session;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.common.model.PageRange;
+import org.hl.wirtualnyregalbackend.common.model.ReadingRange;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateRequest;
@@ -13,7 +13,7 @@ import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionUpdateRequ
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadPagesEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadTodayEvent;
-import org.hl.wirtualnyregalbackend.reading_session.model.ReadingRange;
+import org.hl.wirtualnyregalbackend.reading_session.exception.ReadingSessionNotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +37,7 @@ class ReadingSessionService {
 
     @Transactional
     public ReadingSessionResponse createReadingSession(ReadingSessionCreateRequest sessionRequest) {
-        ReadingBook rb = readingBookHelper.findReadingBookEntityById(sessionRequest.getReadingBookId());
+        ReadingBook rb = readingBookHelper.findReadingBookById(sessionRequest.getReadingBookId());
         ReadingSession session = ReadingSessionMapper.toReadingSession(sessionRequest, rb);
         sessionRepository.save(session);
 
@@ -51,7 +51,7 @@ class ReadingSessionService {
     }
 
     public ReadingSessionResponse updateReadingSession(Long sessionId, ReadingSessionUpdateRequest sessionRequest) {
-        ReadingSession session = findReadingSessionEntityById(sessionId);
+        ReadingSession session = findReadingSessionById(sessionId);
 
         String description = sessionRequest.getDescription();
         if (description != null) {
@@ -88,13 +88,13 @@ class ReadingSessionService {
 
 
     public void deleteReadingSession(Long sessionId) {
-        ReadingSession rs = findReadingSessionEntityById(sessionId);
+        ReadingSession rs = findReadingSessionById(sessionId);
         sessionRepository.delete(rs);
     }
 
-    private ReadingSession findReadingSessionEntityById(Long id) throws EntityNotFoundException {
+    private ReadingSession findReadingSessionById(Long id) throws ReadingSessionNotFoundException {
         Optional<ReadingSession> sessionOpt = id != null ? sessionRepository.findById(id) : Optional.empty();
-        return sessionOpt.orElseThrow(() -> new EntityNotFoundException("ReadingSession with id: %d not found".formatted(id)));
+        return sessionOpt.orElseThrow(() -> new ReadingSessionNotFoundException(id));
     }
 
 

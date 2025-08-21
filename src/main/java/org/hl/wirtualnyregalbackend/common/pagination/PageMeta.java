@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.common.model;
+package org.hl.wirtualnyregalbackend.common.pagination;
 
 import org.springframework.data.domain.Page;
 

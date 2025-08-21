@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.common.model.PageRange;
+import org.hl.wirtualnyregalbackend.common.model.ReadingRange;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-import org.hl.wirtualnyregalbackend.reading_session.model.ReadingRange;
 
 @Entity
 @Table(name = "reading_session")

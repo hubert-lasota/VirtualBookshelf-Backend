@@ -106,7 +106,7 @@ public class BookService {
         BookFoundEvent event = new BookFoundEvent(book, user);
         eventPublisher.publishEvent(event);
         ReviewStatistics reviewStats = bookReviewService.getBookReviewStatistics(bookId);
-        BookReview review = bookReviewService.findBookReviewEntityById(bookId);
+        BookReview review = bookReviewService.findOptionalBookReviewById(bookId).orElse(null);
         Locale locale = LocaleContextHolder.getLocale();
         ReadingBook rb = readingBookHelper.findUserReadingBookByBookId(bookId, user);
         return BookMapper.toBookDetailsResponse(book, reviewStats, review, locale, rb);

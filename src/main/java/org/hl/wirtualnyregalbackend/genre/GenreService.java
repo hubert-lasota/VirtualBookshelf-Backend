@@ -1,9 +1,9 @@
 package org.hl.wirtualnyregalbackend.genre;
 
-import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.hl.wirtualnyregalbackend.genre.dto.GenrePageResponse;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
+import org.hl.wirtualnyregalbackend.genre.exception.GenreNotFoundException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,11 +35,11 @@ public class GenreService {
         return GenrePageResponse.from(page);
     }
 
-    public Genre findGenreById(Long genreId) throws EntityNotFoundException {
+    public Genre findGenreById(Long genreId) throws GenreNotFoundException {
         Optional<Genre> genreOpt = genreId == null
             ? Optional.empty()
             : genreRepository.findById(genreId);
-        return genreOpt.orElseThrow(() -> new EntityNotFoundException("Genre with id = '%d' not found.".formatted(genreId)));
+        return genreOpt.orElseThrow(() -> new GenreNotFoundException(genreId));
     }
 
 }

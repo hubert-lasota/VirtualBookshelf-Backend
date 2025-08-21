@@ -8,6 +8,7 @@ import org.hl.wirtualnyregalbackend.book.dto.BookRequest;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
+import org.hl.wirtualnyregalbackend.common.model.ReadingRange;
 import org.hl.wirtualnyregalbackend.reading_book.dto.*;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookCreatedEvent;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -47,22 +47,15 @@ public class ReadingBookService {
     }
 
     public ReadingBookResponse updateReadingBook(Long readingBookId, ReadingBookUpdateRequest readingBookRequest) {
-        ReadingBook readingBook = readingBookHelper.findReadingBookEntityById(readingBookId);
+        ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
 
         ReadingStatus status = readingBookRequest.getStatus();
         if (status != null) {
             readingBook.setStatus(status);
         }
 
-        Instant startedReadingAt = readingBookRequest.getStartedReadingAt() != null
-            ? readingBookRequest.getStartedReadingAt()
-            : readingBook.getStartedReadingAt();
-
-        Instant finishedReadingAt = readingBookRequest.getFinishedReadingAt() != null
-            ? readingBookRequest.getFinishedReadingAt()
-            : readingBook.getFinishedReadingAt();
-
-        readingBook.setReadingPeriod(startedReadingAt, finishedReadingAt);
+        ReadingRange rr = ReadingRange.merge(readingBook.getReadingRange(), readingBookRequest.getReadingRange());
+        readingBook.setReadingRange(rr);
 
         readingBookRepository.save(readingBook);
         return mapToReadingBookResponseDto(readingBook);
@@ -70,14 +63,14 @@ public class ReadingBookService {
 
     public ReadingBookResponse moveReadingBook(Long readingBookId, Long bookshelfId) {
         Bookshelf bookshelf = bookshelfService.findBookshelfById(bookshelfId);
-        ReadingBook readingBook = readingBookHelper.findReadingBookEntityById(readingBookId);
+        ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
         readingBook.setBookshelf(bookshelf);
         readingBookRepository.save(readingBook);
         return mapToReadingBookResponseDto(readingBook);
     }
 
     public ReadingBookResponse changeReadingBookStatus(Long readingBookId, ReadingStatus status) {
-        ReadingBook book = readingBookHelper.findReadingBookEntityById(readingBookId);
+        ReadingBook book = readingBookHelper.findReadingBookById(readingBookId);
         book.setStatus(status);
         publishReadingBookFinishedEventIfRequired(book, status);
         readingBookRepository.save(book);
@@ -99,14 +92,14 @@ public class ReadingBookService {
     }
 
     public ReadingBookResponse findReadingBookById(Long readingBookId) {
-        ReadingBook book = readingBookHelper.findReadingBookEntityById(readingBookId);
+        ReadingBook book = readingBookHelper.findReadingBookById(readingBookId);
         return mapToReadingBookResponseDto(book);
     }
 
 
     @Transactional
     public void deleteReadingBook(Long readingBookId) {
-        ReadingBook readingBook = readingBookHelper.findReadingBookEntityById(readingBookId);
+        ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
         eventPublisher.publishEvent(new ReadingBookDeletedEvent(readingBook));
 
         noteHelper.deleteNotesByReadingBookId(readingBookId);

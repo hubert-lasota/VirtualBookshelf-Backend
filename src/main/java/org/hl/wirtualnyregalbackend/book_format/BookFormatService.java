@@ -6,7 +6,7 @@ import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
 import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatListResponse;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
-import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
+import org.hl.wirtualnyregalbackend.book_format.exception.BookFormatNotFoundException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -36,8 +36,9 @@ public class BookFormatService {
         return new BookFormatListResponse(formats);
     }
 
-    public BookFormat findBookFormatById(Long id) throws EntityNotFoundException {
+    public BookFormat findBookFormatById(Long id) throws BookFormatNotFoundException {
         Optional<BookFormat> formatOpt = id != null ? bookFormatRepository.findById(id) : Optional.empty();
-        return formatOpt.orElseThrow(() -> new EntityNotFoundException("Book format with id = '%d' not found.".formatted(id)));
+        return formatOpt.orElseThrow(() -> new BookFormatNotFoundException(id));
     }
+
 }

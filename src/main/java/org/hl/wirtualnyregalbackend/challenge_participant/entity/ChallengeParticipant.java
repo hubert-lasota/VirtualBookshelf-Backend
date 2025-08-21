@@ -7,9 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
+import org.hl.wirtualnyregalbackend.challenge_participant.exception.InvalidChallengeParticipantStatusStateException;
 import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantDurationRange;
 import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantStatus;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 import java.time.Instant;
@@ -62,7 +62,7 @@ public class ChallengeParticipant extends BaseEntity {
             this.status = newStatus;
             this.durationRange = ChallengeParticipantDurationRange.merge(this.durationRange, new ChallengeParticipantDurationRange(durationRange.startedAt(), finishedAt));
         } else {
-            throw new InvalidRequestException("You can't change status to %s if status is not ACTIVE".formatted(newStatus.toString()));
+            throw new InvalidChallengeParticipantStatusStateException("You can't change status to %s if status is not ACTIVE".formatted(newStatus.toString()));
         }
     }
 

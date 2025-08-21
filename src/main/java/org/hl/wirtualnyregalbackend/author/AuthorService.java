@@ -8,10 +8,9 @@ import org.hl.wirtualnyregalbackend.author.dto.AuthorPageResponse;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorRequest;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorResponse;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
+import org.hl.wirtualnyregalbackend.author.exception.AuthorNotFoundException;
 import org.hl.wirtualnyregalbackend.author_review.AuthorReviewService;
 import org.hl.wirtualnyregalbackend.author_review.entity.AuthorReview;
-import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,9 +33,9 @@ public class AuthorService {
     }
 
     public AuthorDetailsResponse findAuthorDetailsById(Long authorId) {
-        Author author = findAuthorEntityById(authorId);
+        Author author = findAuthorById(authorId);
         ReviewStatistics stats = reviewService.getAuthorReviewStats(authorId);
-        AuthorReview review = reviewService.findAuthorReviewEntityById(authorId);
+        AuthorReview review = reviewService.findOptionalAuthorReviewById(authorId).orElse(null);
         return AuthorMapper.toAuthorDetailsResponse(author, stats, review);
     }
 
@@ -55,25 +54,20 @@ public class AuthorService {
 
     public Author findOrCreateAuthor(Long id, AuthorRequest authorRequest) {
         if (id != null) {
-            return findAuthorEntityById(id);
+            return findAuthorById(id);
         }
 
         return createAuthorEntity(authorRequest);
     }
 
     private Author createAuthorEntity(AuthorRequest authorRequest) {
-        String fullName = authorRequest.fullName();
-        boolean exists = authorRepository.existsByFullName(fullName);
-        if (exists) {
-            throw new InvalidRequestException("Author with this full name = %s already exists".formatted(fullName));
-        }
         Author author = AuthorMapper.toAuthor(authorRequest);
         return authorRepository.save(author);
     }
 
-    private Author findAuthorEntityById(Long id) {
+    private Author findAuthorById(Long id) throws AuthorNotFoundException {
         Optional<Author> authorOpt = id != null ? authorRepository.findById(id) : Optional.empty();
-        return authorOpt.orElseThrow(() -> new EntityNotFoundException("Author with id='%d' not found".formatted(id)));
+        return authorOpt.orElseThrow(() -> new AuthorNotFoundException(id));
     }
 
 }

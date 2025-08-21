@@ -7,10 +7,11 @@ import org.hl.wirtualnyregalbackend.challenge.dto.ChallengePageResponse;
 import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeRequest;
 import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeResponse;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
+import org.hl.wirtualnyregalbackend.challenge.exception.ChallengeNotFoundException;
 import org.hl.wirtualnyregalbackend.challenge.model.ChallengeFilter;
 import org.hl.wirtualnyregalbackend.challenge_participant.ChallengeParticipantHelper;
 import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengeParticipant;
-import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
+import org.hl.wirtualnyregalbackend.challenge_participant.exception.ChallengeParticipantNotFoundException;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
 import org.hl.wirtualnyregalbackend.genre.GenreService;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
@@ -65,11 +66,11 @@ class ChallengeService {
         return mapToChallengeResponseDto(challenge);
     }
 
-    public Challenge findChallengeById(Long challengeId) {
+    public Challenge findChallengeById(Long challengeId) throws ChallengeNotFoundException {
         Optional<Challenge> challengeOpt = challengeId == null
             ? Optional.empty()
             : challengeRepository.findById(challengeId);
-        return challengeOpt.orElseThrow(() -> new IllegalArgumentException("Challenge with id = '%d' not found.".formatted(challengeId)));
+        return challengeOpt.orElseThrow(() -> new ChallengeNotFoundException(challengeId));
     }
 
     public ChallengePageResponse findChallenges(ChallengeFilter filter, User participant, Pageable pageable) {
@@ -88,7 +89,7 @@ class ChallengeService {
     public void quitChallenge(Long challengeId) {
         ChallengeParticipant participant = participantHelper.findCurrentUserParticipant(challengeId);
         if (participant == null) {
-            throw new EntityNotFoundException("ChallengeParticipant not found for challengeId: %d and and current usr".formatted(challengeId));
+            throw new ChallengeParticipantNotFoundException("ChallengeParticipant not found for challengeId: %d and and current usr".formatted(challengeId));
         }
         participantHelper.deleteParticipant(participant);
     }

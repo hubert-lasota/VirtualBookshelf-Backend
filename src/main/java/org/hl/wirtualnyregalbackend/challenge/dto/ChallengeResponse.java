@@ -1,10 +1,9 @@
 package org.hl.wirtualnyregalbackend.challenge.dto;
 
+import org.hl.wirtualnyregalbackend.challenge.model.ChallengeDurationRange;
 import org.hl.wirtualnyregalbackend.challenge.model.ChallengeType;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.user.dto.UserResponse;
-
-import java.time.Instant;
 
 public record ChallengeResponse(
     Long id,
@@ -12,8 +11,7 @@ public record ChallengeResponse(
     String description,
     ChallengeType type,
     Integer targetCount,
-    Instant startAt,
-    Instant endAt,
+    ChallengeDurationRange durationRange,
     GenreResponse genre,
     Long totalParticipants,
     ChallengeParticipation participation,

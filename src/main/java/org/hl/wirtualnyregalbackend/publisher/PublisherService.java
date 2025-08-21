@@ -2,13 +2,12 @@ package org.hl.wirtualnyregalbackend.publisher;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherDetailsResponse;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherPageResponse;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherRequest;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponse;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
+import org.hl.wirtualnyregalbackend.publisher.exception.PublisherNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,29 +34,24 @@ public class PublisherService {
     }
 
     public PublisherDetailsResponse findPublisherDetailsById(Long publisherId) {
-        Publisher publisher = findPublisherEntityById(publisherId);
+        Publisher publisher = findPublisherById(publisherId);
         return PublisherMapper.toPublisherDetailsResponseDto(publisher);
     }
 
     public Publisher findOrCreatePublisher(Long id, PublisherRequest publisherDto) {
         if (id != null) {
-            return findPublisherEntityById(id);
+            return findPublisherById(id);
         }
         return createPublisherEntity(publisherDto);
     }
 
     private Publisher createPublisherEntity(PublisherRequest publisherRequest) {
-        String name = publisherRequest.name();
-        boolean exists = publisherRepository.existsByNameIgnoreCase(name);
-        if (exists) {
-            throw new InvalidRequestException("Publisher with %s name already exists".formatted(name));
-        }
         Publisher publisher = PublisherMapper.toPublisher(publisherRequest);
         return publisherRepository.save(publisher);
     }
 
-    private Publisher findPublisherEntityById(Long id) {
+    private Publisher findPublisherById(Long id) throws PublisherNotFoundException {
         Optional<Publisher> publisherOpt = id != null ? publisherRepository.findById(id) : Optional.empty();
-        return publisherOpt.orElseThrow(() -> new EntityNotFoundException("Publisher with id='%d' not found".formatted(id)));
+        return publisherOpt.orElseThrow(() -> new PublisherNotFoundException(id));
     }
 }

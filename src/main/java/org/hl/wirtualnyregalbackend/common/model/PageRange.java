@@ -7,11 +7,9 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidFieldsException;
+import org.hl.wirtualnyregalbackend.common.error.exception.InvalidPageRangeException;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.springframework.lang.Nullable;
-
-import java.util.List;
 
 @Embeddable
 public record PageRange(
@@ -32,11 +30,11 @@ public record PageRange(
 
         Integer from = newPr.from() != null ? newPr.from() : oldPr.from();
         Integer to = newPr.to() != null ? newPr.to() : oldPr.to();
+        PageRange pr = new PageRange(from, to);
         if (!isValid(from, to)) {
-            ApiFieldError error = new ApiFieldError("pageRange", "to must be greater or equal from", newPr);
-            throw new InvalidFieldsException(List.of(error));
+            throw new InvalidPageRangeException(pr);
         }
-        return new PageRange(from, to);
+        return pr;
     }
 
     private static boolean isValid(Integer from, Integer to) {
@@ -51,8 +49,7 @@ public record PageRange(
     @JsonIgnore
     public void validate(Book book) {
         if (to > book.getPageCount()) {
-            ApiFieldError error = new ApiFieldError("pageRange", "to must be less than page count of book(%d)".formatted(book.getPageCount()), this);
-            throw new InvalidFieldsException(List.of(error));
+            throw new InvalidPageRangeException(this, book);
         }
     }
 

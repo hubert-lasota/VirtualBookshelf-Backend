@@ -3,23 +3,33 @@ package org.hl.wirtualnyregalbackend.common.json;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidFieldsException;
-import org.hl.wirtualnyregalbackend.common.model.ApiFieldError;
+import org.hl.wirtualnyregalbackend.common.error.exception.InvalidLanguageCodeException;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Locale;
 
 public class LocaleDeserializer extends JsonDeserializer<Locale> {
 
     @Override
     public Locale deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        try {
-            return Locale.forLanguageTag(p.getText());
-        } catch (IllegalArgumentException e) {
-            ApiFieldError error = new ApiFieldError(p.currentName(), e.getMessage(), p.getText());
-            throw new InvalidFieldsException(List.of(error));
+        String raw = p.getValueAsString();
+        if (raw == null || raw.isBlank()) {
+            throw new InvalidLanguageCodeException("Language code not provided");
         }
+
+        String langCode = raw.trim().toLowerCase(Locale.ROOT);
+
+        if (!langCode.matches("^[a-z]{2,3}$")) {
+            throw new InvalidLanguageCodeException("Invalid language code: %s".formatted(langCode));
+        }
+
+        boolean isIsoLanguage = Arrays.asList(Locale.getISOLanguages()).contains(langCode);
+        if (!isIsoLanguage) {
+            throw new InvalidLanguageCodeException("Nieznany kod języka ISO 639: " + langCode);
+        }
+
+        return new Locale(langCode);
     }
 
 }

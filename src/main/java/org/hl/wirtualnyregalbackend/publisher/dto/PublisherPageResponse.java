@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.publisher.dto;
 
-import org.hl.wirtualnyregalbackend.common.model.PageMeta;
+import org.hl.wirtualnyregalbackend.common.pagination.PageMeta;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

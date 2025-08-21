@@ -3,13 +3,11 @@ package org.hl.wirtualnyregalbackend.challenge_participant.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.AssertTrue;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidFieldsException;
-import org.hl.wirtualnyregalbackend.common.model.ApiFieldError;
+import org.hl.wirtualnyregalbackend.challenge_participant.exception.InvalidChallengeParticipantDurationRangeException;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.springframework.lang.Nullable;
 
 import java.time.Instant;
-import java.util.List;
 
 @Embeddable
 public record ChallengeParticipantDurationRange(
@@ -20,18 +18,17 @@ public record ChallengeParticipantDurationRange(
     Instant finishedAt
 ) {
 
-
     public static ChallengeParticipantDurationRange merge(ChallengeParticipantDurationRange oldDr, @Nullable ChallengeParticipantDurationRange newDr) {
         if (newDr == null) {
             return oldDr;
         }
         Instant startedAt = newDr.startedAt() != null ? newDr.startedAt() : oldDr.startedAt();
         Instant finishedAt = newDr.finishedAt() != null ? newDr.finishedAt() : oldDr.finishedAt();
+        ChallengeParticipantDurationRange durationRange = new ChallengeParticipantDurationRange(startedAt, finishedAt);
         if (!isValid(startedAt, finishedAt)) {
-            ApiFieldError err = new ApiFieldError("durationRange", "finishedAt must be greater or equal startedAt", newDr);
-            throw new InvalidFieldsException(List.of(err));
+            throw new InvalidChallengeParticipantDurationRangeException(durationRange);
         }
-        return new ChallengeParticipantDurationRange(startedAt, finishedAt);
+        return durationRange;
     }
 
     private static boolean isValid(Instant startedAt, @Nullable Instant finishedAt) {

@@ -6,12 +6,11 @@ import org.hl.wirtualnyregalbackend.author.AuthorHelper;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.author_review.dto.AuthorReviewCreateRequest;
 import org.hl.wirtualnyregalbackend.author_review.entity.AuthorReview;
-import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
+import org.hl.wirtualnyregalbackend.author_review.exception.AuthorReviewAlreadyExistsException;
+import org.hl.wirtualnyregalbackend.author_review.exception.AuthorReviewNotFoundException;
 import org.hl.wirtualnyregalbackend.common.review.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,7 +27,7 @@ public class AuthorReviewService {
         Long authorId = reviewDto.getAuthorId();
         Author author = authorHelper.findAuthorById(authorId);
         if (authorReviewRepository.existsByAuthorIdAndUserId(authorId, user.getId())) {
-            throw new InvalidRequestException("Review already exists for author '%d' and user '%d'".formatted(authorId, user.getId()));
+            throw new AuthorReviewAlreadyExistsException("Review already exists for author '%d' and user '%d'".formatted(authorId, user.getId()));
         }
         AuthorReview authorReview = AuthorReviewMapper.toAuthorReview(reviewDto, author, user);
         authorReviewRepository.save(authorReview);
@@ -71,14 +70,12 @@ public class AuthorReviewService {
         return authorReviewRepository.isAuthor(authorReviewId, userId);
     }
 
-    private AuthorReview findAuthorReviewById(Long id) throws EntityNotFoundException {
-        return authorReviewRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("AuthorReview not found for id: %d".formatted(id)));
+    private AuthorReview findAuthorReviewById(Long id) throws AuthorReviewNotFoundException {
+        return findOptionalAuthorReviewById(id).orElseThrow(() -> new AuthorReviewNotFoundException(id));
     }
 
-    @Nullable
-    public AuthorReview findAuthorReviewEntityById(Long id) {
-        Optional<AuthorReview> reviewOpt = id != null ? authorReviewRepository.findById(id) : Optional.empty();
-        return reviewOpt.orElse(null);
+    public Optional<AuthorReview> findOptionalAuthorReviewById(Long id) {
+        return id != null ? authorReviewRepository.findById(id) : Optional.empty();
     }
 
 }

@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCoverBinary;
+import org.hl.wirtualnyregalbackend.book_cover.exception.BookCoverNotFoundException;
 import org.hl.wirtualnyregalbackend.common.ServerInfoProvider;
-import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -49,9 +49,9 @@ public class BookCoverService {
         }
     }
 
-    public BookCoverBinary findBookCoverBinaryByCoverId(Long coverId) {
+    public BookCoverBinary findBookCoverBinaryByCoverId(Long coverId) throws BookCoverNotFoundException {
         BookCover bookCover = bookCoverRepository.findById(coverId)
-            .orElseThrow(() -> new EntityNotFoundException("BookCover with id: %d not found".formatted(coverId)));
+            .orElseThrow(() -> new BookCoverNotFoundException(coverId));
         return bookCover.getCoverBinary();
     }
 

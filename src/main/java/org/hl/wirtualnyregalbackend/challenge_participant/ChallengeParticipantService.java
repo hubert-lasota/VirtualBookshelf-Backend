@@ -1,10 +1,11 @@
 package org.hl.wirtualnyregalbackend.challenge_participant;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor(access = lombok.AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class ChallengeParticipantService {
 
     private final ChallengeParticipantRepository participantRepository;

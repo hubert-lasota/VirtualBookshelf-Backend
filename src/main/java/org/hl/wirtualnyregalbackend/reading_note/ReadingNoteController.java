@@ -8,12 +8,8 @@ import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteListResponse;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponse;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteUpdateRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("/v1/reading-notes")
@@ -25,26 +21,13 @@ class ReadingNoteController {
 
 
     @PostMapping
-    public ResponseEntity<ReadingNoteResponse> createReadingNote(
-        @Validated(CreateGroup.class)
-        @RequestBody
-        ReadingNoteCreateRequest noteRequest,
-        UriComponentsBuilder uriBuilder
-    ) {
-        ReadingNoteResponse response = noteService.createReadingNote(noteRequest);
-
-        URI location = uriBuilder
-            .path("/v1/reading-notes/{noteId}")
-            .buildAndExpand(response.id())
-            .toUri();
-
-        return ResponseEntity.created(location).body(response);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReadingNoteResponse createReadingNote(@Validated(CreateGroup.class)
+                                                 @RequestBody
+                                                 ReadingNoteCreateRequest noteRequest) {
+        return noteService.createReadingNote(noteRequest);
     }
 
-    @GetMapping("/{noteId}")
-    public ReadingNoteResponse findReadingNote(@PathVariable Long noteId) {
-        return noteService.findReadingNoteById(noteId);
-    }
 
     @GetMapping
     public ReadingNoteListResponse findReadingNotes(@RequestParam Long readingBookId) {

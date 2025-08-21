@@ -8,6 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 interface AuthorRepository extends JpaRepository<Author, Long>, JpaSpecificationExecutor<Author> {
 
-    boolean existsByFullName(String fullName);
-
 }

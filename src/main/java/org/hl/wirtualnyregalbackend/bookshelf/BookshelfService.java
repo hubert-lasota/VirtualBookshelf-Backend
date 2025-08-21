@@ -10,7 +10,7 @@ import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfRequest;
 import org.hl.wirtualnyregalbackend.bookshelf.dto.BookshelfResponse;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.BookshelfType;
-import org.hl.wirtualnyregalbackend.common.exception.EntityNotFoundException;
+import org.hl.wirtualnyregalbackend.bookshelf.exception.BookshelfNotFoundException;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -98,9 +98,9 @@ public class BookshelfService {
         return bookshelfRepository.isUserBookshelfAuthor(bookshelfId, userId);
     }
 
-    public Bookshelf findBookshelfById(Long bookshelfId) throws EntityNotFoundException {
+    public Bookshelf findBookshelfById(Long bookshelfId) throws BookshelfNotFoundException {
         Optional<Bookshelf> bookshelfOpt = bookshelfId != null ? bookshelfRepository.findById(bookshelfId) : Optional.empty();
-        return bookshelfOpt.orElseThrow(() -> new EntityNotFoundException("Not found Bookshelf with id = %d".formatted(bookshelfId)));
+        return bookshelfOpt.orElseThrow(() -> new BookshelfNotFoundException(bookshelfId));
     }
 
 

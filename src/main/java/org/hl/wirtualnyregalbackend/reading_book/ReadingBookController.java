@@ -69,9 +69,9 @@ public class ReadingBookController {
         Long readingBookId,
         @RequestBody
         @Validated(UpdateGroup.class)
-        ReadingBookUpdateRequest readingBookUpdateRequest
+        ReadingBookUpdateRequest readingBookRequest
     ) {
-        return readingBookService.updateReadingBook(readingBookId, readingBookUpdateRequest);
+        return readingBookService.updateReadingBook(readingBookId, readingBookRequest);
     }
 
     @PatchMapping("/{readingBookId}/move")

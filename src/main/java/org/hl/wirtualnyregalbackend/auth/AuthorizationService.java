@@ -6,14 +6,14 @@ import org.hl.wirtualnyregalbackend.auth.dto.UserSignInResponse;
 import org.hl.wirtualnyregalbackend.auth.entity.Authority;
 import org.hl.wirtualnyregalbackend.auth.entity.AuthorityName;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
+import org.hl.wirtualnyregalbackend.auth.exception.InvalidCredentialsException;
+import org.hl.wirtualnyregalbackend.auth.exception.UsernameAlreadyExistsException;
 import org.hl.wirtualnyregalbackend.auth.jwt.JwtService;
-import org.hl.wirtualnyregalbackend.common.exception.InvalidRequestException;
 import org.hl.wirtualnyregalbackend.user.UserDefaultConfigurer;
 import org.hl.wirtualnyregalbackend.user.UserMapper;
 import org.hl.wirtualnyregalbackend.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,7 +37,7 @@ class AuthorizationService {
 
     public UserSignInResponse registerUser(UserCredentialsDto credentials) {
         if (userRepository.existsByUsername(credentials.username())) {
-            throw new InvalidRequestException("Username: %s is already in database".formatted(credentials.username()));
+            throw new UsernameAlreadyExistsException("Username: %s already exists.".formatted(credentials.username()));
         }
 
         Authority userRole = new Authority(AuthorityName.USER);
@@ -58,7 +58,7 @@ class AuthorizationService {
         try {
             authResult = authenticationManager.authenticate(authToken);
         } catch (AuthenticationException exc) {
-            throw new InvalidRequestException("Login failed due to invalid credentials.", HttpStatus.UNAUTHORIZED);
+            throw new InvalidCredentialsException("Sign in failed due to invalid credentials.");
         }
 
         User user = (User) authResult.getPrincipal();
