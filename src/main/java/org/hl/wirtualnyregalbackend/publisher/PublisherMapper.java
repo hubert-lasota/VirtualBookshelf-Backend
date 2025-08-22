@@ -11,11 +11,11 @@ public class PublisherMapper {
     }
 
 
-    public static PublisherResponse toPublisherResponseDto(Publisher publisher) {
+    public static PublisherResponse toPublisherResponse(Publisher publisher) {
         return new PublisherResponse(publisher.getId(), publisher.getName());
     }
 
-    public static PublisherDetailsResponse toPublisherDetailsResponseDto(Publisher publisher) {
+    public static PublisherDetailsResponse toPublisherDetailsResponse(Publisher publisher) {
         return new PublisherDetailsResponse(
             publisher.getId(),
             publisher.getName(),

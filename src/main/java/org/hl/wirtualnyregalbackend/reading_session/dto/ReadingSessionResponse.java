@@ -9,6 +9,7 @@ public record ReadingSessionResponse(
     Long id,
     PageRange pageRange,
     SessionReadingDurationRange durationRange,
+    String description,
     BookResponse book
 ) {
 }

@@ -41,7 +41,6 @@ public record PageRange(
         return from <= to;
     }
 
-    @JsonIgnore
     public Integer getReadPages() {
         return to - from;
     }

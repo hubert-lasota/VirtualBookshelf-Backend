@@ -31,5 +31,5 @@ public class ReadingBook extends BaseEntity {
     @JoinColumn(name = "book_id")
     @Setter(AccessLevel.NONE)
     private Book book;
-
+// TODO dodac totalNotes
 }

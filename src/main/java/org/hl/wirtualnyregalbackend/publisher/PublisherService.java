@@ -23,19 +23,19 @@ public class PublisherService {
 
     public PublisherResponse createPublisher(PublisherRequest publisherRequest) {
         Publisher publisher = createPublisherEntity(publisherRequest);
-        return PublisherMapper.toPublisherResponseDto(publisher);
+        return PublisherMapper.toPublisherResponse(publisher);
     }
 
     public PublisherPageResponse findPublishers(Pageable pageable) {
         Page<PublisherResponse> page = publisherRepository
             .findAll(pageable)
-            .map(PublisherMapper::toPublisherResponseDto);
+            .map(PublisherMapper::toPublisherResponse);
         return PublisherPageResponse.from(page);
     }
 
     public PublisherDetailsResponse findPublisherDetailsById(Long publisherId) {
         Publisher publisher = findPublisherById(publisherId);
-        return PublisherMapper.toPublisherDetailsResponseDto(publisher);
+        return PublisherMapper.toPublisherDetailsResponse(publisher);
     }
 
     public Publisher findOrCreatePublisher(Long id, PublisherRequest publisherDto) {

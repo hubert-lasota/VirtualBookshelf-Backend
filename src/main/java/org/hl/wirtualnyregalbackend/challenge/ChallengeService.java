@@ -40,7 +40,7 @@ class ChallengeService {
         Challenge challenge = ChallengeMapper.toChallenge(challengeRequest, genre, user);
         challengeRepository.save(challenge);
         participantHelper.createChallengeParticipant(challenge);
-        return mapToChallengeResponseDto(challenge);
+        return mapToChallengeResponse(challenge);
     }
 
     public ChallengeResponse updateChallenge(Long challengeId, ChallengeRequest challengeRequest) {
@@ -63,7 +63,7 @@ class ChallengeService {
         if (goalValue != null) {
             challenge.setGoalValue(goalValue);
         }
-        return mapToChallengeResponseDto(challenge);
+        return mapToChallengeResponse(challenge);
     }
 
     public Challenge findChallengeById(Long challengeId) throws ChallengeNotFoundException {
@@ -81,7 +81,7 @@ class ChallengeService {
 
         Page<ChallengeResponse> page = challengeRepository
             .findAll(spec, pageable)
-            .map(this::mapToChallengeResponseDto);
+            .map(this::mapToChallengeResponse);
 
         return ChallengePageResponse.from(page);
     }
@@ -94,7 +94,7 @@ class ChallengeService {
         participantHelper.deleteParticipant(participant);
     }
 
-    private ChallengeResponse mapToChallengeResponseDto(Challenge challenge) {
+    private ChallengeResponse mapToChallengeResponse(Challenge challenge) {
         Locale locale = LocaleContextHolder.getLocale();
         GenreResponse genreDto = challenge.getGenre() == null
             ? null

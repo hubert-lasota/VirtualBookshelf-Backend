@@ -27,5 +27,5 @@ public class Bookshelf extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
+// TODO dodac totalBooks
 }

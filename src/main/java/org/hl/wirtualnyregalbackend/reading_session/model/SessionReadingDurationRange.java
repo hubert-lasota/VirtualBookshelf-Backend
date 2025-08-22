@@ -51,7 +51,6 @@ public class SessionReadingDurationRange {
         return startedAt.isBefore(finishedAt);
     }
 
-    @JsonIgnore
     public Integer getReadMinutes() {
         return (int) Duration.between(startedAt, finishedAt).toMinutes();
     }

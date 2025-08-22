@@ -21,12 +21,13 @@ class ReadingSessionMapper {
         );
     }
 
-    public static ReadingSessionResponse toReadingSessionResponseDto(ReadingSession session) {
+    public static ReadingSessionResponse toReadingSessionResponse(ReadingSession session) {
         BookResponse book = BookMapper.toBookResponse(session.getReadingBook().getBook());
         return new ReadingSessionResponse(
             session.getId(),
             session.getPageRange(),
             session.getDurationRange(),
+            session.getDescription(),
             book
         );
     }

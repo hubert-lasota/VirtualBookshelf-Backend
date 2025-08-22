@@ -84,7 +84,7 @@ public class BookMapper {
 
         Publisher publisher = book.getPublisher();
         PublisherResponse publisherResponse = book.getPublisher() != null
-            ? PublisherMapper.toPublisherResponseDto(publisher)
+            ? PublisherMapper.toPublisherResponse(publisher)
             : null;
 
         List<AuthorResponse> authors = book

@@ -43,7 +43,7 @@ public class ReadingBookService {
         ReadingBook readingBook = ReadingBookMapper.toReadingBook(readingBookRequest, bookshelf, book);
         readingBookRepository.save(readingBook);
         eventPublisher.publishEvent(new ReadingBookCreatedEvent(readingBook));
-        return mapToReadingBookResponseDto(readingBook);
+        return mapToReadingBookResponse(readingBook);
     }
 
     public ReadingBookResponse updateReadingBook(Long readingBookId, ReadingBookUpdateRequest readingBookRequest) {
@@ -58,7 +58,7 @@ public class ReadingBookService {
         readingBook.setDurationRange(rbdr);
 
         readingBookRepository.save(readingBook);
-        return mapToReadingBookResponseDto(readingBook);
+        return mapToReadingBookResponse(readingBook);
     }
 
     public ReadingBookResponse moveReadingBook(Long readingBookId, Long bookshelfId) {
@@ -66,7 +66,7 @@ public class ReadingBookService {
         ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
         readingBook.setBookshelf(bookshelf);
         readingBookRepository.save(readingBook);
-        return mapToReadingBookResponseDto(readingBook);
+        return mapToReadingBookResponse(readingBook);
     }
 
     public ReadingBookResponse changeReadingBookStatus(Long readingBookId, ReadingStatus status) {
@@ -74,7 +74,7 @@ public class ReadingBookService {
         book.setStatus(status);
         publishReadingBookFinishedEventIfRequired(book, status);
         readingBookRepository.save(book);
-        return mapToReadingBookResponseDto(book);
+        return mapToReadingBookResponse(book);
     }
 
     public ReadingBookListResponse findUserReadingBooks(User user, @Nullable String query) {
@@ -86,14 +86,14 @@ public class ReadingBookService {
         List<ReadingBookResponse> books = readingBookRepository
             .findAll(spec)
             .stream()
-            .map(this::mapToReadingBookResponseDto)
+            .map(this::mapToReadingBookResponse)
             .toList();
         return new ReadingBookListResponse(books);
     }
 
     public ReadingBookResponse findReadingBookById(Long readingBookId) {
         ReadingBook book = readingBookHelper.findReadingBookById(readingBookId);
-        return mapToReadingBookResponseDto(book);
+        return mapToReadingBookResponse(book);
     }
 
 
@@ -118,7 +118,7 @@ public class ReadingBookService {
         }
     }
 
-    private ReadingBookResponse mapToReadingBookResponseDto(ReadingBook readingBook) {
+    private ReadingBookResponse mapToReadingBookResponse(ReadingBook readingBook) {
         Long totalNotes = noteHelper.getTotalNotes(readingBook.getId());
         // TODO
         return ReadingBookMapper.toReadingBookResponse(readingBook, totalNotes, 0, 0F);

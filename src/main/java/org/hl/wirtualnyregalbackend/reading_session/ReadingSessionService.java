@@ -47,7 +47,7 @@ class ReadingSessionService {
             new ReadPagesEvent(session.getPageRange().getReadPages(), session.getDurationRange().getReadMinutes(), session)
         );
 
-        return ReadingSessionMapper.toReadingSessionResponseDto(session);
+        return ReadingSessionMapper.toReadingSessionResponse(session);
     }
 
     public ReadingSessionResponse updateReadingSession(Long sessionId, ReadingSessionUpdateRequest sessionRequest) {
@@ -75,14 +75,14 @@ class ReadingSessionService {
             eventPublisher.publishEvent(new ReadPagesEvent(readPages, readMinutes, session));
         }
 
-        return ReadingSessionMapper.toReadingSessionResponseDto(session);
+        return ReadingSessionMapper.toReadingSessionResponse(session);
     }
 
 
     public ReadingSessionPageResponse findReadingSessions(User user, Pageable pageable) {
         Page<ReadingSessionResponse> page = sessionRepository
             .findByUserId(user.getId(), pageable)
-            .map(ReadingSessionMapper::toReadingSessionResponseDto);
+            .map(ReadingSessionMapper::toReadingSessionResponse);
         return ReadingSessionPageResponse.from(page);
     }
 
