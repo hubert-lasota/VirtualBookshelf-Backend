@@ -10,7 +10,7 @@ public record RangeFilter(
 
     @AssertTrue(message = "lte must be lower or equals to gte")
     public boolean isValid() {
-        if(lte == null || gte == null) {
+        if (lte == null || gte == null) {
             return true;
         }
 

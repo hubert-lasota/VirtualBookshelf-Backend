@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.common.model.PageRange;
-import org.hl.wirtualnyregalbackend.common.model.ReadingDurationRange;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
+import org.hl.wirtualnyregalbackend.reading_session.model.SessionReadingDurationRange;
 
 @Entity
 @Table(name = "reading_session")
@@ -19,7 +19,7 @@ public class ReadingSession extends BaseEntity {
     private PageRange pageRange;
 
     @Embedded
-    private ReadingDurationRange durationRange;
+    private SessionReadingDurationRange durationRange;
 
     @Column
     private String description;

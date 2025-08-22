@@ -8,12 +8,12 @@ import org.hl.wirtualnyregalbackend.book.dto.BookRequest;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
-import org.hl.wirtualnyregalbackend.common.model.ReadingDurationRange;
 import org.hl.wirtualnyregalbackend.reading_book.dto.*;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookCreatedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookDeletedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookFinishedEvent;
+import org.hl.wirtualnyregalbackend.reading_book.model.ReadingBookDurationRange;
 import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
 import org.hl.wirtualnyregalbackend.reading_note.ReadingNoteHelper;
 import org.springframework.context.ApplicationEventPublisher;
@@ -54,8 +54,8 @@ public class ReadingBookService {
             readingBook.setStatus(status);
         }
 
-        ReadingDurationRange rr = ReadingDurationRange.merge(readingBook.getDurationRange(), readingBookRequest.getDurationRange());
-        readingBook.setDurationRange(rr);
+        ReadingBookDurationRange rbdr = ReadingBookDurationRange.merge(readingBook.getDurationRange(), readingBookRequest.getDurationRange());
+        readingBook.setDurationRange(rbdr);
 
         readingBookRepository.save(readingBook);
         return mapToReadingBookResponseDto(readingBook);

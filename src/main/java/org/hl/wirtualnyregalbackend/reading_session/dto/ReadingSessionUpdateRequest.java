@@ -7,10 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hl.wirtualnyregalbackend.common.model.PageRange;
-import org.hl.wirtualnyregalbackend.common.model.ReadingDurationRange;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.NotAllFieldsNull;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
+import org.hl.wirtualnyregalbackend.reading_session.model.SessionReadingDurationRange;
 import org.springframework.lang.Nullable;
 
 @Setter
@@ -26,7 +26,7 @@ public class ReadingSessionUpdateRequest {
 
     @Valid
     @NotNull(groups = CreateGroup.class)
-    protected ReadingDurationRange durationRange;
+    protected SessionReadingDurationRange durationRange;
 
     @Nullable
     protected String description;

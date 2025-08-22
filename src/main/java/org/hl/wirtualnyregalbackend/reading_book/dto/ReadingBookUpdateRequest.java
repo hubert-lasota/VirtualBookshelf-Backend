@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hl.wirtualnyregalbackend.common.model.ReadingDurationRange;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
+import org.hl.wirtualnyregalbackend.reading_book.model.ReadingBookDurationRange;
 import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
 
 @Getter
@@ -25,6 +25,6 @@ public class ReadingBookUpdateRequest {
 
     @Valid
     @NotNull(groups = CreateGroup.class)
-    protected ReadingDurationRange durationRange;
+    protected ReadingBookDurationRange durationRange;
 
 }

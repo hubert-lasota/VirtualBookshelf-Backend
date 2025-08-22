@@ -3,7 +3,6 @@ package org.hl.wirtualnyregalbackend.reading_session;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.model.PageRange;
-import org.hl.wirtualnyregalbackend.common.model.ReadingDurationRange;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateRequest;
@@ -14,6 +13,7 @@ import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadPagesEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadTodayEvent;
 import org.hl.wirtualnyregalbackend.reading_session.exception.ReadingSessionNotFoundException;
+import org.hl.wirtualnyregalbackend.reading_session.model.SessionReadingDurationRange;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -63,9 +63,9 @@ class ReadingSessionService {
         PageRange pr = PageRange.merge(oldPr, newPr);
         session.setPageRange(pr);
 
-        ReadingDurationRange oldRr = session.getDurationRange();
-        ReadingDurationRange newRr = sessionRequest.getDurationRange();
-        ReadingDurationRange rr = ReadingDurationRange.merge(oldRr, newRr);
+        SessionReadingDurationRange oldRr = session.getDurationRange();
+        SessionReadingDurationRange newRr = sessionRequest.getDurationRange();
+        SessionReadingDurationRange rr = SessionReadingDurationRange.merge(oldRr, newRr);
         session.setDurationRange(rr);
 
         // Check if the reading period or page range has changed and publish event with the difference in read pages and minutes.
@@ -102,7 +102,7 @@ class ReadingSessionService {
         Optional<ReadingSession> lastSessionOpt = sessionRepository.findLastByUserId(user.getId());
         if (!checkIfUserReadToday(lastSessionOpt)) {
             Instant lastReadAt = lastSessionOpt
-                .map((session) -> session.getDurationRange().startedAt())
+                .map((session) -> session.getDurationRange().getStartedAt())
                 .orElse(null);
             eventPublisher.publishEvent(new ReadTodayEvent(lastReadAt, user));
         }
@@ -112,7 +112,7 @@ class ReadingSessionService {
         if (lastSessionOpt.isPresent()) {
             ZoneId zoneId = clock.getZone();
             LocalDate today = LocalDate.now(zoneId);
-            Instant lastReadAt = lastSessionOpt.get().getDurationRange().startedAt();
+            Instant lastReadAt = lastSessionOpt.get().getDurationRange().getStartedAt();
             LocalDate lastReadDate = lastReadAt.atZone(zoneId).toLocalDate();
             return today.equals(lastReadDate);
         }
