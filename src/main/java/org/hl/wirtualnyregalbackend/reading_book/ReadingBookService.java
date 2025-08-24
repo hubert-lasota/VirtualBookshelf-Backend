@@ -43,7 +43,7 @@ public class ReadingBookService {
         ReadingBook readingBook = ReadingBookMapper.toReadingBook(readingBookRequest, bookshelf, book);
         readingBookRepository.save(readingBook);
         eventPublisher.publishEvent(new ReadingBookCreatedEvent(readingBook));
-        return mapToReadingBookResponse(readingBook);
+        return ReadingBookMapper.toReadingBookResponse(readingBook);
     }
 
     public ReadingBookResponse updateReadingBook(Long readingBookId, ReadingBookUpdateRequest readingBookRequest) {
@@ -58,7 +58,7 @@ public class ReadingBookService {
         readingBook.setDurationRange(rbdr);
 
         readingBookRepository.save(readingBook);
-        return mapToReadingBookResponse(readingBook);
+        return ReadingBookMapper.toReadingBookResponse(readingBook);
     }
 
     public ReadingBookResponse moveReadingBook(Long readingBookId, Long bookshelfId) {
@@ -66,7 +66,7 @@ public class ReadingBookService {
         ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
         readingBook.setBookshelf(bookshelf);
         readingBookRepository.save(readingBook);
-        return mapToReadingBookResponse(readingBook);
+        return ReadingBookMapper.toReadingBookResponse(readingBook);
     }
 
     public ReadingBookResponse changeReadingBookStatus(Long readingBookId, ReadingStatus status) {
@@ -74,7 +74,7 @@ public class ReadingBookService {
         book.setStatus(status);
         publishReadingBookFinishedEventIfRequired(book, status);
         readingBookRepository.save(book);
-        return mapToReadingBookResponse(book);
+        return ReadingBookMapper.toReadingBookResponse(book);
     }
 
     public ReadingBookListResponse findUserReadingBooks(User user, @Nullable String query) {
@@ -86,14 +86,9 @@ public class ReadingBookService {
         List<ReadingBookResponse> books = readingBookRepository
             .findAll(spec)
             .stream()
-            .map(this::mapToReadingBookResponse)
+            .map(ReadingBookMapper::toReadingBookResponse)
             .toList();
         return new ReadingBookListResponse(books);
-    }
-
-    public ReadingBookResponse findReadingBookById(Long readingBookId) {
-        ReadingBook book = readingBookHelper.findReadingBookById(readingBookId);
-        return mapToReadingBookResponse(book);
     }
 
 
@@ -116,25 +111,6 @@ public class ReadingBookService {
         if (ReadingStatus.READ.equals(status)) {
             eventPublisher.publishEvent(new ReadingBookFinishedEvent(readingBook));
         }
-    }
-
-    private ReadingBookResponse mapToReadingBookResponse(ReadingBook readingBook) {
-        Long totalNotes = noteHelper.getTotalNotes(readingBook.getId());
-        // TODO
-        return ReadingBookMapper.toReadingBookResponse(readingBook, totalNotes, 0, 0F);
-    }
-
-
-    private Float calculateProgressPercentage(Integer currentPage, Integer bookPageCount) {
-        if (currentPage == null || currentPage <= 0) {
-            return 0F;
-        }
-
-        if (currentPage >= bookPageCount) {
-            return 100F;
-        }
-
-        return ((float) currentPage) / bookPageCount * 100F;
     }
 
 }

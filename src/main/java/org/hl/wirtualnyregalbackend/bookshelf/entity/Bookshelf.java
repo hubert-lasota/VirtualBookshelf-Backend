@@ -1,7 +1,10 @@
 package org.hl.wirtualnyregalbackend.bookshelf.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
@@ -10,7 +13,6 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Bookshelf extends BaseEntity {
 
     @Column
@@ -27,5 +29,26 @@ public class Bookshelf extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-// TODO dodac totalBooks
+
+    @Column(name = "total_books")
+    @Setter(AccessLevel.NONE)
+    private Long totalBooks;
+
+    public Bookshelf(String name, BookshelfType type, String description, User user) {
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.user = user;
+        this.totalBooks = 0L;
+    }
+
+
+    public void incrementTotalBooks() {
+        this.totalBooks++;
+    }
+
+    public void decrementTotalBooks() {
+        this.totalBooks--;
+    }
+
 }

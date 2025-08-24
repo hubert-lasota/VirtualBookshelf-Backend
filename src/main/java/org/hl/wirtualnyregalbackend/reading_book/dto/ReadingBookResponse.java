@@ -10,6 +10,7 @@ public record ReadingBookResponse(
     Float progressPercentage,
     Integer currentPage,
     Long totalNotes,
+    Long totalSessions,
     ReadingBookDurationRange durationRange,
     ReadingStatus status,
     BookResponse book,

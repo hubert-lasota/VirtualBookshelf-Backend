@@ -19,13 +19,13 @@ class BookshelfMapper {
         );
     }
 
-    public static BookshelfResponse toBookshelfResponse(Bookshelf bookshelf, Long totalBooks) {
+    public static BookshelfResponse toBookshelfResponse(Bookshelf bookshelf) {
         return new BookshelfResponse(
             bookshelf.getId(),
             bookshelf.getName(),
             bookshelf.getType(),
             bookshelf.getDescription(),
-            totalBooks
+            bookshelf.getTotalBooks()
         );
     }
 

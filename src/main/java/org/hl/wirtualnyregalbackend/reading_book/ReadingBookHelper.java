@@ -15,10 +15,6 @@ public class ReadingBookHelper {
 
     private final ReadingBookRepository readingBookRepository;
 
-    public Long getTotalBooks(Long bookshelfId) {
-        return readingBookRepository.countBooks(bookshelfId);
-    }
-
     public ReadingBook findReadingBookById(Long readingBookId) throws ReadingBookNotFoundException {
         Optional<ReadingBook> bookOpt = readingBookId != null ? readingBookRepository.findById(readingBookId) : Optional.empty();
         return bookOpt.orElseThrow(() -> new ReadingBookNotFoundException(readingBookId));

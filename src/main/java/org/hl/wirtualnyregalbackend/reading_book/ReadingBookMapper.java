@@ -26,26 +26,23 @@ public class ReadingBookMapper {
         );
     }
 
-    public static ReadingBookResponse toReadingBookResponse(ReadingBook readingBook,
-                                                            Long totalNotes,
-                                                            Integer currentPage,
-                                                            Float progressPercentage) {
+    public static ReadingBookResponse toReadingBookResponse(ReadingBook readingBook) {
         BookResponse book = BookMapper.toBookResponse(readingBook.getBook());
 
         Bookshelf bookshelf = readingBook.getBookshelf();
         BookshelfSummaryResponse bookshelfDto = new BookshelfSummaryResponse(bookshelf.getId(), bookshelf.getName());
-
+        Integer currentPage = readingBook.getCurrentPage();
         return new ReadingBookResponse(
             readingBook.getId(),
-            progressPercentage,
+            readingBook.calculateProgressPercentage(),
             currentPage,
-            totalNotes,
+            readingBook.getTotalNotes(),
+            readingBook.getTotalSessions(),
             readingBook.getDurationRange(),
             readingBook.getStatus(),
             book,
             bookshelfDto
         );
     }
-
 
 }

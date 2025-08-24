@@ -60,17 +60,10 @@ class ChallengeMapper {
         return new ChallengeParticipation(
             true,
             currentGoalValue,
-            calculateProgressPercentage(currentGoalValue, challengeGoalValue),
+            participant.calculateProgressPercentage(),
             participant.getStatus(),
             participant.getDurationRange()
         );
-    }
-
-    private static Float calculateProgressPercentage(Integer currentGoalValue, Integer challengeGoalValue) {
-        if (currentGoalValue.equals(0)) {
-            return 0F;
-        }
-        return ((float) currentGoalValue) / challengeGoalValue * 100F;
     }
 
 }

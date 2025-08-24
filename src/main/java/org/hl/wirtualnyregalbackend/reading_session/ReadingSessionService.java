@@ -12,6 +12,8 @@ import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionUpdateRequ
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadPagesEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadTodayEvent;
+import org.hl.wirtualnyregalbackend.reading_session.event.ReadingSessionCreatedEvent;
+import org.hl.wirtualnyregalbackend.reading_session.event.ReadingSessionDeletedEvent;
 import org.hl.wirtualnyregalbackend.reading_session.exception.ReadingSessionNotFoundException;
 import org.hl.wirtualnyregalbackend.reading_session.model.SessionReadingDurationRange;
 import org.springframework.context.ApplicationEventPublisher;
@@ -46,7 +48,7 @@ class ReadingSessionService {
         eventPublisher.publishEvent(
             new ReadPagesEvent(session.getPageRange().getReadPages(), session.getDurationRange().getReadMinutes(), session)
         );
-
+        eventPublisher.publishEvent(new ReadingSessionCreatedEvent(session));
         return ReadingSessionMapper.toReadingSessionResponse(session);
     }
 
@@ -89,6 +91,7 @@ class ReadingSessionService {
 
     public void deleteReadingSession(Long sessionId) {
         ReadingSession rs = findReadingSessionById(sessionId);
+        eventPublisher.publishEvent(new ReadingSessionDeletedEvent(rs));
         sessionRepository.delete(rs);
     }
 

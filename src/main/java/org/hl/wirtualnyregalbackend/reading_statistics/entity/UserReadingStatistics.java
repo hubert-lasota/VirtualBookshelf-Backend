@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
+import java.time.YearMonth;
+
 @Entity
 @Table(name = "user_reading_statistics")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,12 +38,16 @@ public class UserReadingStatistics extends BaseEntity {
     @Column(name = "longest_reading_streak")
     private Integer longestReadingStreak;
 
+    @Column(name = "year_month")
+    private YearMonth yearMonth;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public UserReadingStatistics(User user) {
+    public UserReadingStatistics(User user, YearMonth yearMonth) {
         this.user = user;
+        this.yearMonth = yearMonth;
         this.totalReadBooks = 0L;
         this.totalReadPages = 0L;
         this.totalReadMinutes = 0L;

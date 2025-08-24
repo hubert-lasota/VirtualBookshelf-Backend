@@ -55,7 +55,7 @@ public class BookshelfService {
     public BookshelfResponse createBookshelf(BookshelfRequest bookshelfRequest, User user) {
         Bookshelf bookshelf = BookshelfMapper.toBookshelf(bookshelfRequest, user);
         bookshelfRepository.save(bookshelf);
-        return mapToBookshelfResponse(bookshelf);
+        return BookshelfMapper.toBookshelfResponse(bookshelf);
     }
 
 
@@ -78,7 +78,7 @@ public class BookshelfService {
         }
 
         bookshelfRepository.save(bookshelf);
-        return mapToBookshelfResponse(bookshelf);
+        return BookshelfMapper.toBookshelfResponse(bookshelf);
     }
 
     public void deleteBookshelf(Long id) {
@@ -89,7 +89,7 @@ public class BookshelfService {
         List<BookshelfResponse> bookshelves = bookshelfRepository
             .findByUserId(userId)
             .stream()
-            .map(this::mapToBookshelfResponse)
+            .map(BookshelfMapper::toBookshelfResponse)
             .toList();
         return new BookshelfListResponse(bookshelves);
     }
@@ -101,12 +101,6 @@ public class BookshelfService {
     public Bookshelf findBookshelfById(Long bookshelfId) throws BookshelfNotFoundException {
         Optional<Bookshelf> bookshelfOpt = bookshelfId != null ? bookshelfRepository.findById(bookshelfId) : Optional.empty();
         return bookshelfOpt.orElseThrow(() -> new BookshelfNotFoundException(bookshelfId));
-    }
-
-
-    private BookshelfResponse mapToBookshelfResponse(Bookshelf bookshelf) {
-        Long totalBooks = readingBookHelper.getTotalBooks(bookshelf.getId());
-        return BookshelfMapper.toBookshelfResponse(bookshelf, totalBooks);
     }
 
 }

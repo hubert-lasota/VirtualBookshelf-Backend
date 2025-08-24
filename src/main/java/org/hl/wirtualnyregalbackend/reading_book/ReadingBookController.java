@@ -8,15 +8,12 @@ import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.reading_book.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("/v1/reading-books")
@@ -28,7 +25,8 @@ public class ReadingBookController {
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasPermission(#readingBookRequest.bookshelfId, 'BOOKSHELF', 'CREATE')")
-    public ResponseEntity<ReadingBookResponse> createReadingBook(
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReadingBookResponse createReadingBook(
         @RequestPart("readingBook")
         @Validated(CreateGroup.class)
         ReadingBookCreateRequest readingBookRequest,
@@ -36,20 +34,7 @@ public class ReadingBookController {
         MultipartFile cover,
         UriComponentsBuilder uriBuilder
     ) {
-        ReadingBookResponse response = readingBookService.createReadingBook(readingBookRequest, cover);
-
-        URI location = uriBuilder
-            .path("/v1/reading-books/{bookId}")
-            .buildAndExpand(response.id())
-            .toUri();
-
-        return ResponseEntity.created(location).body(response);
-    }
-
-    @GetMapping("/{readingBookId}")
-    @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'READ')")
-    public ReadingBookResponse findReadingBook(@PathVariable Long readingBookId) {
-        return readingBookService.findReadingBookById(readingBookId);
+        return readingBookService.createReadingBook(readingBookRequest, cover);
     }
 
     @GetMapping

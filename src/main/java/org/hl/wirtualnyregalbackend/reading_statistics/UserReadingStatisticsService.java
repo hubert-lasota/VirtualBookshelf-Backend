@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Optional;
 
 @Service
@@ -42,8 +43,9 @@ class UserReadingStatisticsService {
     }
 
     private UserReadingStatistics findOrCreateUserReadingStatistics(User user) {
-        Optional<UserReadingStatistics> statsOpt = userStatsRepository.findByUserId(user.getId());
-        return statsOpt.orElseGet(() -> new UserReadingStatistics(user));
+        YearMonth yearMonth = YearMonth.now(clock);
+        Optional<UserReadingStatistics> statsOpt = userStatsRepository.findByUserAndYearMonth(user, yearMonth);
+        return statsOpt.orElseGet(() -> new UserReadingStatistics(user, yearMonth));
     }
 
 }

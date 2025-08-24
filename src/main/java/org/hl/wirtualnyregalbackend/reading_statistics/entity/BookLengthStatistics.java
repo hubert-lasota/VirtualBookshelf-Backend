@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
+import java.time.YearMonth;
+
 @Entity
 @Table(name = "book_length_statistics")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,15 +25,20 @@ public class BookLengthStatistics extends BaseEntity {
     @Column(name = "read_book_count")
     private Long readBookCount;
 
+    @Column(name = "year_month")
+    private YearMonth yearMonth;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
 
-    public BookLengthStatistics(BookLength length, User user) {
+    public BookLengthStatistics(BookLength length, User user, YearMonth yearMonth) {
         this.length = length;
-        this.bookCount = 0L;
         this.user = user;
+        this.yearMonth = yearMonth;
+        this.readBookCount = 0L;
+        this.bookCount = 0L;
     }
 
     public void incrementBookCount() {

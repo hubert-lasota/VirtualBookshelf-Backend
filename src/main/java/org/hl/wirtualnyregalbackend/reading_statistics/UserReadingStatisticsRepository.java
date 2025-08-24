@@ -1,14 +1,16 @@
 package org.hl.wirtualnyregalbackend.reading_statistics;
 
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.reading_statistics.entity.UserReadingStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.YearMonth;
 import java.util.Optional;
 
 @Repository
 interface UserReadingStatisticsRepository extends JpaRepository<UserReadingStatistics, Long> {
 
-    Optional<UserReadingStatistics> findByUserId(Long userId);
+    Optional<UserReadingStatistics> findByUserAndYearMonth(User user, YearMonth yearMonth);
 
 }

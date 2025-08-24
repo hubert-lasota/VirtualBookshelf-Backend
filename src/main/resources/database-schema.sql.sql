@@ -202,6 +202,7 @@ CREATE TABLE bookshelf
     name        TEXT        NOT NULL,
     type        TEXT        NOT NULL,
     description TEXT,
+    total_books BIGINT      NOT NULL,
     created_at  TIMESTAMPTZ NOT NULL,
     updated_at  TIMESTAMPTZ
 );
@@ -212,6 +213,9 @@ CREATE TABLE reading_book
     bookshelf_id        BIGINT      NOT NULL REFERENCES bookshelf (id),
     book_id             BIGINT      NOT NULL REFERENCES book (id),
     status              VARCHAR(50) NOT NULL,
+    current_page        INT         NOT NULL,
+    total_notes         BIGINT      NOT NULL,
+    total_sessions      BIGINT      NOT NULL,
     started_reading_at  TIMESTAMPTZ NOT NULL,
     finished_reading_at TIMESTAMPTZ,
     created_at          TIMESTAMPTZ NOT NULL,
@@ -293,6 +297,7 @@ CREATE TABLE book_length_statistics
     length          TEXT        NOT NULL,
     book_count      BIGINT      NOT NULL,
     read_book_count BIGINT      NOT NULL,
+    year_month      TEXT        NOT NULL,
     created_at      TIMESTAMPTZ NOT NULL,
     updated_at      TIMESTAMPTZ NOT NULL
 );
@@ -304,6 +309,7 @@ CREATE TABLE genre_statistics
     genre_id        BIGINT REFERENCES genre (id),
     book_count      BIGINT      NOT NULL,
     read_book_count BIGINT      NOT NULL,
+    year_month      TEXT        NOT NULL,
     created_at      TIMESTAMPTZ NOT NULL,
     updated_at      TIMESTAMPTZ NOT NULL
 );
@@ -319,6 +325,7 @@ CREATE TABLE user_reading_statistics
     longest_read_minutes       INTEGER     NOT NULL,
     current_reading_streak     INTEGER     NOT NULL,
     longest_reading_streak     INTEGER     NOT NULL,
+    year_month                 TEXT        NOT NULL,
     created_at                 TIMESTAMPTZ NOT NULL,
     updated_at                 TIMESTAMPTZ
 );

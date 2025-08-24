@@ -12,6 +12,8 @@ import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengePartici
 import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantStatus;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 
 @Entity
@@ -40,6 +42,16 @@ public class ChallengeParticipant extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+
+    public Float calculateProgressPercentage() {
+        if (currentGoalValue.equals(0)) {
+            return 0F;
+        }
+        float value = ((float) currentGoalValue) / challenge.getGoalValue() * 100F;
+        return BigDecimal.valueOf(value)
+            .setScale(2, RoundingMode.HALF_UP)
+            .floatValue();
+    }
 
     public void completed(Instant finishedAt) {
         changeStatusToOtherThanActive(ChallengeParticipantStatus.COMPLETED, finishedAt);

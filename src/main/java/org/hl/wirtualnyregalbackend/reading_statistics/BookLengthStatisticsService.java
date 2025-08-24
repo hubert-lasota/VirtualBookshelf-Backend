@@ -8,6 +8,8 @@ import org.hl.wirtualnyregalbackend.reading_statistics.entity.BookLength;
 import org.hl.wirtualnyregalbackend.reading_statistics.entity.BookLengthStatistics;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
+import java.time.YearMonth;
 import java.util.Optional;
 
 @Service
@@ -15,12 +17,14 @@ import java.util.Optional;
 class BookLengthStatisticsService {
 
     private final BookLengthStatisticsRepository bookLenRepository;
+    private final Clock clock;
 
     public void updateBookLengthStatistics(User user, Book book, ReadingStatus status) {
         Integer pageCount = book.getPageCount();
         BookLength length = BookLength.fromPageCount(pageCount);
-        Optional<BookLengthStatistics> lenStatsOpt = bookLenRepository.findByUserIdAndLength(user.getId(), length);
-        BookLengthStatistics lenStats = lenStatsOpt.orElseGet(() -> new BookLengthStatistics(length, user));
+        YearMonth yearMonth = YearMonth.now(clock);
+        Optional<BookLengthStatistics> lenStatsOpt = bookLenRepository.findByUserIdAndLengthAndYearMonth(user.getId(), length, yearMonth);
+        BookLengthStatistics lenStats = lenStatsOpt.orElseGet(() -> new BookLengthStatistics(length, user, yearMonth));
         lenStats.incrementBookCount();
         if (ReadingStatus.READ.equals(status)) {
             lenStats.incrementReadBookCount();
