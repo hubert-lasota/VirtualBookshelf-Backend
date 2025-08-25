@@ -9,6 +9,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,7 +28,7 @@ class UserReadingStatisticsService {
 
     public void updateTotalReadBooks(User user) {
         UserReadingStatistics stats = findOrCreateUserReadingStatistics(user);
-        stats.incrementTotalReadBooks();
+        stats.incrementReadBookCount();
         userStatsRepository.save(stats);
     }
 
@@ -40,6 +41,10 @@ class UserReadingStatisticsService {
         }
         stats.incrementCurrentReadingStreak();
         userStatsRepository.save(stats);
+    }
+
+    public List<UserReadingStatistics> findUserReadingStatistics(User user) {
+        return userStatsRepository.findByUser(user);
     }
 
     private UserReadingStatistics findOrCreateUserReadingStatistics(User user) {

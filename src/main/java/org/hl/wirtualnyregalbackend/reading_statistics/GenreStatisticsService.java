@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Clock;
 import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ class GenreStatisticsService {
         Set<Genre> genres = book.getGenres();
         genres.forEach(genre -> {
             YearMonth yearMonth = YearMonth.now(clock);
-            Optional<GenreStatistics> statsOpt = genreStatsRepository.findByUserIdAndGenreIdAndYearMonth(user.getId(), genre.getId(), yearMonth);
+            Optional<GenreStatistics> statsOpt = genreStatsRepository.findByUserAndGenreAndYearMonth(user, genre, yearMonth);
             GenreStatistics stats = statsOpt.orElseGet(() -> new GenreStatistics(genre, user, yearMonth));
             stats.incrementBookCount();
             if (ReadingStatus.READ.equals(status)) {
@@ -32,6 +33,10 @@ class GenreStatisticsService {
             }
             genreStatsRepository.save(stats);
         });
+    }
+
+    public List<GenreStatistics> findGenreStatistics(User user) {
+        return genreStatsRepository.findByUser(user);
     }
 
 }

@@ -18,16 +18,16 @@ import java.time.YearMonth;
 public class UserReadingStatistics extends BaseEntity {
 
     @Column(name = "total_read_books")
-    private Long totalReadBooks;
+    private Long readBookCount;
 
     @Column(name = "total_read_pages")
-    private Long totalReadPages;
+    private Long readPageCount;
 
     @Column(name = "most_pages_read_in_session")
     private Integer mostPagesReadInSession;
 
     @Column(name = "total_read_minutes")
-    private Long totalReadMinutes;
+    private Long readMinuteCount;
 
     @Column(name = "longest_read_minutes")
     private Integer longestReadMinutes;
@@ -48,17 +48,17 @@ public class UserReadingStatistics extends BaseEntity {
     public UserReadingStatistics(User user, YearMonth yearMonth) {
         this.user = user;
         this.yearMonth = yearMonth;
-        this.totalReadBooks = 0L;
-        this.totalReadPages = 0L;
-        this.totalReadMinutes = 0L;
+        this.readBookCount = 0L;
+        this.readPageCount = 0L;
+        this.readMinuteCount = 0L;
         this.longestReadMinutes = 0;
         this.mostPagesReadInSession = 0;
         this.currentReadingStreak = 0;
         this.longestReadingStreak = 0;
     }
 
-    public void incrementTotalReadBooks() {
-        this.totalReadBooks++;
+    public void incrementReadBookCount() {
+        this.readBookCount++;
     }
 
     public void incrementCurrentReadingStreak() {
@@ -73,14 +73,14 @@ public class UserReadingStatistics extends BaseEntity {
     }
 
     public void addReadPages(Integer readPages) {
-        this.totalReadPages += readPages;
+        this.readPageCount += readPages;
         if (readPages > this.mostPagesReadInSession) {
             this.mostPagesReadInSession = readPages;
         }
     }
 
     public void addReadMinutes(Integer readMinutes) {
-        this.totalReadMinutes += readMinutes;
+        this.readMinuteCount += readMinutes;
         if (readMinutes > this.longestReadMinutes) {
             this.longestReadMinutes = readMinutes;
         }

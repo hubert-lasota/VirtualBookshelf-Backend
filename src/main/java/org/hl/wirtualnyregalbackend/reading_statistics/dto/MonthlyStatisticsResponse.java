@@ -1,18 +1,16 @@
 package org.hl.wirtualnyregalbackend.reading_statistics.dto;
 
-import org.hl.wirtualnyregalbackend.reading_statistics.entity.BookLengthStatistics;
-
 import java.time.YearMonth;
 import java.util.List;
 
 public record MonthlyStatisticsResponse(
-    Long readBooks,
-    Long readPages,
+    Long readBookCount,
+    Long readPageCount,
     Integer mostPagesReadInSession,
-    Long readMinutes,
+    Long readMinuteCount,
     Integer longestReadMinutes,
     List<GenreStatisticsResponse> genreStatistics,
-    List<BookLengthStatistics> bookLengthStatistics,
+    List<BookLengthStatisticsResponse> bookLengthStatistics,
     YearMonth yearMonth
 ) {
 }
