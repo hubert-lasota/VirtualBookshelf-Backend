@@ -5,8 +5,8 @@ import org.hl.wirtualnyregalbackend.book.dto.BookResponse;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.reading_book.dto.BookshelfSummaryResponse;
+import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookCreateRequest;
 import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookResponse;
-import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookUpdateRequest;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 
 public class ReadingBookMapper {
@@ -15,12 +15,12 @@ public class ReadingBookMapper {
     }
 
 
-    public static ReadingBook toReadingBook(ReadingBookUpdateRequest readingBookDto,
+    public static ReadingBook toReadingBook(ReadingBookCreateRequest bookRequest,
                                             Bookshelf bookshelf,
                                             Book book) {
         return new ReadingBook(
-            readingBookDto.getStatus(),
-            readingBookDto.getDurationRange(),
+            bookRequest.status(),
+            bookRequest.durationRange(),
             bookshelf,
             book
         );

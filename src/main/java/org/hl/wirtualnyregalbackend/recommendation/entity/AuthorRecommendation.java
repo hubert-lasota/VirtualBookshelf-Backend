@@ -8,22 +8,21 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.book.entity.Book;
+import org.hl.wirtualnyregalbackend.author.entity.Author;
 
 @Entity
-@Table(name = "book_recommendation")
+@Table(name = "author_recommendation")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BookRecommendation extends BaseRecommendation {
+public class AuthorRecommendation extends BaseRecommendation {
 
     @ManyToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @JoinColumn(name = "author_id")
+    private Author author;
 
-
-    public BookRecommendation(User user, Float score, Book book) {
+    public AuthorRecommendation(User user, Float score, Author author) {
         super(user, score);
-        this.book = book;
+        this.author = author;
     }
 
 }

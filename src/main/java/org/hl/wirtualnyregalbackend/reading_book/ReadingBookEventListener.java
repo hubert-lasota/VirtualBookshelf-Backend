@@ -21,7 +21,7 @@ class ReadingBookEventListener {
     public void handleReadingSessionCreatedEvent(ReadingSessionCreatedEvent event) {
         ReadingSession session = event.readingSession();
         ReadingBook readingBook = session.getReadingBook();
-        readingBook.setCurrentPage(session.getPageRange().to());
+        readingBook.updateCurrentPage(session.getPageRange().to());
         readingBook.incrementTotalSessions();
         readingBookRepository.save(readingBook);
     }

@@ -10,7 +10,11 @@ public class InvalidReadingBookDurationRangeException extends RuntimeException {
     private final FieldValidationError error;
 
     public InvalidReadingBookDurationRangeException(ReadingBookDurationRange durationRange) {
-        this.error = FieldValidationError.of("durationRange", "Invalid duration range. StartedAt must be before FinishedAt.", durationRange);
+        this(durationRange, "Invalid duration range. StartedAt must be before FinishedAt.");
+    }
+
+    public InvalidReadingBookDurationRangeException(ReadingBookDurationRange durationRange, String message) {
+        this.error = FieldValidationError.of("durationRange", message, durationRange);
     }
 
 }

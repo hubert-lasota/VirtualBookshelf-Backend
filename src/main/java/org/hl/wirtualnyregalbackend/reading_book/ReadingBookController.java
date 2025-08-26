@@ -3,8 +3,6 @@ package org.hl.wirtualnyregalbackend.reading_book;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
-import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.reading_book.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/v1/reading-books")
@@ -28,11 +25,10 @@ public class ReadingBookController {
     @ResponseStatus(HttpStatus.CREATED)
     public ReadingBookResponse createReadingBook(
         @RequestPart("readingBook")
-        @Validated(CreateGroup.class)
+        @Validated
         ReadingBookCreateRequest readingBookRequest,
         @RequestPart(value = "cover", required = false)
-        MultipartFile cover,
-        UriComponentsBuilder uriBuilder
+        MultipartFile cover
     ) {
         return readingBookService.createReadingBook(readingBookRequest, cover);
     }
@@ -53,7 +49,7 @@ public class ReadingBookController {
         @PathVariable
         Long readingBookId,
         @RequestBody
-        @Validated(UpdateGroup.class)
+        @Validated
         ReadingBookUpdateRequest readingBookRequest
     ) {
         return readingBookService.updateReadingBook(readingBookId, readingBookRequest);

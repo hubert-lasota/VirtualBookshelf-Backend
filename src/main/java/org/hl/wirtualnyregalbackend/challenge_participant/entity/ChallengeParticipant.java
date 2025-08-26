@@ -14,7 +14,6 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Instant;
 
 @Entity
 @Table(name = "challenge_participant")
@@ -48,33 +47,25 @@ public class ChallengeParticipant extends BaseEntity {
             return 0F;
         }
         float value = ((float) currentGoalValue) / challenge.getGoalValue() * 100F;
-        return BigDecimal.valueOf(value)
+        return BigDecimal
+            .valueOf(value)
             .setScale(2, RoundingMode.HALF_UP)
             .floatValue();
     }
 
-    public void completed(Instant finishedAt) {
-        changeStatusToOtherThanActive(ChallengeParticipantStatus.COMPLETED, finishedAt);
-    }
-
-    public void uncompleted(Instant finishedAt) {
-        changeStatusToOtherThanActive(ChallengeParticipantStatus.UNCOMPLETED, finishedAt);
+    public void changeStatus(ChallengeParticipantStatus status, ChallengeParticipantDurationRange durationRange) {
+        if (this.status == ChallengeParticipantStatus.ACTIVE) {
+            this.status = status;
+            this.durationRange = durationRange;
+        } else {
+            throw new InvalidChallengeParticipantStatusStateException("You can't change status to %s if status is not ACTIVE".formatted(status.toString()));
+        }
     }
 
     public void incrementCurrentCount() {
         Integer goalValue = challenge.getGoalValue();
         if (!goalValue.equals(currentGoalValue)) {
             this.currentGoalValue++;
-        }
-    }
-
-
-    private void changeStatusToOtherThanActive(ChallengeParticipantStatus newStatus, Instant finishedAt) {
-        if (status == ChallengeParticipantStatus.ACTIVE) {
-            this.status = newStatus;
-            this.durationRange = ChallengeParticipantDurationRange.merge(this.durationRange, new ChallengeParticipantDurationRange(durationRange.startedAt(), finishedAt));
-        } else {
-            throw new InvalidChallengeParticipantStatusStateException("You can't change status to %s if status is not ACTIVE".formatted(newStatus.toString()));
         }
     }
 

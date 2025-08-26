@@ -4,26 +4,24 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.book.entity.Book;
+import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 
 @Entity
-@Table(name = "book_recommendation")
+@Table(name = "genre_recommendation")
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BookRecommendation extends BaseRecommendation {
+public class GenreRecommendation extends BaseRecommendation {
 
     @ManyToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @JoinColumn(name = "genre_id")
+    private Genre genre;
 
-
-    public BookRecommendation(User user, Float score, Book book) {
+    public GenreRecommendation(User user, Float score, Genre genre) {
         super(user, score);
-        this.book = book;
+        this.genre = genre;
     }
 
 }

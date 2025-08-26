@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -35,10 +37,11 @@ public class ReadingBookService {
     private final BookService bookService;
     private final ReadingNoteHelper noteHelper;
     private final ApplicationEventPublisher eventPublisher;
+    private final Clock clock;
 
     public ReadingBookResponse createReadingBook(ReadingBookCreateRequest readingBookRequest, MultipartFile bookCover) {
-        Bookshelf bookshelf = bookshelfService.findBookshelfById(readingBookRequest.getBookshelfId());
-        BookWithIdDto bookWithIdDto = readingBookRequest.getBook();
+        Bookshelf bookshelf = bookshelfService.findBookshelfById(readingBookRequest.bookshelfId());
+        BookWithIdDto bookWithIdDto = readingBookRequest.book();
         Book book = findOrCreateBook(bookWithIdDto.getId(), bookWithIdDto.getBookRequest(), bookCover);
         ReadingBook readingBook = ReadingBookMapper.toReadingBook(readingBookRequest, bookshelf, book);
         readingBookRepository.save(readingBook);
@@ -49,13 +52,11 @@ public class ReadingBookService {
     public ReadingBookResponse updateReadingBook(Long readingBookId, ReadingBookUpdateRequest readingBookRequest) {
         ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
 
-        ReadingStatus status = readingBookRequest.getStatus();
+        ReadingStatus status = readingBookRequest.status();
         if (status != null) {
-            readingBook.setStatus(status);
+            ReadingBookDurationRange rbdr = ReadingBookDurationRange.merge(readingBook.getDurationRange(), readingBookRequest.durationRange());
+            readingBook.changeStatus(status, rbdr);
         }
-
-        ReadingBookDurationRange rbdr = ReadingBookDurationRange.merge(readingBook.getDurationRange(), readingBookRequest.getDurationRange());
-        readingBook.setDurationRange(rbdr);
 
         readingBookRepository.save(readingBook);
         return ReadingBookMapper.toReadingBookResponse(readingBook);
@@ -71,7 +72,14 @@ public class ReadingBookService {
 
     public ReadingBookResponse changeReadingBookStatus(Long readingBookId, ReadingStatus status) {
         ReadingBook book = readingBookHelper.findReadingBookById(readingBookId);
-        book.setStatus(status);
+        ReadingBookDurationRange rbdr = null;
+        Instant now = Instant.now(clock);
+        if (ReadingStatus.READ.equals(status)) {
+            rbdr = ReadingBookDurationRange.merge(book.getDurationRange(), ReadingBookDurationRange.of(null, now));
+        } else if (ReadingStatus.READING.equals(status)) {
+            rbdr = ReadingBookDurationRange.merge(book.getDurationRange(), ReadingBookDurationRange.of(now, null));
+        }
+        book.changeStatus(status, rbdr);
         publishReadingBookFinishedEventIfRequired(book, status);
         readingBookRepository.save(book);
         return ReadingBookMapper.toReadingBookResponse(book);

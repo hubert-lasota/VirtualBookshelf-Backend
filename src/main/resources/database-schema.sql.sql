@@ -216,7 +216,7 @@ CREATE TABLE reading_book
     current_page        INT         NOT NULL,
     total_notes         BIGINT      NOT NULL,
     total_sessions      BIGINT      NOT NULL,
-    started_reading_at  TIMESTAMPTZ NOT NULL,
+    started_reading_at  TIMESTAMPTZ,
     finished_reading_at TIMESTAMPTZ,
     created_at          TIMESTAMPTZ NOT NULL,
     updated_at          TIMESTAMPTZ
@@ -350,6 +350,15 @@ CREATE TABLE author_recommendation
     updated_at TIMESTAMPTZ
 );
 
+CREATE TABLE genre_recommendation
+(
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT      NOT NULL REFERENCES users (id),
+    genre_id   BIGINT      NOT NULL REFERENCES genre (id),
+    score      FLOAT       NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
 
 CREATE TABLE user_genre_preferences
 (

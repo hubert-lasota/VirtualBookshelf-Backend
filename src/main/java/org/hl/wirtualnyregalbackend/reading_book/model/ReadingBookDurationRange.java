@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +21,7 @@ import java.time.Instant;
 @AllArgsConstructor
 public class ReadingBookDurationRange {
 
-    @NotNull(groups = CreateGroup.class)
+    @Nullable
     @Column(name = "started_reading_at")
     private Instant startedAt;
     @Nullable
@@ -40,7 +39,7 @@ public class ReadingBookDurationRange {
         return ReadingBookDurationRange.of(startedAt, finishedAt);
     }
 
-    public static ReadingBookDurationRange of(Instant startedAt, @Nullable Instant finishedAt) throws InvalidReadingBookDurationRangeException {
+    public static ReadingBookDurationRange of(@Nullable Instant startedAt, @Nullable Instant finishedAt) throws InvalidReadingBookDurationRangeException {
         ReadingBookDurationRange rbdr = new ReadingBookDurationRange(startedAt, finishedAt);
         if (!isValid(startedAt, finishedAt)) {
             throw new InvalidReadingBookDurationRangeException(rbdr);
@@ -48,8 +47,8 @@ public class ReadingBookDurationRange {
         return rbdr;
     }
 
-    private static boolean isValid(Instant startedAt, @Nullable Instant finishedAt) {
-        if (finishedAt == null) {
+    private static boolean isValid(@Nullable Instant startedAt, @Nullable Instant finishedAt) {
+        if (finishedAt == null || startedAt == null) {
             return true;
         }
 
@@ -58,8 +57,8 @@ public class ReadingBookDurationRange {
 
     @JsonIgnore
     public Integer getReadMinutes() {
-        if (finishedAt == null) {
-            throw new IllegalStateException("finishedAt is null. Cannot calculate minutes");
+        if (finishedAt == null || startedAt == null) {
+            throw new IllegalStateException("finishedAt or startedAt is null. Cannot calculate minutes");
         }
         return (int) Duration.between(startedAt, finishedAt).toMinutes();
     }

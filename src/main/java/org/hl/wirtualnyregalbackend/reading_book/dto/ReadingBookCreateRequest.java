@@ -1,16 +1,18 @@
 package org.hl.wirtualnyregalbackend.reading_book.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.hl.wirtualnyregalbackend.reading_book.model.ReadingBookDurationRange;
+import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
 
-@Getter
-@Setter
-@NoArgsConstructor
-public class ReadingBookCreateRequest extends ReadingBookUpdateRequest {
 
+public record ReadingBookCreateRequest(
     @NotNull
-    private Long bookshelfId;
-
+    Long bookshelfId,
+    @NotNull
+    @Valid
+    BookWithIdDto book,
+    ReadingStatus status,
+    ReadingBookDurationRange durationRange
+) {
 }
