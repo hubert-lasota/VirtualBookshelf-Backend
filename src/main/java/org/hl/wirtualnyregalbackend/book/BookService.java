@@ -89,7 +89,7 @@ public class BookService {
         return book;
     }
 
-    public BookPageResponseDto findBooks(String query, Pageable pageable) {
+    public BookPageResponse findBooks(String query, Pageable pageable) {
         Specification<Book> spec = Specification
             .where(BookSpecification.titleIgnoreCaseLike(query))
             .or(BookSpecification.authorFullNameIgnoreCaseLike(query))
@@ -98,7 +98,7 @@ public class BookService {
         Page<BookResponse> bookPage = bookRepository.findAll(spec, pageable)
             .map(BookMapper::toBookResponse);
 
-        return BookPageResponseDto.from(bookPage);
+        return BookPageResponse.from(bookPage);
     }
 
     public BookDetailsResponse findBookDetailsById(Long bookId, User user) {

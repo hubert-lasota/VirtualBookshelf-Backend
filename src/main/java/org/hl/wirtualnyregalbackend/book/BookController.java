@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book.dto.BookDetailsResponse;
-import org.hl.wirtualnyregalbackend.book.dto.BookPageResponseDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookPageResponse;
 import org.hl.wirtualnyregalbackend.book.dto.BookRequest;
 import org.hl.wirtualnyregalbackend.book.dto.BookResponse;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
@@ -28,12 +28,14 @@ class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public ResponseEntity<BookResponse> createBook(@Validated(CreateGroup.class)
-                                                   @RequestPart("book")
-                                                   BookRequest bookRequest,
-                                                   @RequestPart("cover")
-                                                   MultipartFile coverFile,
-                                                   UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<BookResponse> createBook(
+        @Validated(CreateGroup.class)
+        @RequestPart("book")
+        BookRequest bookRequest,
+        @RequestPart("cover")
+        MultipartFile coverFile,
+        UriComponentsBuilder uriBuilder
+    ) {
         BookResponse response = bookService.createBook(bookRequest, coverFile);
 
         URI location = uriBuilder
@@ -45,8 +47,8 @@ class BookController {
     }
 
     @GetMapping
-    public BookPageResponseDto findBooks(@RequestParam String query,
-                                         @PageableDefault Pageable pageable) {
+    public BookPageResponse findBooks(@RequestParam String query,
+                                      @PageableDefault Pageable pageable) {
         return bookService.findBooks(query, pageable);
     }
 
@@ -57,9 +59,15 @@ class BookController {
     }
 
     @PatchMapping("/{id}")
-    public BookResponse updateBook(@PathVariable Long id,
-                                   @Validated(UpdateGroup.class) @RequestPart("book") BookRequest bookRequest,
-                                   @RequestPart("cover") MultipartFile coverFile) {
+    public BookResponse updateBook(
+        @PathVariable
+        Long id,
+        @Validated(UpdateGroup.class)
+        @RequestPart("book")
+        BookRequest bookRequest,
+        @RequestPart("cover")
+        MultipartFile coverFile
+    ) {
         return bookService.updateBook(id, bookRequest, coverFile);
     }
 

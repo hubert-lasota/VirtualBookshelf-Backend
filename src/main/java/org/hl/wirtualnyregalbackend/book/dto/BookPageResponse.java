@@ -5,13 +5,13 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-public record BookPageResponseDto(
+public record BookPageResponse(
     List<BookResponse> books,
     PageMeta pageMeta
 ) {
 
-    public static BookPageResponseDto from(Page<BookResponse> page) {
-        return new BookPageResponseDto(page.getContent(), PageMeta.from(page));
+    public static BookPageResponse from(Page<BookResponse> page) {
+        return new BookPageResponse(page.getContent(), PageMeta.from(page));
     }
 
 }
