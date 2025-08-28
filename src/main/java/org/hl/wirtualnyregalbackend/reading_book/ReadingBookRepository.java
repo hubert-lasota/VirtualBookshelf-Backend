@@ -13,4 +13,8 @@ interface ReadingBookRepository extends JpaRepository<ReadingBook, Long>, JpaSpe
 
     @Query("select rb from ReadingBook rb join rb.bookshelf b where rb.book.id = :bookId and b.user.id = :userId")
     Optional<ReadingBook> findByBookIdAndUserId(Long bookId, Long userId);
+
+    @Query("select count(rb) > 0 from ReadingBook rb where rb.id = :readingBookId and rb.bookshelf.user.id = :userId")
+    boolean isAuthor(Long readingBookId, Long userId);
+
 }

@@ -2,19 +2,19 @@ package org.hl.wirtualnyregalbackend.auth.permission;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.reading_note.ReadingNoteService;
+import org.hl.wirtualnyregalbackend.challenge.ChallengeService;
 import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-class ReadingNotePermissionEvaluator implements ResourcePermissionEvaluator {
+public class ChallengePermissionEvaluator implements ResourcePermissionEvaluator {
 
-    private final ReadingNoteService noteService;
+    private final ChallengeService challengeService;
 
     @Override
     public boolean hasPermission(User user, Object targetId, ActionType actionType) {
-        Long noteId = (Long) targetId;
-        return noteService.isNoteAuthor(noteId, user);
+        Long challengeId = (Long) targetId;
+        return challengeService.isChallengeAuthor(challengeId, user);
     }
 
 }

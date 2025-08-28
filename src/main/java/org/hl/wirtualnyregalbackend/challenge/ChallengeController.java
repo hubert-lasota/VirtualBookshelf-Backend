@@ -11,6 +11,7 @@ import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,7 @@ public class ChallengeController {
     }
 
     @PatchMapping("/{challengeId}")
+    @PreAuthorize("hasPermission(#challengeId, 'CHALLENGE', 'UPDATE')")
     public ChallengeResponse updateChallenge(@PathVariable
                                              Long challengeId,
                                              @Validated(UpdateGroup.class)

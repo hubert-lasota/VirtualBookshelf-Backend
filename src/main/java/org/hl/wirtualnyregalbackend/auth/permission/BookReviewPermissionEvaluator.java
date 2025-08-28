@@ -11,11 +11,10 @@ class BookReviewPermissionEvaluator implements ResourcePermissionEvaluator {
 
     private final BookReviewService bookReviewService;
 
-
     @Override
     public boolean hasPermission(User user, Object targetId, ActionType actionType) {
         Long reviewId = (Long) targetId;
-        return bookReviewService.isAuthor(reviewId, user);
+        return bookReviewService.isBookReviewAuthor(reviewId, user);
     }
 
 }

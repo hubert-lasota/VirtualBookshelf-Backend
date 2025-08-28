@@ -3,6 +3,7 @@ package org.hl.wirtualnyregalbackend.reading_note;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.model.PageRange;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
@@ -75,6 +76,10 @@ public class ReadingNoteService {
         noteRepository.delete(note);
         eventPublisher.publishEvent(new ReadingNoteDeletedEvent(note));
         log.info("Deleted Reading Note: {}", note);
+    }
+
+    public boolean isNoteAuthor(Long noteId, User user) {
+        return noteRepository.isNoteAuthor(noteId, user.getId());
     }
 
     private ReadingNote findReadingNoteById(Long noteId) throws ReadingNoteNotFoundException {

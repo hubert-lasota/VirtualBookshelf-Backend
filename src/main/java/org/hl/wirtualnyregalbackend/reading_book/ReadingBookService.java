@@ -114,6 +114,11 @@ public class ReadingBookService {
 
         noteHelper.deleteNotesByReadingBookId(readingBookId);
         readingBookRepository.delete(readingBook);
+        log.info("Deleted Reading Book: {}", readingBook);
+    }
+
+    public boolean isReadingBookAuthor(Long readingBookId, User user) {
+        return readingBookRepository.isAuthor(readingBookId, user.getId());
     }
 
 

@@ -8,13 +8,13 @@ import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteListResponse;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponse;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteUpdateRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/reading-notes")
 @AllArgsConstructor
-// TODO add preauthorize
 class ReadingNoteController {
 
     private final ReadingNoteService noteService;
@@ -35,6 +35,7 @@ class ReadingNoteController {
     }
 
     @PatchMapping("/{noteId}")
+    @PreAuthorize("hasPermission(#noteId, 'READING_NOTE', 'UPDATE')")
     public ReadingNoteResponse updateReadingNote(@PathVariable
                                                  Long noteId,
                                                  @Validated(UpdateGroup.class)
@@ -45,6 +46,7 @@ class ReadingNoteController {
 
     @DeleteMapping("/{noteId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasPermission(#noteId, 'READING_NOTE', 'DELETE')")
     public void deleteReadingNote(@PathVariable Long noteId) {
         noteService.deleteReadingNoteById(noteId);
     }

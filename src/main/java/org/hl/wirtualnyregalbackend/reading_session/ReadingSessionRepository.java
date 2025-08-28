@@ -18,4 +18,7 @@ interface ReadingSessionRepository extends JpaRepository<ReadingSession, Long> {
     @Query("select rs from ReadingSession rs where rs.readingBook.bookshelf.user.id = :userId order by rs.createdAt desc limit 1")
     Optional<ReadingSession> findLastByUserId(Long userId);
 
+    @Query("select count(rs) > 0 from ReadingSession rs where rs.id = :readingSessionId and rs.readingBook.bookshelf.user.id = :userId")
+    boolean isAuthor(Long readingSessionId, Long userId);
+
 }

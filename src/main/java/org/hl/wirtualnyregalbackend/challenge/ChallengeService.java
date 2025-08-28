@@ -31,7 +31,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Slf4j
-class ChallengeService {
+public class ChallengeService {
 
     private final ChallengeRepository challengeRepository;
     private final ChallengeParticipantHelper participantHelper;
@@ -112,6 +112,10 @@ class ChallengeService {
         }
         log.info("Quit challenge: {} with participant: {}", challengeId, participant);
         participantHelper.deleteParticipant(participant);
+    }
+
+    public boolean isChallengeAuthor(Long challengeId, User user) {
+        return challengeRepository.isChallengeAuthor(challengeId, user.getId());
     }
 
     private ChallengeResponse mapToChallengeResponse(Challenge challenge) {

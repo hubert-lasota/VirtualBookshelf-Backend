@@ -26,6 +26,7 @@ public class Bookshelf extends BaseEntity {
     @Setter(AccessLevel.NONE)
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private User user;
 
     @Column(name = "total_books")

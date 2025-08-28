@@ -1,10 +1,7 @@
 package org.hl.wirtualnyregalbackend.user.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 @Entity
@@ -13,6 +10,7 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 public class UserProfilePicture extends BaseEntity {
 
     @Column
@@ -20,6 +18,7 @@ public class UserProfilePicture extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_profile_picture_binary_id")
+    @ToString.Exclude
     private UserProfilePictureBinary binaryPicture;
 
 }

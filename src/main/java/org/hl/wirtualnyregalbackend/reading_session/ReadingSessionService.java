@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.reading_session;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
@@ -30,9 +31,9 @@ import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Slf4j
-class ReadingSessionService {
+public class ReadingSessionService {
 
     private final ReadingSessionRepository sessionRepository;
     private final ReadingBookHelper readingBookHelper;
@@ -99,6 +100,11 @@ class ReadingSessionService {
         eventPublisher.publishEvent(new ReadingSessionDeletedEvent(rs));
         sessionRepository.delete(rs);
         log.info("Deleted reading session: {}", rs);
+    }
+
+
+    public boolean isSessionAuthor(Long sessionId, User user) {
+        return sessionRepository.isAuthor(sessionId, user.getId());
     }
 
     private ReadingSession findReadingSessionById(Long id) throws ReadingSessionNotFoundException {

@@ -67,7 +67,7 @@ public class BookReviewService {
         return ReviewPageResponse.from(page);
     }
 
-    public boolean isAuthor(Long bookReviewId, User user) {
+    public boolean isBookReviewAuthor(Long bookReviewId, User user) {
         return bookReviewRepository.isAuthor(bookReviewId, user.getId());
     }
 

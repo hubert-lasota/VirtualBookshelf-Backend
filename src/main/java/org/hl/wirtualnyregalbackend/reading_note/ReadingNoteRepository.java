@@ -20,4 +20,7 @@ interface ReadingNoteRepository extends JpaRepository<ReadingNote, Long> {
     @Query("DELETE FROM ReadingNote n WHERE n.readingBook.id = :readingBookId")
     void deleteNotesByReadingBookId(Long readingBookId);
 
+    @Query("select count(n) > 0 from ReadingNote n where n.id = :noteId and n.readingBook.bookshelf.user = :userId")
+    boolean isNoteAuthor(Long noteId, Long userId);
+
 }

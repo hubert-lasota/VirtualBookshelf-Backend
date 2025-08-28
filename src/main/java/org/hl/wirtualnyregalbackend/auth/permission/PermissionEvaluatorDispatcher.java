@@ -18,12 +18,20 @@ public class PermissionEvaluatorDispatcher implements PermissionEvaluator {
 
     PermissionEvaluatorDispatcher(
         BookReviewPermissionEvaluator bookReviewPermissionEvaluator,
+        AuthorReviewPermissionEvaluator authorReviewPermissionEvaluator,
         BookshelfPermissionEvaluator bookshelfPermissionEvaluator,
-        ReadingBookPermissionEvaluator readingBookPermissionEvaluator
+        ReadingBookPermissionEvaluator readingBookPermissionEvaluator,
+        ReadingNotePermissionEvaluator readingNotePermissionEvaluator,
+        ReadingSessionPermissionEvaluator readingSessionPermissionEvaluator,
+        ChallengePermissionEvaluator challengePermissionEvaluator
     ) {
         evaluators.put(ResourceType.BOOK_REVIEW, bookReviewPermissionEvaluator);
+        evaluators.put(ResourceType.AUTHOR_REVIEW, authorReviewPermissionEvaluator);
         evaluators.put(ResourceType.BOOKSHELF, bookshelfPermissionEvaluator);
         evaluators.put(ResourceType.READING_BOOK, readingBookPermissionEvaluator);
+        evaluators.put(ResourceType.READING_NOTE, readingNotePermissionEvaluator);
+        evaluators.put(ResourceType.READING_SESSION, readingSessionPermissionEvaluator);
+        evaluators.put(ResourceType.CHALLENGE, challengePermissionEvaluator);
     }
 
     @Override
