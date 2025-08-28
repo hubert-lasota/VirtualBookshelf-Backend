@@ -1,6 +1,7 @@
 package org.hl.wirtualnyregalbackend.reading_session;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.model.PageRange;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
@@ -30,6 +31,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 class ReadingSessionService {
 
     private final ReadingSessionRepository sessionRepository;
@@ -49,11 +51,13 @@ class ReadingSessionService {
             new ReadPagesEvent(session.getPageRange().getReadPages(), session.getDurationRange().getReadMinutes(), session)
         );
         eventPublisher.publishEvent(new ReadingSessionCreatedEvent(session));
+        log.info("Reading session created: {}", session);
         return ReadingSessionMapper.toReadingSessionResponse(session);
     }
 
     public ReadingSessionResponse updateReadingSession(Long sessionId, ReadingSessionUpdateRequest sessionRequest) {
         ReadingSession session = findReadingSessionById(sessionId);
+        log.info("Updating reading session: {} by request: {}", session, sessionRequest);
 
         String description = sessionRequest.getDescription();
         if (description != null) {
@@ -76,7 +80,8 @@ class ReadingSessionService {
             Integer readMinutes = rr.getReadMinutes() - oldRr.getReadMinutes();
             eventPublisher.publishEvent(new ReadPagesEvent(readPages, readMinutes, session));
         }
-
+        sessionRepository.save(session);
+        log.info("Updated reading session: {}", session);
         return ReadingSessionMapper.toReadingSessionResponse(session);
     }
 
@@ -93,11 +98,15 @@ class ReadingSessionService {
         ReadingSession rs = findReadingSessionById(sessionId);
         eventPublisher.publishEvent(new ReadingSessionDeletedEvent(rs));
         sessionRepository.delete(rs);
+        log.info("Deleted reading session: {}", rs);
     }
 
     private ReadingSession findReadingSessionById(Long id) throws ReadingSessionNotFoundException {
         Optional<ReadingSession> sessionOpt = id != null ? sessionRepository.findById(id) : Optional.empty();
-        return sessionOpt.orElseThrow(() -> new ReadingSessionNotFoundException(id));
+        return sessionOpt.orElseThrow(() -> {
+            log.warn("ReadingSession not found with ID: {}", id);
+            return new ReadingSessionNotFoundException(id);
+        });
     }
 
 

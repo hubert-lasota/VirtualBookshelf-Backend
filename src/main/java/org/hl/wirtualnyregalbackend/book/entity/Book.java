@@ -20,6 +20,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString(callSuper = true)
 public class Book extends BaseEntity {
 
     @Column

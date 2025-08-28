@@ -10,6 +10,7 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString(callSuper = true)
 public class Author extends BaseEntity {
 
     @Column(name = "full_name")

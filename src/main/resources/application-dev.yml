@@ -19,6 +19,8 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [correlationId=%X{correlationId}] [userId=%X{userId:-anonymous}] %-5level %logger{36} - %msg%n"
   level:
     org.hl.wirtualnyregalbackend: TRACE
     org.springframework.boot.context.config: TRACE

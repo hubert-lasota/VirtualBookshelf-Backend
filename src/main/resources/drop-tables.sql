@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS author_recommendation;;
+DROP TABLE IF EXISTS book_recommendation;
+DROP TABLE IF EXISTS genre_recommendation;;
 DROP TABLE IF EXISTS user_reading_statistics;
 DROP TABLE IF EXISTS genre_statistics;
 DROP TABLE IF EXISTS book_length_statistics;

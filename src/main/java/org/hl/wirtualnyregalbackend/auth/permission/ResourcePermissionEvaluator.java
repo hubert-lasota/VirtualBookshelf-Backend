@@ -1,9 +1,9 @@
 package org.hl.wirtualnyregalbackend.auth.permission;
 
-import org.springframework.security.core.Authentication;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 
 interface ResourcePermissionEvaluator {
 
-    boolean hasPermission(Authentication authentication, Object targetId, ActionType actionType);
+    boolean hasPermission(User user, Object targetId, ActionType actionType);
 
 }

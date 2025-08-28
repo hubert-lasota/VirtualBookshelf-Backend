@@ -14,6 +14,7 @@ import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString(callSuper = true)
 public class Challenge extends BaseEntity {
 
     @Column

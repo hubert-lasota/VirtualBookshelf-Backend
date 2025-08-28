@@ -1,10 +1,7 @@
 package org.hl.wirtualnyregalbackend.bookshelf.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
@@ -13,6 +10,7 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(callSuper = true)
 public class Bookshelf extends BaseEntity {
 
     @Column
@@ -26,7 +24,7 @@ public class Bookshelf extends BaseEntity {
     private String description;
 
     @Setter(AccessLevel.NONE)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -9,6 +9,7 @@ import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengePartici
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -32,7 +33,8 @@ public class ChallengeParticipantHelper {
 
     }
 
-    public void createChallengeParticipant(Challenge challenge) {
+    @Transactional
+    public ChallengeParticipant createChallengeParticipant(Challenge challenge) {
         var durationRange = new ChallengeParticipantDurationRange(Instant.now(clock), null);
         ChallengeParticipant participant = new ChallengeParticipant(
             0,
@@ -41,7 +43,7 @@ public class ChallengeParticipantHelper {
             challenge,
             challenge.getUser()
         );
-        participantRepository.save(participant);
+        return participantRepository.save(participant);
     }
 
     public void deleteParticipant(ChallengeParticipant participant) {

@@ -15,9 +15,6 @@ interface ReadingNoteRepository extends JpaRepository<ReadingNote, Long> {
     @Query("select note from ReadingNote note where note.readingBook.id = :readingBookId")
     List<ReadingNote> findReadingNotesByReadingBookId(Long readingBookId);
 
-    @Query("select count(n) from ReadingNote n where n.readingBook.id = :readingBookId")
-    Long countNotes(Long readingBookId);
-
     @Transactional
     @Modifying
     @Query("DELETE FROM ReadingNote n WHERE n.readingBook.id = :readingBookId")

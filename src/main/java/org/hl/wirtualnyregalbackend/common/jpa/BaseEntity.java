@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -11,6 +12,7 @@ import java.time.Instant;
 @MappedSuperclass
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public abstract class BaseEntity {
 
     @Id

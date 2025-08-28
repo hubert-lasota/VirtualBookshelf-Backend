@@ -2,7 +2,6 @@ package org.hl.wirtualnyregalbackend.auth.permission;
 
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 
@@ -16,12 +15,8 @@ class BookshelfPermissionEvaluator implements ResourcePermissionEvaluator {
     }
 
     @Override
-    public boolean hasPermission(Authentication authentication, Object targetId, ActionType actionType) {
-        if (PermissionUtils.isAdmin(authentication)) {
-            return true;
-        }
+    public boolean hasPermission(User user, Object targetId, ActionType actionType) {
         Long bookshelfId = (Long) targetId;
-        User user = (User) authentication.getPrincipal();
         return bookshelfService.isUserBookshelfAuthor(bookshelfId, user.getId());
     }
 

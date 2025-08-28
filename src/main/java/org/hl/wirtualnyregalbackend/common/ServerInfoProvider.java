@@ -19,4 +19,5 @@ public class ServerInfoProvider {
     public String getOrigin() {
         return protocol + "://" + address + ":" + port;
     }
+
 }

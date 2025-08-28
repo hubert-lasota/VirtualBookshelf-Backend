@@ -1,6 +1,7 @@
 package org.hl.wirtualnyregalbackend.reading_book;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_book.exception.ReadingBookNotFoundException;
@@ -11,13 +12,17 @@ import java.util.Optional;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class ReadingBookHelper {
 
     private final ReadingBookRepository readingBookRepository;
 
     public ReadingBook findReadingBookById(Long readingBookId) throws ReadingBookNotFoundException {
         Optional<ReadingBook> bookOpt = readingBookId != null ? readingBookRepository.findById(readingBookId) : Optional.empty();
-        return bookOpt.orElseThrow(() -> new ReadingBookNotFoundException(readingBookId));
+        return bookOpt.orElseThrow(() -> {
+            log.warn("ReadingBook not found with ID: {}", readingBookId);
+            return new ReadingBookNotFoundException(readingBookId);
+        });
     }
 
     @Nullable

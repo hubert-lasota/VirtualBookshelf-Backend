@@ -1,6 +1,7 @@
 package org.hl.wirtualnyregalbackend.auth;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.dto.UserCredentialsDto;
 import org.hl.wirtualnyregalbackend.auth.dto.UserSignInResponse;
 import org.hl.wirtualnyregalbackend.auth.entity.Authority;
@@ -12,21 +13,17 @@ import org.hl.wirtualnyregalbackend.auth.jwt.JwtService;
 import org.hl.wirtualnyregalbackend.user.UserDefaultConfigurer;
 import org.hl.wirtualnyregalbackend.user.UserMapper;
 import org.hl.wirtualnyregalbackend.user.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 class AuthorizationService {
-
-    private final static Logger log = LoggerFactory.getLogger(AuthorizationService.class);
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
@@ -36,7 +33,9 @@ class AuthorizationService {
 
 
     public UserSignInResponse registerUser(UserCredentialsDto credentials) {
+        log.info("User registration started for username: {}", credentials.username());
         if (userRepository.existsByUsername(credentials.username())) {
+            log.warn("User registration failed - username already exists: {}", credentials.username());
             throw new UsernameAlreadyExistsException("Username: %s already exists.".formatted(credentials.username()));
         }
 
@@ -47,10 +46,12 @@ class AuthorizationService {
         userRepository.save(user);
         userDefaultConfigurer.configure(user);
         String jwt = jwtService.generateToken(user);
+        log.info("User successfully registered: {}", user.getUsername());
         return UserMapper.toUserSignInResponse(user, jwt);
     }
 
     public UserSignInResponse signIn(UserCredentialsDto credentials) {
+        log.info("User sign-in attempt for username: {}", credentials.username());
         UsernamePasswordAuthenticationToken authToken =
             new UsernamePasswordAuthenticationToken(credentials.username(), credentials.password());
 
@@ -58,23 +59,15 @@ class AuthorizationService {
         try {
             authResult = authenticationManager.authenticate(authToken);
         } catch (AuthenticationException exc) {
+            log.warn("User sign-in failed due to invalid credentials: {}", credentials.username());
             throw new InvalidCredentialsException("Sign in failed due to invalid credentials.");
         }
 
         User user = (User) authResult.getPrincipal();
 
         String jwt = jwtService.generateToken(user);
+        log.info("User successfully signed in: {}", user.getUsername());
         return UserMapper.toUserSignInResponse(user, jwt);
-    }
-
-    public boolean isJwtValid(String jwt) {
-        try {
-            String username = jwtService.extractUsername(jwt);
-            UserDetails userDetails = userRepository.findByUsername(username).orElseThrow();
-            return jwtService.isTokenValid(jwt, userDetails);
-        } catch (RuntimeException e) {
-            return false;
-        }
     }
 
 }

@@ -2,6 +2,7 @@ package org.hl.wirtualnyregalbackend.reading_book;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book.BookService;
 import org.hl.wirtualnyregalbackend.book.dto.BookRequest;
@@ -29,6 +30,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
+@Slf4j
 public class ReadingBookService {
 
     private final ReadingBookRepository readingBookRepository;
@@ -46,11 +48,13 @@ public class ReadingBookService {
         ReadingBook readingBook = ReadingBookMapper.toReadingBook(readingBookRequest, bookshelf, book);
         readingBookRepository.save(readingBook);
         eventPublisher.publishEvent(new ReadingBookCreatedEvent(readingBook));
+        log.info("Created Reading Book: {}", readingBook);
         return ReadingBookMapper.toReadingBookResponse(readingBook);
     }
 
     public ReadingBookResponse updateReadingBook(Long readingBookId, ReadingBookUpdateRequest readingBookRequest) {
         ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
+        log.info("Updating Reading Book: {} by request: {}", readingBook, readingBookRequest);
 
         ReadingStatus status = readingBookRequest.status();
         if (status != null) {
@@ -59,12 +63,14 @@ public class ReadingBookService {
         }
 
         readingBookRepository.save(readingBook);
+        log.info("Updated Reading Book: {}", readingBook);
         return ReadingBookMapper.toReadingBookResponse(readingBook);
     }
 
     public ReadingBookResponse moveReadingBook(Long readingBookId, Long bookshelfId) {
         Bookshelf bookshelf = bookshelfService.findBookshelfById(bookshelfId);
         ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
+        log.info("Moving Reading Book: {} to bookshelf: {}", readingBook, bookshelf);
         readingBook.setBookshelf(bookshelf);
         readingBookRepository.save(readingBook);
         return ReadingBookMapper.toReadingBookResponse(readingBook);
@@ -74,6 +80,7 @@ public class ReadingBookService {
         ReadingBook book = readingBookHelper.findReadingBookById(readingBookId);
         ReadingBookDurationRange rbdr = null;
         Instant now = Instant.now(clock);
+        log.info("Changing Reading Book: {} to status: {}", book, status);
         if (ReadingStatus.READ.equals(status)) {
             rbdr = ReadingBookDurationRange.merge(book.getDurationRange(), ReadingBookDurationRange.of(null, now));
         } else if (ReadingStatus.READING.equals(status)) {

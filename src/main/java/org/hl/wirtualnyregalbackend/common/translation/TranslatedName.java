@@ -2,10 +2,7 @@ package org.hl.wirtualnyregalbackend.common.translation;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Locale;
 
@@ -13,6 +10,7 @@ import java.util.Locale;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
 public class TranslatedName {
 
     @Column

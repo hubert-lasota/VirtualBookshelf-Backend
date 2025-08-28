@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.common.translation.TranslatedName;
 import org.hl.wirtualnyregalbackend.common.translation.TranslatedNamedEntity;
@@ -12,6 +13,7 @@ import org.hl.wirtualnyregalbackend.common.translation.TranslatedNamedEntity;
 @Table(name = "book_format_translation")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString(callSuper = true)
 public class BookFormatTranslation extends BaseEntity implements TranslatedNamedEntity {
 
     @Embedded
@@ -19,6 +21,7 @@ public class BookFormatTranslation extends BaseEntity implements TranslatedNamed
 
     @ManyToOne
     @JoinColumn(name = "book_format_id")
+    @ToString.Exclude
     private BookFormat format;
 
 

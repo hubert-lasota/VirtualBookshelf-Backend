@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
+import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,7 +61,12 @@ public class JwtFilter extends OncePerRequestFilter {
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        filterChain.doFilter(request, response);
+        try {
+            MDC.put("userId", ((User) userDetails).getId().toString());
+            filterChain.doFilter(request, response);
+        } finally {
+            MDC.remove("userId");
+        }
     }
 
 }

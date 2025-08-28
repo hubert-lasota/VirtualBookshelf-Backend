@@ -3,7 +3,6 @@ package org.hl.wirtualnyregalbackend.auth.permission;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,12 +13,9 @@ class BookReviewPermissionEvaluator implements ResourcePermissionEvaluator {
 
 
     @Override
-    public boolean hasPermission(Authentication authentication, Object targetId, ActionType actionType) {
-        return false;
-    }
-
-    public boolean isAuthor(Long bookRatingId, User user) {
-        return bookReviewService.isAuthor(bookRatingId, user.getId());
+    public boolean hasPermission(User user, Object targetId, ActionType actionType) {
+        Long reviewId = (Long) targetId;
+        return bookReviewService.isAuthor(reviewId, user);
     }
 
 }

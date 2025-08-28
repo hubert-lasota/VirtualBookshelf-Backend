@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.genre;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.genre.dto.GenrePageResponse;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class GenreService {
 
     private final GenreRepository genreRepository;
@@ -39,7 +41,10 @@ public class GenreService {
         Optional<Genre> genreOpt = genreId == null
             ? Optional.empty()
             : genreRepository.findById(genreId);
-        return genreOpt.orElseThrow(() -> new GenreNotFoundException(genreId));
+        return genreOpt.orElseThrow(() -> {
+            log.warn("Genre not found with ID: {}", genreId);
+            return new GenreNotFoundException(genreId);
+        });
     }
 
 }

@@ -11,6 +11,7 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(callSuper = true)
 public class Publisher extends BaseEntity {
 
     private String name;

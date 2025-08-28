@@ -276,19 +276,6 @@ CREATE TABLE challenge_participant
     updated_at         TIMESTAMPTZ
 );
 
--- TODO create notification types -> comment_notification etc
--- NOTIFICATION
-CREATE TABLE notification
-(
-    id         BIGSERIAL PRIMARY KEY,
-    user_id    BIGINT      NOT NULL REFERENCES users (id),
-    message    TEXT        NOT NULL,
-    is_read    BOOLEAN     NOT NULL,
-    read_at    TIMESTAMPTZ,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
-);
-
 -- STATISTICS AND RECOMMENDATION
 CREATE TABLE book_length_statistics
 (

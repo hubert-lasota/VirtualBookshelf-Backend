@@ -67,8 +67,8 @@ public class BookReviewService {
         return ReviewPageResponse.from(page);
     }
 
-    public boolean isAuthor(Long bookRatingId, Long userId) {
-        return bookReviewRepository.isAuthor(bookRatingId, userId);
+    public boolean isAuthor(Long bookReviewId, User user) {
+        return bookReviewRepository.isAuthor(bookReviewId, user.getId());
     }
 
     private BookReview findBookReviewById(Long id) throws BookReviewNotFoundException {

@@ -7,6 +7,7 @@ public enum ResourceType {
     READING_BOOK;
 
     public static ResourceType fromString(String resourceType) {
+        resourceType = resourceType.replace(" ", "_");
         return ResourceType.valueOf(resourceType.toUpperCase());
     }
 

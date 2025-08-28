@@ -6,6 +6,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.common.review.Review;
@@ -15,6 +16,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "author_review")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(callSuper = true)
 public class AuthorReview extends Review {
 
     @ManyToOne(optional = false)

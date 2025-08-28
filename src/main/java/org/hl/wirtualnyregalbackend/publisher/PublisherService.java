@@ -2,6 +2,7 @@ package org.hl.wirtualnyregalbackend.publisher;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherDetailsResponse;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherPageResponse;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherRequest;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
+@Slf4j
 public class PublisherService {
 
     private final PublisherRepository publisherRepository;
@@ -23,6 +25,7 @@ public class PublisherService {
 
     public PublisherResponse createPublisher(PublisherRequest publisherRequest) {
         Publisher publisher = createPublisherEntity(publisherRequest);
+        log.info("Publisher created with ID: {}", publisher.getId());
         return PublisherMapper.toPublisherResponse(publisher);
     }
 
@@ -52,6 +55,9 @@ public class PublisherService {
 
     private Publisher findPublisherById(Long id) throws PublisherNotFoundException {
         Optional<Publisher> publisherOpt = id != null ? publisherRepository.findById(id) : Optional.empty();
-        return publisherOpt.orElseThrow(() -> new PublisherNotFoundException(id));
+        return publisherOpt.orElseThrow(() -> {
+            log.warn("Publisher not found with ID: {}", id);
+            return new PublisherNotFoundException(id);
+        });
     }
 }

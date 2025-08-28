@@ -2,6 +2,7 @@ package org.hl.wirtualnyregalbackend.book;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.author.AuthorService;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
@@ -21,8 +22,6 @@ import org.hl.wirtualnyregalbackend.publisher.PublisherService;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -42,9 +41,8 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
+@Slf4j
 public class BookService {
-
-    private static final Logger log = LoggerFactory.getLogger(BookService.class);
 
     private final ApplicationEventPublisher eventPublisher;
     private final BookRepository bookRepository;
@@ -60,6 +58,7 @@ public class BookService {
 
     public BookResponse createBook(BookRequest bookRequest, MultipartFile coverFile) {
         Book book = createBookEntity(bookRequest, coverFile);
+        log.info("Created book: {}", book);
         return BookMapper.toBookResponse(book);
     }
 
@@ -85,8 +84,7 @@ public class BookService {
         }
 
         Book book = BookMapper.toBook(bookDto, cover, format, publisher, authors, genres);
-        bookRepository.save(book);
-        return book;
+        return bookRepository.save(book);
     }
 
     public BookPageResponse findBooks(String query, Pageable pageable) {
@@ -105,11 +103,15 @@ public class BookService {
         Book book = bookHelper.findBookById(bookId);
         BookFoundEvent event = new BookFoundEvent(book, user);
         eventPublisher.publishEvent(event);
+
         ReviewStatistics reviewStats = bookReviewService.getBookReviewStatistics(bookId);
         BookReview review = bookReviewService.findOptionalBookReviewById(bookId).orElse(null);
         Locale locale = LocaleContextHolder.getLocale();
         ReadingBook rb = readingBookHelper.findUserReadingBookByBookId(bookId, user);
-        return BookMapper.toBookDetailsResponse(book, reviewStats, review, locale, rb);
+
+        BookDetailsResponse response = BookMapper.toBookDetailsResponse(book, reviewStats, review, locale, rb);
+        log.info("Found Book Details: {}", response);
+        return response;
     }
 
     @Transactional
@@ -117,6 +119,7 @@ public class BookService {
                                    BookRequest bookRequest,
                                    MultipartFile coverFile) {
         Book book = bookHelper.findBookById(bookId);
+        log.info("Updating book: {} by request: {}", book, bookRequest);
         String isbn = bookRequest.isbn();
         if (isbn != null) {
             book.setIsbn(isbn);
@@ -174,6 +177,7 @@ public class BookService {
         BookCover cover = bookCoverService.createBookCover(bookRequest.coverUrl(), coverFile);
         book.setCover(cover);
 
+        log.info("Book updated: {}", book);
         return BookMapper.toBookResponse(book);
     }
 

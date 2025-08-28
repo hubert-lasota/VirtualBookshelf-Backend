@@ -1,6 +1,7 @@
 package org.hl.wirtualnyregalbackend.author_review;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.author.AuthorHelper;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor(access = lombok.AccessLevel.PACKAGE)
+@Slf4j
 public class AuthorReviewService {
 
     private final AuthorReviewRepository authorReviewRepository;
@@ -27,10 +29,12 @@ public class AuthorReviewService {
         Long authorId = reviewDto.getAuthorId();
         Author author = authorHelper.findAuthorById(authorId);
         if (authorReviewRepository.existsByAuthorIdAndUserId(authorId, user.getId())) {
+            log.warn("Review already exists for author '{}'", authorId);
             throw new AuthorReviewAlreadyExistsException("Review already exists for author '%d' and user '%d'".formatted(authorId, user.getId()));
         }
         AuthorReview authorReview = AuthorReviewMapper.toAuthorReview(reviewDto, author, user);
         authorReviewRepository.save(authorReview);
+        log.info("AuthorReview created: {}", authorReview);
         return ReviewMapper.toReviewResponse(authorReview);
     }
 
@@ -71,7 +75,10 @@ public class AuthorReviewService {
     }
 
     private AuthorReview findAuthorReviewById(Long id) throws AuthorReviewNotFoundException {
-        return findOptionalAuthorReviewById(id).orElseThrow(() -> new AuthorReviewNotFoundException(id));
+        return findOptionalAuthorReviewById(id).orElseThrow(() -> {
+            log.warn("AuthorReview not found with ID: {}", id);
+            return new AuthorReviewNotFoundException(id);
+        });
     }
 
     public Optional<AuthorReview> findOptionalAuthorReviewById(Long id) {
