@@ -1,7 +1,6 @@
 package org.hl.wirtualnyregalbackend.auth.permission;
 
 public enum ResourceType {
-    BOOK,
     BOOK_REVIEW,
     AUTHOR_REVIEW,
     BOOKSHELF,

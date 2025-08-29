@@ -61,6 +61,10 @@ public class UserReadingStatistics extends BaseEntity {
         this.readBookCount++;
     }
 
+    public void decrementReadBookCount() {
+        this.readBookCount--;
+    }
+
     public void incrementCurrentReadingStreak() {
         this.currentReadingStreak++;
         if (currentReadingStreak > longestReadingStreak) {

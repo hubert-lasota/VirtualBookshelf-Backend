@@ -30,7 +30,8 @@ public class User extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Authority> authorities = new ArrayList<>();
-// TODO create with profile (use AllArgsConstructor)
+
+    // TODO create with profile (use AllArgsConstructor)
     public User(String username, String password, Authority... authorities) {
         this.username = username;
         this.password = password;

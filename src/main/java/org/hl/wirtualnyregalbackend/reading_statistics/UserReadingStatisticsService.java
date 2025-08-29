@@ -26,9 +26,15 @@ class UserReadingStatisticsService {
         userStatsRepository.save(stats);
     }
 
-    public void updateTotalReadBooks(User user) {
+    public void incrementReadBookCount(User user) {
         UserReadingStatistics stats = findOrCreateUserReadingStatistics(user);
         stats.incrementReadBookCount();
+        userStatsRepository.save(stats);
+    }
+
+    public void decrementReadBookCount(User user) {
+        UserReadingStatistics stats = findOrCreateUserReadingStatistics(user);
+        stats.decrementReadBookCount();
         userStatsRepository.save(stats);
     }
 

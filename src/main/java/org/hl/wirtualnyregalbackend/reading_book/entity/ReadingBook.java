@@ -59,7 +59,7 @@ public class ReadingBook extends BaseEntity {
         switch (status) {
             case WANT_TO_READ:
                 this.status = ReadingStatus.WANT_TO_READ;
-                this.durationRange = null;
+                this.durationRange = ReadingBookDurationRange.of(null, null);
                 break;
             case READ:
                 if (durationRange.getFinishedAt() == null) {
@@ -77,12 +77,12 @@ public class ReadingBook extends BaseEntity {
         }
     }
 
-    public void updateCurrentPage(Integer currentPage) {
-        this.currentPage = currentPage;
-        if (this.currentPage.equals(book.getPageCount())) {
-            this.status = ReadingStatus.READ;
+    public void addReadPages(Integer readPages) {
+        int currentPage = this.currentPage + readPages;
+        if (currentPage > book.getPageCount()) {
+            this.currentPage = book.getPageCount();
         } else {
-            this.status = ReadingStatus.READING;
+            this.currentPage = Math.max(currentPage, 0);
         }
     }
 

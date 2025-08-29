@@ -9,20 +9,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class BookshelfEventListener {
+class BookshelfEventListener {
 
+    private final BookshelfService bookshelfService;
     private final BookshelfRepository bookshelfRepository;
 
     @EventListener
     public void handleReadingBookCreatedEvent(ReadingBookCreatedEvent event) {
-        Bookshelf bookshelf = event.readingBook().getBookshelf();
+        Bookshelf bookshelf = bookshelfService.findBookshelfById(event.bookshelfId());
         bookshelf.incrementTotalBooks();
         bookshelfRepository.save(bookshelf);
     }
 
     @EventListener
     public void handleReadingBookDeletedEvent(ReadingBookDeletedEvent event) {
-        Bookshelf bookshelf = event.readingBook().getBookshelf();
+        Bookshelf bookshelf = bookshelfService.findBookshelfById(event.bookshelfId());
         bookshelf.decrementTotalBooks();
         bookshelfRepository.save(bookshelf);
     }

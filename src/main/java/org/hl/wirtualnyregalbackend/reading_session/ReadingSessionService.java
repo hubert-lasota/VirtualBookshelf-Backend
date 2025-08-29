@@ -48,10 +48,8 @@ public class ReadingSessionService {
 
         publishReadTodayEventIfRequired(rb.getBookshelf().getUser());
 
-        eventPublisher.publishEvent(
-            new ReadPagesEvent(session.getPageRange().getReadPages(), session.getDurationRange().getReadMinutes(), session)
-        );
-        eventPublisher.publishEvent(new ReadingSessionCreatedEvent(session));
+        eventPublisher.publishEvent(ReadPagesEvent.from(session));
+        eventPublisher.publishEvent(ReadingSessionCreatedEvent.from(session));
         log.info("Reading session created: {}", session);
         return ReadingSessionMapper.toReadingSessionResponse(session);
     }
@@ -70,16 +68,14 @@ public class ReadingSessionService {
         PageRange pr = PageRange.merge(oldPr, newPr);
         session.setPageRange(pr);
 
-        SessionReadingDurationRange oldRr = session.getDurationRange();
-        SessionReadingDurationRange newRr = sessionRequest.getDurationRange();
-        SessionReadingDurationRange rr = SessionReadingDurationRange.merge(oldRr, newRr);
+        SessionReadingDurationRange oldDr = session.getDurationRange();
+        SessionReadingDurationRange newDr = sessionRequest.getDurationRange();
+        SessionReadingDurationRange rr = SessionReadingDurationRange.merge(oldDr, newDr);
         session.setDurationRange(rr);
 
-        // Check if the reading period or page range has changed and publish event with the difference in read pages and minutes.
-        if ((!oldPr.equals(pr)) || (!oldRr.equals(rr))) {
-            Integer readPages = pr.getReadPages() - oldPr.getReadPages();
-            Integer readMinutes = rr.getReadMinutes() - oldRr.getReadMinutes();
-            eventPublisher.publishEvent(new ReadPagesEvent(readPages, readMinutes, session));
+        ReadPagesEvent rpEvent = ReadPagesEvent.ofDifference(oldPr, newPr, oldDr, newDr, session);
+        if (rpEvent != null) {
+            eventPublisher.publishEvent(rpEvent);
         }
         sessionRepository.save(session);
         log.info("Updated reading session: {}", session);
@@ -97,7 +93,7 @@ public class ReadingSessionService {
 
     public void deleteReadingSession(Long sessionId) {
         ReadingSession rs = findReadingSessionById(sessionId);
-        eventPublisher.publishEvent(new ReadingSessionDeletedEvent(rs));
+        eventPublisher.publishEvent(ReadingSessionDeletedEvent.from(rs));
         sessionRepository.delete(rs);
         log.info("Deleted reading session: {}", rs);
     }

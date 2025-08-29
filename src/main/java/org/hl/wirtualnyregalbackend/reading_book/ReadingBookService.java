@@ -11,9 +11,9 @@ import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.reading_book.dto.*;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
+import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookChangedStatusEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookCreatedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookDeletedEvent;
-import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookFinishedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.model.ReadingBookDurationRange;
 import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
 import org.hl.wirtualnyregalbackend.reading_note.ReadingNoteHelper;
@@ -47,7 +47,7 @@ public class ReadingBookService {
         Book book = findOrCreateBook(bookWithIdDto.getId(), bookWithIdDto.getBookRequest(), bookCover);
         ReadingBook readingBook = ReadingBookMapper.toReadingBook(readingBookRequest, bookshelf, book);
         readingBookRepository.save(readingBook);
-        eventPublisher.publishEvent(new ReadingBookCreatedEvent(readingBook));
+        eventPublisher.publishEvent(ReadingBookCreatedEvent.from(readingBook));
         log.info("Created Reading Book: {}", readingBook);
         return ReadingBookMapper.toReadingBookResponse(readingBook);
     }
@@ -78,6 +78,7 @@ public class ReadingBookService {
 
     public ReadingBookResponse changeReadingBookStatus(Long readingBookId, ReadingStatus status) {
         ReadingBook book = readingBookHelper.findReadingBookById(readingBookId);
+        ReadingStatus previousStatus = book.getStatus();
         ReadingBookDurationRange rbdr = null;
         Instant now = Instant.now(clock);
         log.info("Changing Reading Book: {} to status: {}", book, status);
@@ -87,8 +88,8 @@ public class ReadingBookService {
             rbdr = ReadingBookDurationRange.merge(book.getDurationRange(), ReadingBookDurationRange.of(now, null));
         }
         book.changeStatus(status, rbdr);
-        publishReadingBookFinishedEventIfRequired(book, status);
         readingBookRepository.save(book);
+        eventPublisher.publishEvent(ReadingBookChangedStatusEvent.fromStatusChange(book, previousStatus));
         return ReadingBookMapper.toReadingBookResponse(book);
     }
 
@@ -110,7 +111,7 @@ public class ReadingBookService {
     @Transactional
     public void deleteReadingBook(Long readingBookId) {
         ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
-        eventPublisher.publishEvent(new ReadingBookDeletedEvent(readingBook));
+        eventPublisher.publishEvent(ReadingBookDeletedEvent.from(readingBook));
 
         noteHelper.deleteNotesByReadingBookId(readingBookId);
         readingBookRepository.delete(readingBook);
@@ -125,12 +126,6 @@ public class ReadingBookService {
     private Book findOrCreateBook(Long bookId, BookRequest bookDto, MultipartFile cover) {
         return bookService.findBookOptById(bookId)
             .orElseGet(() -> bookService.createBookEntity(bookDto, cover));
-    }
-
-    private void publishReadingBookFinishedEventIfRequired(ReadingBook readingBook, ReadingStatus status) {
-        if (ReadingStatus.READ.equals(status)) {
-            eventPublisher.publishEvent(new ReadingBookFinishedEvent(readingBook));
-        }
     }
 
 }

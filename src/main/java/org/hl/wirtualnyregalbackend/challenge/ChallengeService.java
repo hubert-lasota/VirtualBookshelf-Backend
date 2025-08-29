@@ -11,7 +11,7 @@ import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.challenge.exception.ChallengeNotFoundException;
 import org.hl.wirtualnyregalbackend.challenge.model.ChallengeDurationRange;
 import org.hl.wirtualnyregalbackend.challenge.model.ChallengeFilter;
-import org.hl.wirtualnyregalbackend.challenge_participant.ChallengeParticipantHelper;
+import org.hl.wirtualnyregalbackend.challenge_participant.ChallengeParticipantService;
 import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengeParticipant;
 import org.hl.wirtualnyregalbackend.challenge_participant.exception.ChallengeParticipantNotFoundException;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
@@ -34,7 +34,7 @@ import java.util.Optional;
 public class ChallengeService {
 
     private final ChallengeRepository challengeRepository;
-    private final ChallengeParticipantHelper participantHelper;
+    private final ChallengeParticipantService participantHelper;
     private final GenreService genreService;
 
     @Transactional

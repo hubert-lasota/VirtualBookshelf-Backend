@@ -21,8 +21,7 @@ class BookLengthStatisticsService {
     private final Clock clock;
 
     public void updateBookLengthStatistics(User user, Book book, ReadingStatus status) {
-        Integer pageCount = book.getPageCount();
-        BookLength length = BookLength.fromPageCount(pageCount);
+        BookLength length = BookLength.fromPageCount(book.getPageCount());
         YearMonth yearMonth = YearMonth.now(clock);
         Optional<BookLengthStatistics> lenStatsOpt = bookLenRepository.findByUserAndLengthAndYearMonth(user, length, yearMonth);
         BookLengthStatistics lenStats = lenStatsOpt.orElseGet(() -> new BookLengthStatistics(length, user, yearMonth));

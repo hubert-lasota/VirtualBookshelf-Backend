@@ -34,7 +34,7 @@ public class ReadingNoteService {
         ReadingBook book = readingBookHelper.findReadingBookById(noteRequest.getReadingBookId());
         ReadingNote note = ReadingNoteMapper.toReadingNote(noteRequest, book);
         noteRepository.save(note);
-        eventPublisher.publishEvent(new ReadingNoteCreatedEvent(note));
+        eventPublisher.publishEvent(ReadingNoteCreatedEvent.from(note));
         log.info("Created Reading Note: {}", note);
         return ReadingNoteMapper.toReadingNoteResponse(note);
     }
@@ -74,7 +74,7 @@ public class ReadingNoteService {
     public void deleteReadingNoteById(Long noteId) {
         ReadingNote note = findReadingNoteById(noteId);
         noteRepository.delete(note);
-        eventPublisher.publishEvent(new ReadingNoteDeletedEvent(note));
+        eventPublisher.publishEvent(ReadingNoteDeletedEvent.from(note));
         log.info("Deleted Reading Note: {}", note);
     }
 
