@@ -57,23 +57,25 @@ public class ReadingBook extends BaseEntity {
 
     public void changeStatus(ReadingStatus status, ReadingBookDurationRange durationRange) {
         switch (status) {
-            case WANT_TO_READ:
+            case WANT_TO_READ -> {
                 this.status = ReadingStatus.WANT_TO_READ;
                 this.durationRange = ReadingBookDurationRange.of(null, null);
-                break;
-            case READ:
+            }
+            case READ -> {
                 if (durationRange.getFinishedAt() == null) {
                     throw new InvalidReadingBookDurationRangeException(durationRange, "FinishedAt must be provided for ReadingStatus='%s'".formatted(ReadingStatus.READ.toString()));
                 }
                 this.status = ReadingStatus.READ;
                 this.durationRange = durationRange;
-                break;
-            case READING:
+                this.currentPage = this.book.getPageCount();
+            }
+            case READING -> {
                 if (durationRange == null || durationRange.getFinishedAt() == null) {
                     throw new InvalidReadingBookDurationRangeException(durationRange, "StartedAt must be provided for ReadingStatus='%s'".formatted(ReadingStatus.READING.toString()));
                 }
                 this.status = ReadingStatus.READING;
                 this.durationRange = ReadingBookDurationRange.of(durationRange.getStartedAt(), null);
+            }
         }
     }
 

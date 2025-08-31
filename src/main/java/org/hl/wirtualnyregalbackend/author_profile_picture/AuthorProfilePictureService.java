@@ -37,7 +37,7 @@ public class AuthorProfilePictureService {
             AuthorProfilePicture picture = new AuthorProfilePicture(null, binary);
             pictureRepository.saveAndFlush(picture);
             picture.setUrl(urlBuilder.buildPictureUrl(picture));
-            return pictureRepository.save(picture);
+            return picture;
         } catch (IOException e) {
             log.error("Error while reading author picture file.", e);
             return null;

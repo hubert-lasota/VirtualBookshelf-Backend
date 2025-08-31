@@ -10,6 +10,7 @@ public record BookResponse(
     String isbn,
     String title,
     List<AuthorResponse> authors,
-    String coverUrl
+    String coverUrl,
+    Integer pageCount
 ) {
 }

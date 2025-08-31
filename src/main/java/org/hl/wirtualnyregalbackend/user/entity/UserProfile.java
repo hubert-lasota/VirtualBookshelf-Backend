@@ -29,7 +29,7 @@ public class UserProfile extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_profile_picture_id")
     private UserProfilePicture profilePicture;
 

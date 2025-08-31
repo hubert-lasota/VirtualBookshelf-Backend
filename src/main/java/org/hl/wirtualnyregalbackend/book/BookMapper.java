@@ -70,7 +70,8 @@ public class BookMapper {
             book.getIsbn(),
             book.getTitle(),
             authors,
-            book.getCover() != null ? book.getCover().getUrl() : null
+            getCoverUrl(book),
+            book.getPageCount()
         );
     }
 
@@ -99,8 +100,6 @@ public class BookMapper {
             .map(genre -> GenreMapper.toGenreResponse(genre, locale))
             .toList();
 
-        BookCover cover = book.getCover();
-        String coverUrl = cover != null ? cover.getUrl() : null;
 
         ReviewResponse reviewResponse = review != null ? ReviewMapper.toReviewResponse(review) : null;
         BookshelfSummaryResponse bookshelf = null;
@@ -113,7 +112,7 @@ public class BookMapper {
             book.getIsbn(),
             book.getTitle(),
             authors,
-            coverUrl,
+            getCoverUrl(book),
             formatDto,
             genres,
             reviewStats,
@@ -125,6 +124,11 @@ public class BookMapper {
             book.getDescription(),
             bookshelf
         );
+    }
+
+    private static String getCoverUrl(Book book) {
+        BookCover cover = book.getCover();
+        return cover != null ? cover.getUrl() : null;
     }
 
 }
