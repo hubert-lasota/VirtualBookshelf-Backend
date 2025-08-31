@@ -18,6 +18,7 @@ import org.hl.wirtualnyregalbackend.reading_book.model.ReadingBookDurationRange;
 import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
 import org.hl.wirtualnyregalbackend.reading_note.ReadingNoteHelper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -49,7 +51,8 @@ public class ReadingBookService {
         ReadingBook readingBook = ReadingBookMapper.toReadingBook(readingBookRequest, bookshelf, book);
         eventPublisher.publishEvent(ReadingBookCreatedEvent.from(readingBook));
         log.info("Created Reading Book: {}", readingBook);
-        return ReadingBookMapper.toReadingBookResponse(readingBook);
+        Locale locale = LocaleContextHolder.getLocale();
+        return ReadingBookMapper.toReadingBookResponse(readingBook, locale);
     }
 
     @Transactional
@@ -64,7 +67,8 @@ public class ReadingBookService {
         }
 
         log.info("Updated Reading Book: {}", readingBook);
-        return ReadingBookMapper.toReadingBookResponse(readingBook);
+        Locale locale = LocaleContextHolder.getLocale();
+        return ReadingBookMapper.toReadingBookResponse(readingBook, locale);
     }
 
     public ReadingBookResponse moveReadingBook(Long readingBookId, Long bookshelfId) {
@@ -73,7 +77,8 @@ public class ReadingBookService {
         log.info("Moving Reading Book: {} to bookshelf: {}", readingBook, bookshelf);
         readingBook.setBookshelf(bookshelf);
         readingBookRepository.save(readingBook);
-        return ReadingBookMapper.toReadingBookResponse(readingBook);
+        Locale locale = LocaleContextHolder.getLocale();
+        return ReadingBookMapper.toReadingBookResponse(readingBook, locale);
     }
 
     @Transactional
@@ -90,7 +95,8 @@ public class ReadingBookService {
         }
         book.changeStatus(status, rbdr);
         eventPublisher.publishEvent(ReadingBookChangedStatusEvent.fromStatusChange(book, previousStatus));
-        return ReadingBookMapper.toReadingBookResponse(book);
+        Locale locale = LocaleContextHolder.getLocale();
+        return ReadingBookMapper.toReadingBookResponse(book, locale);
     }
 
     public ReadingBookListResponse findUserReadingBooks(User user, @Nullable String query) {
@@ -98,11 +104,11 @@ public class ReadingBookService {
         if (query != null) {
             spec = spec.and(ReadingBookSpecification.byQuery(query));
         }
-
+        Locale locale = LocaleContextHolder.getLocale();
         List<ReadingBookResponse> books = readingBookRepository
             .findAll(spec)
             .stream()
-            .map(ReadingBookMapper::toReadingBookResponse)
+            .map((rb) -> ReadingBookMapper.toReadingBookResponse(rb, locale))
             .toList();
         return new ReadingBookListResponse(books);
     }

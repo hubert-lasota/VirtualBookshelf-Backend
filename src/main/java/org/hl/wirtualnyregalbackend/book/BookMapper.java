@@ -58,18 +58,13 @@ public class BookMapper {
         );
     }
 
-    public static BookResponse toBookResponse(Book book) {
-        List<AuthorResponse> authors = book
-            .getAuthors()
-            .stream()
-            .map(AuthorMapper::toAuthorResponse)
-            .toList();
-
+    public static BookResponse toBookResponse(Book book, Locale locale) {
         return new BookResponse(
             book.getId(),
             book.getIsbn(),
             book.getTitle(),
-            authors,
+            toAuthorResponseList(book),
+            toGenreResponseList(book, locale),
             getCoverUrl(book),
             book.getPageCount()
         );
@@ -88,17 +83,6 @@ public class BookMapper {
             ? PublisherMapper.toPublisherResponse(publisher)
             : null;
 
-        List<AuthorResponse> authors = book
-            .getAuthors()
-            .stream()
-            .map(AuthorMapper::toAuthorResponse)
-            .toList();
-
-        List<GenreResponse> genres = book
-            .getGenres()
-            .stream()
-            .map(genre -> GenreMapper.toGenreResponse(genre, locale))
-            .toList();
 
 
         ReviewResponse reviewResponse = review != null ? ReviewMapper.toReviewResponse(review) : null;
@@ -111,10 +95,10 @@ public class BookMapper {
             book.getId(),
             book.getIsbn(),
             book.getTitle(),
-            authors,
+            toAuthorResponseList(book),
             getCoverUrl(book),
             formatDto,
-            genres,
+            toGenreResponseList(book, locale),
             reviewStats,
             reviewResponse,
             publisherResponse,
@@ -129,6 +113,22 @@ public class BookMapper {
     private static String getCoverUrl(Book book) {
         BookCover cover = book.getCover();
         return cover != null ? cover.getUrl() : null;
+    }
+
+    private static List<AuthorResponse> toAuthorResponseList(Book book) {
+        return book
+            .getAuthors()
+            .stream()
+            .map(AuthorMapper::toAuthorResponse)
+            .toList();
+    }
+
+    private static List<GenreResponse> toGenreResponseList(Book book, Locale locale) {
+        return book
+            .getGenres()
+            .stream()
+            .map(genre -> GenreMapper.toGenreResponse(genre, locale))
+            .toList();
     }
 
 }

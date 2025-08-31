@@ -7,6 +7,8 @@ import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateRequ
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponse;
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 
+import java.util.Locale;
+
 class ReadingSessionMapper {
 
     private ReadingSessionMapper() {
@@ -21,8 +23,8 @@ class ReadingSessionMapper {
         );
     }
 
-    public static ReadingSessionResponse toReadingSessionResponse(ReadingSession session) {
-        BookResponse book = BookMapper.toBookResponse(session.getReadingBook().getBook());
+    public static ReadingSessionResponse toReadingSessionResponse(ReadingSession session, Locale locale) {
+        BookResponse book = BookMapper.toBookResponse(session.getReadingBook().getBook(), locale);
         return new ReadingSessionResponse(
             session.getId(),
             session.getPageRange(),

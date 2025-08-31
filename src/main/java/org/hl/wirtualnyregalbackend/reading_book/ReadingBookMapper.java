@@ -9,6 +9,8 @@ import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookCreateRequest;
 import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookResponse;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 
+import java.util.Locale;
+
 public class ReadingBookMapper {
 
     private ReadingBookMapper() {
@@ -26,8 +28,8 @@ public class ReadingBookMapper {
         );
     }
 
-    public static ReadingBookResponse toReadingBookResponse(ReadingBook readingBook) {
-        BookResponse book = BookMapper.toBookResponse(readingBook.getBook());
+    public static ReadingBookResponse toReadingBookResponse(ReadingBook readingBook, Locale locale) {
+        BookResponse book = BookMapper.toBookResponse(readingBook.getBook(), locale);
 
         Bookshelf bookshelf = readingBook.getBookshelf();
         BookshelfSummaryResponse bookshelfDto = new BookshelfSummaryResponse(bookshelf.getId(), bookshelf.getName());

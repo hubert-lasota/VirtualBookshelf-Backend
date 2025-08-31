@@ -59,8 +59,8 @@ public class BookService {
     @Transactional
     public BookResponse createBook(BookRequest bookRequest, MultipartFile coverFile) {
         Book book = createBookEntity(bookRequest, coverFile);
-
-        return BookMapper.toBookResponse(book);
+        Locale locale = LocaleContextHolder.getLocale();
+        return BookMapper.toBookResponse(book, locale);
     }
 
     @Transactional
@@ -96,8 +96,10 @@ public class BookService {
             .or(BookSpecification.authorFullNameIgnoreCaseLike(query))
             .or(BookSpecification.isbnEqual(query));
 
-        Page<BookResponse> bookPage = bookRepository.findAll(spec, pageable)
-            .map(BookMapper::toBookResponse);
+        Locale locale = LocaleContextHolder.getLocale();
+        Page<BookResponse> bookPage = bookRepository
+            .findAll(spec, pageable)
+            .map((book) -> BookMapper.toBookResponse(book, locale));
 
         return BookPageResponse.from(bookPage);
     }
@@ -181,7 +183,8 @@ public class BookService {
         book.setCover(cover);
 
         log.info("Book updated: {}", book);
-        return BookMapper.toBookResponse(book);
+        Locale locale = LocaleContextHolder.getLocale();
+        return BookMapper.toBookResponse(book, locale);
     }
 
 

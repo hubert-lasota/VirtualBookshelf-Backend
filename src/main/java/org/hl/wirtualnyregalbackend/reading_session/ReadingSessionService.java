@@ -19,6 +19,7 @@ import org.hl.wirtualnyregalbackend.reading_session.event.ReadingSessionDeletedE
 import org.hl.wirtualnyregalbackend.reading_session.exception.ReadingSessionNotFoundException;
 import org.hl.wirtualnyregalbackend.reading_session.model.SessionReadingDurationRange;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -51,7 +53,8 @@ public class ReadingSessionService {
         eventPublisher.publishEvent(ReadPagesEvent.from(session));
         eventPublisher.publishEvent(ReadingSessionCreatedEvent.from(session));
         log.info("Reading session created: {}", session);
-        return ReadingSessionMapper.toReadingSessionResponse(session);
+        Locale locale = LocaleContextHolder.getLocale();
+        return ReadingSessionMapper.toReadingSessionResponse(session, locale);
     }
 
     @Transactional
@@ -79,14 +82,17 @@ public class ReadingSessionService {
             eventPublisher.publishEvent(rpEvent);
         }
         log.info("Updated reading session: {}", session);
-        return ReadingSessionMapper.toReadingSessionResponse(session);
+
+        Locale locale = LocaleContextHolder.getLocale();
+        return ReadingSessionMapper.toReadingSessionResponse(session, locale);
     }
 
 
     public ReadingSessionPageResponse findReadingSessions(User user, Pageable pageable) {
+        Locale locale = LocaleContextHolder.getLocale();
         Page<ReadingSessionResponse> page = sessionRepository
             .findByUserId(user.getId(), pageable)
-            .map(ReadingSessionMapper::toReadingSessionResponse);
+            .map((session) -> ReadingSessionMapper.toReadingSessionResponse(session, locale));
         return ReadingSessionPageResponse.from(page);
     }
 
