@@ -54,6 +54,7 @@ public class ReadingSessionService {
         return ReadingSessionMapper.toReadingSessionResponse(session);
     }
 
+    @Transactional
     public ReadingSessionResponse updateReadingSession(Long sessionId, ReadingSessionUpdateRequest sessionRequest) {
         ReadingSession session = findReadingSessionById(sessionId);
         log.info("Updating reading session: {} by request: {}", session, sessionRequest);
@@ -77,7 +78,6 @@ public class ReadingSessionService {
         if (rpEvent != null) {
             eventPublisher.publishEvent(rpEvent);
         }
-        sessionRepository.save(session);
         log.info("Updated reading session: {}", session);
         return ReadingSessionMapper.toReadingSessionResponse(session);
     }
@@ -91,6 +91,7 @@ public class ReadingSessionService {
     }
 
 
+    @Transactional
     public void deleteReadingSession(Long sessionId) {
         ReadingSession rs = findReadingSessionById(sessionId);
         eventPublisher.publishEvent(ReadingSessionDeletedEvent.from(rs));

@@ -12,6 +12,8 @@ import org.hl.wirtualnyregalbackend.reading_session.event.ReadingSessionDeletedE
 import org.hl.wirtualnyregalbackend.reading_session.model.SessionReadingDurationRange;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.Instant;
 
@@ -22,12 +24,6 @@ class ReadingBookEventListener {
     private final ReadingBookRepository readingBookRepository;
     private final ReadingBookHelper readingBookHelper;
 
-    @EventListener
-    public void handleReadingSessionCreatedEvent(ReadingSessionCreatedEvent event) {
-        ReadingBook readingBook = readingBookHelper.findReadingBookById(event.readingBookId());
-        readingBook.incrementTotalSessions();
-        readingBookRepository.save(readingBook);
-    }
 
     @EventListener
     public void handleReadPagesEvent(ReadPagesEvent event) {
@@ -49,21 +45,29 @@ class ReadingBookEventListener {
         readingBookRepository.save(rb);
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleReadingSessionCreatedEvent(ReadingSessionCreatedEvent event) {
+        ReadingBook readingBook = readingBookHelper.findReadingBookById(event.readingBookId());
+        readingBook.incrementTotalSessions();
+        readingBookRepository.save(readingBook);
+    }
+
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReadingSessionDeletedEvent(ReadingSessionDeletedEvent event) {
         ReadingBook rb = readingBookHelper.findReadingBookById(event.readingBookId());
         rb.decrementTotalSessions();
         readingBookRepository.save(rb);
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReadingNoteCreatedEvent(ReadingNoteCreatedEvent event) {
         ReadingBook rb = readingBookHelper.findReadingBookById(event.readingBookId());
         rb.incrementTotalNotes();
         readingBookRepository.save(rb);
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReadingNoteDeletedEvent(ReadingNoteDeletedEvent event) {
         ReadingBook rb = readingBookHelper.findReadingBookById(event.readingBookId());
         rb.decrementTotalNotes();

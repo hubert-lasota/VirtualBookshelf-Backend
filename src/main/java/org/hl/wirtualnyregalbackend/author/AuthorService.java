@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.author;
 
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,8 @@ import org.hl.wirtualnyregalbackend.author.dto.AuthorRequest;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorResponse;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.author.exception.AuthorNotFoundException;
+import org.hl.wirtualnyregalbackend.author_profile_picture.AuthorProfilePictureService;
+import org.hl.wirtualnyregalbackend.author_profile_picture.entity.AuthorProfilePicture;
 import org.hl.wirtualnyregalbackend.author_review.AuthorReviewService;
 import org.hl.wirtualnyregalbackend.author_review.entity.AuthorReview;
 import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
@@ -17,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -27,12 +31,38 @@ import java.util.Optional;
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
+    private final AuthorProfilePictureService profilePictureService;
     private final AuthorReviewService reviewService;
 
-    public AuthorResponse createAuthor(AuthorRequest authorRequest) {
+
+    @Transactional
+    public AuthorResponse createAuthor(AuthorRequest authorRequest, MultipartFile profilePictureFile) {
         log.info("Creating new author: {}", authorRequest);
-        Author author = createAuthorEntity(authorRequest);
+        AuthorProfilePicture picture = profilePictureService.createAuthorProfilePicture(authorRequest.profilePictureUrl(), profilePictureFile);
+        Author author = AuthorMapper.toAuthor(authorRequest, picture);
         log.info("Author created with ID: {}", author.getId());
+        return AuthorMapper.toAuthorResponse(author);
+    }
+
+    public AuthorResponse updateAuthor(Long authorId, AuthorRequest authorRequest, MultipartFile profilePictureFile) {
+        Author author = findAuthorById(authorId);
+        log.info("Updating author: {} by request: {}", author, authorRequest);
+
+        String fullName = authorRequest.fullName();
+        if (fullName != null) {
+            author.setFullName(fullName);
+        }
+        String profilePictureUrl = authorRequest.profilePictureUrl();
+        if (profilePictureUrl != null || profilePictureFile != null) {
+            author.setAuthorProfilePicture(profilePictureService.createAuthorProfilePicture(profilePictureUrl, profilePictureFile));
+        }
+
+        String description = authorRequest.description();
+        if (description != null) {
+            author.setDescription(description);
+        }
+
+        log.info("Author updated: {}", author);
         return AuthorMapper.toAuthorResponse(author);
     }
 

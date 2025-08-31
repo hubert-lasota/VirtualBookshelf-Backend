@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
+import org.hl.wirtualnyregalbackend.user_profile_picture.entity.UserProfilePicture;
 
 
 @Entity

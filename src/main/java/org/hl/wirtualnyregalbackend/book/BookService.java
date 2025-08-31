@@ -56,13 +56,16 @@ public class BookService {
     private final ReadingBookHelper readingBookHelper;
 
 
+    @Transactional
     public BookResponse createBook(BookRequest bookRequest, MultipartFile coverFile) {
         Book book = createBookEntity(bookRequest, coverFile);
-        log.info("Created book: {}", book);
+
         return BookMapper.toBookResponse(book);
     }
 
+    @Transactional
     public Book createBookEntity(BookRequest bookDto, MultipartFile coverFile) {
+        log.info("Creating book: {}", bookDto);
         Set<Author> authors = findOrCreateAuthors(bookDto.authors());
         Set<Genre> genres = genreService.findGenresByIds(bookDto.genreIds());
         BookCover cover = null;
@@ -82,9 +85,9 @@ public class BookService {
         if (publisherWithIdDto != null) {
             publisher = publisherService.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
         }
-
         Book book = BookMapper.toBook(bookDto, cover, format, publisher, authors, genres);
-        return bookRepository.save(book);
+        log.info("Created book: {}", book);
+        return book;
     }
 
     public BookPageResponse findBooks(String query, Pageable pageable) {

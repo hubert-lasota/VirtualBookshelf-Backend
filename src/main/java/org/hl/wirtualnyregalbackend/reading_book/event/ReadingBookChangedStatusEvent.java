@@ -11,7 +11,8 @@ public record ReadingBookChangedStatusEvent(
     ReadingStatus previousStatus,
     @Nullable
     ReadingBookDurationRange durationRange,
-    Long userId
+    Long userId,
+    Long bookId
 ) {
 
     public static ReadingBookChangedStatusEvent fromStatusChange(ReadingBook readingBook, ReadingStatus previousStatus) {
@@ -21,6 +22,7 @@ public record ReadingBookChangedStatusEvent(
             previousStatus,
             readingBook.getDurationRange(),
             readingBook.getBookshelf().getUser().getId()
+            , readingBook.getBook().getId()
         );
     }
 

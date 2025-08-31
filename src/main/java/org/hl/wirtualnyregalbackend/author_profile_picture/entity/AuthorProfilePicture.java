@@ -1,10 +1,7 @@
-package org.hl.wirtualnyregalbackend.author.entity;
+package org.hl.wirtualnyregalbackend.author_profile_picture.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 
@@ -16,6 +13,7 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 public class AuthorProfilePicture extends BaseEntity {
 
     @Column
+    @Setter
     private String url;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

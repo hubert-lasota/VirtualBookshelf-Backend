@@ -11,7 +11,7 @@ public record AuthorRequest(
     @StringConstraints
     String fullName,
     @URL
-    String photoUrl,
+    String profilePictureUrl,
     @StringConstraints
     String description
 ) {

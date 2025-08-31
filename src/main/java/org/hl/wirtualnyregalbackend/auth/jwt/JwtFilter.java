@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.hl.wirtualnyregalbackend.auth.SecurityProperties;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static org.hl.wirtualnyregalbackend.auth.SecurityConfig.EXCLUDED_PATHS;
 
 @Component
 @AllArgsConstructor
@@ -27,13 +27,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-
+    private final SecurityProperties securityProperties;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        for (String path : EXCLUDED_PATHS) {
+        for (String path : securityProperties.excludedPaths()) {
             AntPathRequestMatcher matcher = new AntPathRequestMatcher(path);
             if (matcher.matches(request)) {
                 filterChain.doFilter(request, response);

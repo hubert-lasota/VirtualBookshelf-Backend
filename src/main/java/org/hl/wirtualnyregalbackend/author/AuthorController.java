@@ -8,11 +8,13 @@ import org.hl.wirtualnyregalbackend.author.dto.AuthorPageResponse;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorRequest;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorResponse;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
+import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -26,11 +28,13 @@ class AuthorController {
 
 
     @PostMapping
-    public ResponseEntity<AuthorResponse> createAuthor(@RequestBody
+    public ResponseEntity<AuthorResponse> createAuthor(@RequestPart("author")
                                                        @Validated(CreateGroup.class)
                                                        AuthorRequest authorRequest,
+                                                       @RequestPart("profilePicture")
+                                                       MultipartFile profilePicture,
                                                        UriComponentsBuilder uriBuilder) {
-        AuthorResponse response = authorService.createAuthor(authorRequest);
+        AuthorResponse response = authorService.createAuthor(authorRequest, profilePicture);
 
         URI location = uriBuilder
             .path("/v1/authors/{id}")
@@ -38,6 +42,16 @@ class AuthorController {
             .toUri();
 
         return ResponseEntity.created(location).body(response);
+    }
+
+    @PatchMapping("/{authorId}")
+    public AuthorResponse createAuthor(@PathVariable Long authorId,
+                                       @RequestPart("author")
+                                       @Validated(UpdateGroup.class)
+                                       AuthorRequest authorRequest,
+                                       @RequestPart("profilePicture")
+                                       MultipartFile profilePicture) {
+        return authorService.updateAuthor(authorId, authorRequest, profilePicture);
     }
 
     @GetMapping("/{authorId}")

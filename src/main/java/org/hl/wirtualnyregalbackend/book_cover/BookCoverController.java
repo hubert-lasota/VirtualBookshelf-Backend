@@ -16,14 +16,13 @@ class BookCoverController {
 
     private final BookCoverService bookCoverService;
 
-
-    @GetMapping(value = "/{id}", produces = "image/*")
-    public ResponseEntity<BookCoverBinary> findBookCoverById(@PathVariable Long id) {
-        BookCoverBinary binary = bookCoverService.findBookCoverBinaryByCoverId(id);
+    @GetMapping(value = "/{coverId}", produces = "image/*")
+    public ResponseEntity<byte[]> findBookCoverBinaryDataById(@PathVariable Long coverId) {
+        BookCoverBinary cover = bookCoverService.findBookCoverBinaryByCoverId(coverId);
         return ResponseEntity
             .ok()
-            .header("Content-Type", binary.getMimeType())
-            .body(binary);
+            .header("Content-Type", cover.getMimeType())
+            .body(cover.getBinaryData());
     }
 
 }

@@ -6,5 +6,4 @@ public enum ChallengeType {
     GENRE_BOOKS,
     PAGE_COUNT,
     AUTHOR_COUNT,
-    LANGUAGE_BOOKS
 }

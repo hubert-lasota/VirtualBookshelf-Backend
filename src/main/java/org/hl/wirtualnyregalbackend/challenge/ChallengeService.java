@@ -21,10 +21,12 @@ import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -116,6 +118,10 @@ public class ChallengeService {
 
     public boolean isChallengeAuthor(Long challengeId, User user) {
         return challengeRepository.isChallengeAuthor(challengeId, user.getId());
+    }
+
+    public Slice<Challenge> findChallengesByEndAt(LocalDate endAt, Pageable pageable) {
+        return challengeRepository.findByEndAt(endAt, pageable);
     }
 
     private ChallengeResponse mapToChallengeResponse(Challenge challenge) {

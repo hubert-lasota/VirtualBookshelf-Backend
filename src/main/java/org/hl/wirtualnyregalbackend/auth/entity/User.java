@@ -1,20 +1,21 @@
 package org.hl.wirtualnyregalbackend.auth.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.user.entity.UserProfile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 public class User extends BaseEntity implements UserDetails {
@@ -31,11 +32,14 @@ public class User extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Authority> authorities = new ArrayList<>();
 
-    // TODO create with profile (use AllArgsConstructor)
-    public User(String username, String password, Authority... authorities) {
+    public User(
+        String username,
+        String password,
+        AuthorityName authorityName
+    ) {
         this.username = username;
         this.password = password;
-        this.authorities = Arrays.asList(authorities);
+        this.authorities.add(new Authority(this, authorityName));
     }
 
 

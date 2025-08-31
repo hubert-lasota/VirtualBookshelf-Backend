@@ -13,11 +13,13 @@ import org.hl.wirtualnyregalbackend.user.UserService;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @AllArgsConstructor
 @Async
-public class ReadingStatisticsEventListener {
+class ReadingStatisticsEventListener {
 
     private final BookLengthStatisticsService bookLenStatsService;
     private final GenreStatisticsService genreStatsService;
@@ -25,7 +27,7 @@ public class ReadingStatisticsEventListener {
     private final BookHelper bookHelper;
     private final UserService userService;
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReadingBookCreatedEvent(ReadingBookCreatedEvent event) {
         Long userId = event.userId();
         ReadingStatus status = event.status();

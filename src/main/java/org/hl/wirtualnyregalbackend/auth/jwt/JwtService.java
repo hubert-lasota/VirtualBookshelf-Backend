@@ -5,7 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +14,10 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Service
+@AllArgsConstructor
 public class JwtService {
 
-    @Value("${jwt.secret-key}")
-    private String SECRET_KEY;
-
-    @Value("${jwt.expiration-days}")
-    private long EXPIRATION_DAYS;
+    private final JwtProperties jwtProperties;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -39,7 +36,7 @@ public class JwtService {
             .builder()
             .setSubject(userDetails.getUsername())
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + dayInMs * EXPIRATION_DAYS))
+            .setExpiration(new Date(System.currentTimeMillis() + dayInMs * jwtProperties.expirationDays()))
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact();
     }
@@ -67,7 +64,7 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.secretKey());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

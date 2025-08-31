@@ -2,6 +2,7 @@ package org.hl.wirtualnyregalbackend.author.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hl.wirtualnyregalbackend.author_profile_picture.entity.AuthorProfilePicture;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 
 @Entity

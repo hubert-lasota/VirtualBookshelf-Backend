@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.user.entity;
+package org.hl.wirtualnyregalbackend.user_profile_picture.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,7 +8,7 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 @Table(name = "user_profile_picture")
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString(callSuper = true)
 public class UserProfilePicture extends BaseEntity {
@@ -20,5 +20,10 @@ public class UserProfilePicture extends BaseEntity {
     @JoinColumn(name = "user_profile_picture_binary_id")
     @ToString.Exclude
     private UserProfilePictureBinary binaryPicture;
+
+
+    public UserProfilePicture(String url) {
+        this.url = url;
+    }
 
 }

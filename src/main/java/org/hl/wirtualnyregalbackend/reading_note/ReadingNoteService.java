@@ -17,6 +17,7 @@ import org.hl.wirtualnyregalbackend.reading_note.event.ReadingNoteDeletedEvent;
 import org.hl.wirtualnyregalbackend.reading_note.exception.ReadingNoteNotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,15 +31,17 @@ public class ReadingNoteService {
     private final ReadingBookHelper readingBookHelper;
     private final ApplicationEventPublisher eventPublisher;
 
+
+    @Transactional
     public ReadingNoteResponse createReadingNote(ReadingNoteCreateRequest noteRequest) {
         ReadingBook book = readingBookHelper.findReadingBookById(noteRequest.getReadingBookId());
         ReadingNote note = ReadingNoteMapper.toReadingNote(noteRequest, book);
-        noteRepository.save(note);
         eventPublisher.publishEvent(ReadingNoteCreatedEvent.from(note));
         log.info("Created Reading Note: {}", note);
         return ReadingNoteMapper.toReadingNoteResponse(note);
     }
 
+    @Transactional
     public ReadingNoteResponse updateReadingNote(Long noteId, ReadingNoteUpdateRequest noteRequest) {
         ReadingNote note = findReadingNoteById(noteId);
         log.info("Updating Reading Note: {} by request: {}", note, noteRequest);
@@ -56,7 +59,6 @@ public class ReadingNoteService {
             note.setContent(content);
         }
 
-        noteRepository.save(note);
         log.info("Updated Reading Note: {}", note);
         return ReadingNoteMapper.toReadingNoteResponse(note);
     }
@@ -71,6 +73,7 @@ public class ReadingNoteService {
         return new ReadingNoteListResponse(notes);
     }
 
+    @Transactional
     public void deleteReadingNoteById(Long noteId) {
         ReadingNote note = findReadingNoteById(noteId);
         noteRepository.delete(note);

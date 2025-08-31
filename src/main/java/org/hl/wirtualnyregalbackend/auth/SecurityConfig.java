@@ -21,15 +21,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @AllArgsConstructor
 public class SecurityConfig {
-    public static final List<String> EXCLUDED_PATHS = List.of("/v1/auth/**", "/v1/book-covers/**");
 
+    private final SecurityProperties securityProperties;
     private final JwtFilter jwtFilter;
 
     @Bean
@@ -38,7 +36,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorize ->
                 authorize
-                    .requestMatchers(EXCLUDED_PATHS.toArray(new String[0])).permitAll()
+                    .requestMatchers(securityProperties.excludedPaths().toArray(new String[0])).permitAll()
                     .anyRequest().authenticated())
             .sessionManagement(session ->
                 session

@@ -5,7 +5,7 @@ import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.user.dto.UserProfileDto;
 import org.hl.wirtualnyregalbackend.user.dto.UserResponse;
 import org.hl.wirtualnyregalbackend.user.entity.UserProfile;
-import org.hl.wirtualnyregalbackend.user.entity.UserProfilePicture;
+import org.hl.wirtualnyregalbackend.user_profile_picture.entity.UserProfilePicture;
 
 public class UserMapper {
 
@@ -36,6 +36,16 @@ public class UserMapper {
             profile.getLastName(),
             pictureUrl,
             profile.getDescription()
+        );
+    }
+
+    public static UserProfile toUserProfile(UserProfileDto profileDto, User user, UserProfilePicture profilePicture) {
+        return new UserProfile(
+            profileDto.firstName(),
+            profileDto.lastName(),
+            profileDto.description(),
+            user,
+            profilePicture
         );
     }
 

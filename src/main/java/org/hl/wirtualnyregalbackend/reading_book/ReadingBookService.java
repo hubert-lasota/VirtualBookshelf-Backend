@@ -41,17 +41,18 @@ public class ReadingBookService {
     private final ApplicationEventPublisher eventPublisher;
     private final Clock clock;
 
+    @Transactional
     public ReadingBookResponse createReadingBook(ReadingBookCreateRequest readingBookRequest, MultipartFile bookCover) {
         Bookshelf bookshelf = bookshelfService.findBookshelfById(readingBookRequest.bookshelfId());
         BookWithIdDto bookWithIdDto = readingBookRequest.book();
         Book book = findOrCreateBook(bookWithIdDto.getId(), bookWithIdDto.getBookRequest(), bookCover);
         ReadingBook readingBook = ReadingBookMapper.toReadingBook(readingBookRequest, bookshelf, book);
-        readingBookRepository.save(readingBook);
         eventPublisher.publishEvent(ReadingBookCreatedEvent.from(readingBook));
         log.info("Created Reading Book: {}", readingBook);
         return ReadingBookMapper.toReadingBookResponse(readingBook);
     }
 
+    @Transactional
     public ReadingBookResponse updateReadingBook(Long readingBookId, ReadingBookUpdateRequest readingBookRequest) {
         ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
         log.info("Updating Reading Book: {} by request: {}", readingBook, readingBookRequest);
@@ -62,7 +63,6 @@ public class ReadingBookService {
             readingBook.changeStatus(status, rbdr);
         }
 
-        readingBookRepository.save(readingBook);
         log.info("Updated Reading Book: {}", readingBook);
         return ReadingBookMapper.toReadingBookResponse(readingBook);
     }
@@ -76,6 +76,7 @@ public class ReadingBookService {
         return ReadingBookMapper.toReadingBookResponse(readingBook);
     }
 
+    @Transactional
     public ReadingBookResponse changeReadingBookStatus(Long readingBookId, ReadingStatus status) {
         ReadingBook book = readingBookHelper.findReadingBookById(readingBookId);
         ReadingStatus previousStatus = book.getStatus();
@@ -88,7 +89,6 @@ public class ReadingBookService {
             rbdr = ReadingBookDurationRange.merge(book.getDurationRange(), ReadingBookDurationRange.of(now, null));
         }
         book.changeStatus(status, rbdr);
-        readingBookRepository.save(book);
         eventPublisher.publishEvent(ReadingBookChangedStatusEvent.fromStatusChange(book, previousStatus));
         return ReadingBookMapper.toReadingBookResponse(book);
     }

@@ -24,6 +24,10 @@ public record ChallengeParticipantDurationRange(
         }
         Instant startedAt = newDr.startedAt() != null ? newDr.startedAt() : oldDr.startedAt();
         Instant finishedAt = newDr.finishedAt() != null ? newDr.finishedAt() : oldDr.finishedAt();
+        return of(startedAt, finishedAt);
+    }
+
+    public static ChallengeParticipantDurationRange of(Instant startedAt, @Nullable Instant finishedAt) {
         ChallengeParticipantDurationRange durationRange = new ChallengeParticipantDurationRange(startedAt, finishedAt);
         if (!isValid(startedAt, finishedAt)) {
             throw new InvalidChallengeParticipantDurationRangeException(durationRange);

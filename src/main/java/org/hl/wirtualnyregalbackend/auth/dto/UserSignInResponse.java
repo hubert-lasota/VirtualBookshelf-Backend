@@ -6,5 +6,6 @@ public record UserSignInResponse(
     Long id,
     String username,
     String jwt,
-    UserProfileDto profile) {
+    UserProfileDto profile
+) {
 }

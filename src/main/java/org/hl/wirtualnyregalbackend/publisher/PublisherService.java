@@ -12,6 +12,7 @@ import org.hl.wirtualnyregalbackend.publisher.exception.PublisherNotFoundExcepti
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -23,6 +24,7 @@ public class PublisherService {
     private final PublisherRepository publisherRepository;
 
 
+    @Transactional
     public PublisherResponse createPublisher(PublisherRequest publisherRequest) {
         Publisher publisher = createPublisherEntity(publisherRequest);
         log.info("Publisher created with ID: {}", publisher.getId());
@@ -41,6 +43,7 @@ public class PublisherService {
         return PublisherMapper.toPublisherDetailsResponse(publisher);
     }
 
+    @Transactional
     public Publisher findOrCreatePublisher(Long id, PublisherRequest publisherDto) {
         if (id != null) {
             return findPublisherById(id);
@@ -48,7 +51,8 @@ public class PublisherService {
         return createPublisherEntity(publisherDto);
     }
 
-    private Publisher createPublisherEntity(PublisherRequest publisherRequest) {
+    @Transactional
+    public Publisher createPublisherEntity(PublisherRequest publisherRequest) {
         Publisher publisher = PublisherMapper.toPublisher(publisherRequest);
         return publisherRepository.save(publisher);
     }

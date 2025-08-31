@@ -2,9 +2,8 @@ package org.hl.wirtualnyregalbackend.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hl.wirtualnyregalbackend.auth.dto.UserCredentialsDto;
+import org.hl.wirtualnyregalbackend.auth.dto.UserSignInRequest;
 import org.hl.wirtualnyregalbackend.auth.dto.UserSignInResponse;
-import org.hl.wirtualnyregalbackend.auth.entity.Authority;
 import org.hl.wirtualnyregalbackend.auth.entity.AuthorityName;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.auth.exception.InvalidCredentialsException;
@@ -12,45 +11,48 @@ import org.hl.wirtualnyregalbackend.auth.exception.UsernameAlreadyExistsExceptio
 import org.hl.wirtualnyregalbackend.auth.jwt.JwtService;
 import org.hl.wirtualnyregalbackend.user.UserDefaultConfigurer;
 import org.hl.wirtualnyregalbackend.user.UserMapper;
-import org.hl.wirtualnyregalbackend.user.UserRepository;
+import org.hl.wirtualnyregalbackend.user.UserService;
+import org.hl.wirtualnyregalbackend.user.dto.UserRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 class AuthorizationService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final UserDefaultConfigurer userDefaultConfigurer;
 
 
-    public UserSignInResponse registerUser(UserCredentialsDto credentials) {
-        log.info("User registration started for username: {}", credentials.username());
-        if (userRepository.existsByUsername(credentials.username())) {
-            log.warn("User registration failed - username already exists: {}", credentials.username());
-            throw new UsernameAlreadyExistsException("Username: %s already exists.".formatted(credentials.username()));
+    @Transactional
+    public UserSignInResponse registerUser(UserRequest userRequest, MultipartFile profilePicture) {
+        String username = userRequest.username();
+        log.info("User registration started for username: {}", username);
+        if (userService.existsByUsername(username)) {
+            log.warn("User registration failed - username already exists: {}", username);
+            throw new UsernameAlreadyExistsException("Username: %s already exists.".formatted(username));
         }
 
-        Authority userRole = new Authority(AuthorityName.USER);
-        String encodedPassword = passwordEncoder.encode(credentials.password());
-        User user = new User(credentials.username(), encodedPassword, userRole);
-        userRole.setUser(user);
-        userRepository.save(user);
+        String encodedPassword = passwordEncoder.encode(userRequest.password());
+        User user = new User(username, encodedPassword, AuthorityName.USER);
+        user.setUserProfile(userService.createUserProfile(userRequest.profile(), profilePicture, user));
         userDefaultConfigurer.configure(user);
         String jwt = jwtService.generateToken(user);
         log.info("User successfully registered: {}", user.getUsername());
         return UserMapper.toUserSignInResponse(user, jwt);
     }
 
-    public UserSignInResponse signIn(UserCredentialsDto credentials) {
+    public UserSignInResponse signIn(UserSignInRequest credentials) {
         log.info("User sign-in attempt for username: {}", credentials.username());
         UsernamePasswordAuthenticationToken authToken =
             new UsernamePasswordAuthenticationToken(credentials.username(), credentials.password());

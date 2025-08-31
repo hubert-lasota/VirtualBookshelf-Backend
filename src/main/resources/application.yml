@@ -1,0 +1,37 @@
+server:
+  servlet:
+    context-path: /api
+  port: 8080
+  address: localhost
+
+spring:
+  application:
+    name: WirtualnyRegalBackend
+
+  jpa:
+    open-in-view: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [correlationId=%X{correlationId}] [userId=%X{userId:-anonymous}] %-5level %logger{36} - %msg%n"
+
+app:
+  protocol: http
+  security:
+    jwt:
+      secret-key: b21a483517257c7ac0eb20b47a6fd8e6bdba832b7393edcdd73364d379eb7ad8
+      expiration-days: 3
+    excluded-paths:
+      - "/v1/auth/**"
+      - "/v1/book-covers/**"
+      - "/v1/user-profile-pictures/**"
+      - "/v1/author-profile-pictures/**"
+  book-cover:
+    url-prefix: /api/v1/book-covers/
+  user-profile-picture:
+    url-prefix: /api/v1/user-profile-pictures/
+  author-profile-picture:
+    url-prefix: /api/v1/author-profile-pictures/
+  review:
+    valid-ratings: [ 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5 ]

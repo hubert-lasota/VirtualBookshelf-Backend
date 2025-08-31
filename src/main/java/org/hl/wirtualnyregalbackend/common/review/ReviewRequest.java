@@ -15,9 +15,9 @@ import org.hl.wirtualnyregalbackend.common.validation.StringConstraints;
 public class ReviewRequest {
     @Rating
     @NotNull(groups = CreateGroup.class)
-    private Float rating;
+    protected Float rating;
 
     @StringConstraints
-    private String content;
+    protected String content;
 
 }

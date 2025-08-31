@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.util.Objects;
 
 @MappedSuperclass
 @Getter
@@ -36,5 +37,16 @@ public abstract class BaseEntity {
         this.updatedAt = Instant.now(Clock.systemUTC());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        BaseEntity that = (BaseEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 
 }
