@@ -74,8 +74,8 @@ public class ReadingSessionService {
 
         SessionReadingDurationRange oldDr = session.getDurationRange();
         SessionReadingDurationRange newDr = sessionRequest.getDurationRange();
-        SessionReadingDurationRange rr = SessionReadingDurationRange.merge(oldDr, newDr);
-        session.setDurationRange(rr);
+        SessionReadingDurationRange dr = SessionReadingDurationRange.merge(oldDr, newDr);
+        session.setDurationRange(dr);
 
         ReadPagesEvent rpEvent = ReadPagesEvent.ofDifference(oldPr, newPr, oldDr, newDr, session);
         if (rpEvent != null) {
