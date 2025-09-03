@@ -1,5 +1,8 @@
 package org.hl.wirtualnyregalbackend.reading_statistics.entity;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public enum BookLength {
     SHORT(0, 200),
     MEDIUM(200, 400),
@@ -9,10 +12,6 @@ public enum BookLength {
     private final int minPages;
     private final int maxPages;
 
-    BookLength(int minPages, int maxPages) {
-        this.minPages = minPages;
-        this.maxPages = maxPages;
-    }
 
     public static BookLength fromPageCount(int pageCount) {
         for (BookLength length : BookLength.values()) {
