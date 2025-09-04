@@ -85,9 +85,9 @@ public class BookshelfService {
         bookshelfRepository.deleteById(id);
     }
 
-    public BookshelfListResponse findUserBookshelves(Long userId) {
+    public BookshelfListResponse findUserBookshelves(User user) {
         List<BookshelfResponse> bookshelves = bookshelfRepository
-            .findByUserId(userId)
+            .findByUser(user)
             .stream()
             .map(BookshelfMapper::toBookshelfResponse)
             .toList();

@@ -30,7 +30,6 @@ public class ChallengeParticipantService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return participantRepository.findByChallengeIdAndUserId(challengeId, user.getId())
             .orElse(null);
-
     }
 
     @Transactional

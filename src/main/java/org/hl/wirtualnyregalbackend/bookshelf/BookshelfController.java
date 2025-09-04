@@ -46,7 +46,7 @@ class BookshelfController {
 
     @GetMapping
     public BookshelfListResponse findCurrentUserBookshelves(@AuthenticationPrincipal User user) {
-        return bookshelfService.findUserBookshelves(user.getId());
+        return bookshelfService.findUserBookshelves(user);
     }
 
     @PatchMapping("/{id}")
