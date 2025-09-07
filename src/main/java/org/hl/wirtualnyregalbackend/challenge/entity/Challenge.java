@@ -13,7 +13,6 @@ import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @ToString(callSuper = true)
 public class Challenge extends BaseEntity {
 
@@ -40,5 +39,36 @@ public class Challenge extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "total_participants")
+    private Long totalParticipants;
+
+
+    public Challenge(String title,
+                     String description,
+                     ChallengeDurationRange durationRange,
+                     ChallengeType type,
+                     Integer goalValue,
+                     Genre genre,
+                     User user) {
+        this.title = title;
+        this.description = description;
+        this.durationRange = durationRange;
+        this.type = type;
+        this.goalValue = goalValue;
+        this.genre = genre;
+        this.user = user;
+        this.totalParticipants = 0L;
+    }
+
+
+    public void incrementTotalParticipants() {
+        this.totalParticipants++;
+    }
+
+    public void decrementTotalParticipants() {
+        this.totalParticipants--;
+    }
 
 }

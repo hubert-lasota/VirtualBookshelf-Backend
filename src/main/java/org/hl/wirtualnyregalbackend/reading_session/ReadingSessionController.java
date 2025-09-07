@@ -28,12 +28,6 @@ class ReadingSessionController {
         return sessionService.createReadingSession(sessionRequest);
     }
 
-    @GetMapping
-    public ReadingSessionPageResponse findCurrentUserReadingSessions(@AuthenticationPrincipal User user,
-                                                                     Pageable pageable) {
-        return sessionService.findReadingSessions(user, pageable);
-    }
-
     @PatchMapping("/{sessionId}")
     public ReadingSessionResponse updateReadingSession(
         @PathVariable
@@ -49,6 +43,12 @@ class ReadingSessionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReadingSession(@PathVariable Long sessionId) {
         sessionService.deleteReadingSession(sessionId);
+    }
+
+    @GetMapping
+    public ReadingSessionPageResponse findCurrentUserReadingSessions(@AuthenticationPrincipal User user,
+                                                                     Pageable pageable) {
+        return sessionService.findReadingSessions(user, pageable);
     }
 
 }

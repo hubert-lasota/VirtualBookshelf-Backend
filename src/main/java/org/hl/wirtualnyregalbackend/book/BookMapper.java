@@ -84,7 +84,6 @@ public class BookMapper {
             : null;
 
 
-
         ReviewResponse reviewResponse = review != null ? ReviewMapper.toReviewResponse(review) : null;
         BookshelfSummaryResponse bookshelf = null;
         if (readingBook != null) {

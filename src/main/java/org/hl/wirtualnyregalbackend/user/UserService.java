@@ -26,14 +26,6 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserProfilePictureService userProfilePictureService;
 
-    public User findUserById(Long userId) throws UserNotFoundException {
-        Optional<User> userOpt = userId != null ? userRepository.findById(userId) : Optional.empty();
-        return userOpt.orElseThrow(() -> {
-            log.warn("User not found with ID: {}", userId);
-            return new UserNotFoundException(userId);
-        });
-    }
-
     @Transactional
     public UserProfile createUserProfile(UserProfileDto profileDto, MultipartFile profilePicture, User user) {
         UserProfilePicture userProfilePicture = userProfilePictureService.createUserProfilePicture(profileDto.pictureUrl(), profilePicture);
@@ -49,6 +41,14 @@ public class UserService implements UserDetailsService {
                 log.warn(message);
                 return new UsernameNotFoundException(message);
             });
+    }
+
+    public User findUserById(Long userId) throws UserNotFoundException {
+        Optional<User> userOpt = userId != null ? userRepository.findById(userId) : Optional.empty();
+        return userOpt.orElseThrow(() -> {
+            log.warn("User not found with ID: {}", userId);
+            return new UserNotFoundException(userId);
+        });
     }
 
     public boolean existsByUsername(String username) {

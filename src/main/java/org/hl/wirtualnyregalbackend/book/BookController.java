@@ -46,18 +46,6 @@ class BookController {
         return ResponseEntity.created(location).body(response);
     }
 
-    @GetMapping
-    public BookPageResponse findBooks(@RequestParam String query,
-                                      @PageableDefault Pageable pageable) {
-        return bookService.findBooks(query, pageable);
-    }
-
-    @GetMapping("/{id}")
-    public BookDetailsResponse findBookDetailsById(@PathVariable Long id,
-                                                   @AuthenticationPrincipal User user) {
-        return bookService.findBookDetailsById(id, user);
-    }
-
     @PatchMapping("/{id}")
     public BookResponse updateBook(
         @PathVariable
@@ -69,6 +57,18 @@ class BookController {
         MultipartFile coverFile
     ) {
         return bookService.updateBook(id, bookRequest, coverFile);
+    }
+
+    @GetMapping
+    public BookPageResponse findBooks(@RequestParam String query,
+                                      @PageableDefault Pageable pageable) {
+        return bookService.findBooks(query, pageable);
+    }
+
+    @GetMapping("/{id}")
+    public BookDetailsResponse findBookDetailsById(@PathVariable Long id,
+                                                   @AuthenticationPrincipal User user) {
+        return bookService.findBookDetailsById(id, user);
     }
 
 }

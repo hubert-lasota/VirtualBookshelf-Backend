@@ -85,38 +85,9 @@ public class BookService {
         if (publisherWithIdDto != null) {
             publisher = publisherService.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
         }
-        Book book = BookMapper.toBook(bookDto, cover, format, publisher, authors, genres);
+        Book book = bookRepository.save(BookMapper.toBook(bookDto, cover, format, publisher, authors, genres));
         log.info("Created book: {}", book);
         return book;
-    }
-
-    public BookPageResponse findBooks(String query, Pageable pageable) {
-        Specification<Book> spec = Specification
-            .where(BookSpecification.titleIgnoreCaseLike(query))
-            .or(BookSpecification.authorFullNameIgnoreCaseLike(query))
-            .or(BookSpecification.isbnEqual(query));
-
-        Locale locale = LocaleContextHolder.getLocale();
-        Page<BookResponse> bookPage = bookRepository
-            .findAll(spec, pageable)
-            .map((book) -> BookMapper.toBookResponse(book, locale));
-
-        return BookPageResponse.from(bookPage);
-    }
-
-    public BookDetailsResponse findBookDetailsById(Long bookId, User user) {
-        Book book = bookHelper.findBookById(bookId);
-        BookFoundEvent event = new BookFoundEvent(book, user);
-        eventPublisher.publishEvent(event);
-
-        ReviewStatistics reviewStats = bookReviewService.getBookReviewStatistics(bookId);
-        BookReview review = bookReviewService.findOptionalBookReviewById(bookId).orElse(null);
-        Locale locale = LocaleContextHolder.getLocale();
-        ReadingBook rb = readingBookHelper.findUserReadingBookByBookId(bookId, user);
-
-        BookDetailsResponse response = BookMapper.toBookDetailsResponse(book, reviewStats, review, locale, rb);
-        log.info("Found Book Details: {}", response);
-        return response;
     }
 
     @Transactional
@@ -187,6 +158,34 @@ public class BookService {
         return BookMapper.toBookResponse(book, locale);
     }
 
+    public BookPageResponse findBooks(String query, Pageable pageable) {
+        Specification<Book> spec = Specification
+            .where(BookSpecification.titleIgnoreCaseLike(query))
+            .or(BookSpecification.authorFullNameIgnoreCaseLike(query))
+            .or(BookSpecification.isbnEqual(query));
+
+        Locale locale = LocaleContextHolder.getLocale();
+        Page<BookResponse> bookPage = bookRepository
+            .findAll(spec, pageable)
+            .map((book) -> BookMapper.toBookResponse(book, locale));
+
+        return BookPageResponse.from(bookPage);
+    }
+
+    public BookDetailsResponse findBookDetailsById(Long bookId, User user) {
+        Book book = bookHelper.findBookById(bookId);
+        BookFoundEvent event = new BookFoundEvent(book, user);
+        eventPublisher.publishEvent(event);
+
+        ReviewStatistics reviewStats = bookReviewService.getBookReviewStatistics(bookId);
+        BookReview review = bookReviewService.findOptionalBookReviewById(bookId).orElse(null);
+        Locale locale = LocaleContextHolder.getLocale();
+        ReadingBook rb = readingBookHelper.findUserReadingBookByBookId(bookId, user);
+
+        BookDetailsResponse response = BookMapper.toBookDetailsResponse(book, reviewStats, review, locale, rb);
+        log.info("Found Book Details: {}", response);
+        return response;
+    }
 
     public Optional<Book> findBookOptById(@Nullable Long id) {
         if (id == null) {

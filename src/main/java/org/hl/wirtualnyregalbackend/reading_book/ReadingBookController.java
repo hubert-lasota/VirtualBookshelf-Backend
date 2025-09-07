@@ -33,16 +33,6 @@ public class ReadingBookController {
         return readingBookService.createReadingBook(readingBookRequest, cover);
     }
 
-    @GetMapping
-    public ReadingBookListResponse findCurrentUserReadingBooks(
-        @RequestParam(required = false)
-        String query,
-        @AuthenticationPrincipal
-        User user
-    ) {
-        return readingBookService.findUserReadingBooks(user, query);
-    }
-
     @PatchMapping("/{readingBookId}")
     @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'DELETE')")
     public ReadingBookResponse updateReadingBook(
@@ -73,6 +63,16 @@ public class ReadingBookController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReadingBook(@PathVariable Long readingBookId) {
         readingBookService.deleteReadingBook(readingBookId);
+    }
+
+    @GetMapping
+    public ReadingBookListResponse findCurrentUserReadingBooks(
+        @RequestParam(required = false)
+        String query,
+        @AuthenticationPrincipal
+        User user
+    ) {
+        return readingBookService.findUserReadingBooks(user, query);
     }
 
 }

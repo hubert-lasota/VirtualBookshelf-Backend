@@ -33,11 +33,6 @@ class BookReviewController {
         return bookReviewService.createBookReview(reviewDto, user);
     }
 
-    @GetMapping
-    public ReviewPageResponse findBookReviews(@RequestParam Long bookId, Pageable pageable) {
-        return bookReviewService.findBookReviews(bookId, pageable);
-    }
-
     @PatchMapping("/{bookReviewId}")
     @PreAuthorize("hasPermission(#bookReviewId, 'BOOK_REVIEW', 'UPDATE')")
     public ReviewResponse updateBookReview(
@@ -55,6 +50,11 @@ class BookReviewController {
     @PreAuthorize("hasPermission(#bookReviewId, 'BOOK_REVIEW', 'DELETE')")
     public void deleteBookReview(@PathVariable Long bookReviewId) {
         bookReviewService.deleteBookReview(bookReviewId);
+    }
+
+    @GetMapping
+    public ReviewPageResponse findBookReviews(@RequestParam Long bookId, Pageable pageable) {
+        return bookReviewService.findBookReviews(bookId, pageable);
     }
 
 }

@@ -33,11 +33,6 @@ class AuthorReviewController {
         return authorReviewService.createAuthorReview(reviewCreateRequest, user);
     }
 
-    @GetMapping
-    public ReviewPageResponse findAuthorReviews(@RequestParam Long authorId, Pageable pageable) {
-        return authorReviewService.findAuthorReviews(authorId, pageable);
-    }
-
     @PatchMapping("/{authorReviewId}")
     @PreAuthorize("hasPermission(#authorReviewId, 'AUTHOR_REVIEW', 'UPDATE')")
     public ReviewResponse updateAuthorReview(
@@ -55,6 +50,11 @@ class AuthorReviewController {
     @PreAuthorize("hasPermission(#authorReviewId, 'AUTHOR_REVIEW', 'DELETE')")
     public void deleteAuthorReview(@PathVariable Long authorReviewId) {
         authorReviewService.deleteAuthorReview(authorReviewId);
+    }
+
+    @GetMapping
+    public ReviewPageResponse findAuthorReviews(@RequestParam Long authorId, Pageable pageable) {
+        return authorReviewService.findAuthorReviews(authorId, pageable);
     }
 
 }

@@ -35,11 +35,10 @@ public class AuthorService {
     private final AuthorReviewService reviewService;
 
 
-    @Transactional
     public AuthorResponse createAuthor(AuthorRequest authorRequest, MultipartFile profilePictureFile) {
         log.info("Creating new author: {}", authorRequest);
         AuthorProfilePicture picture = profilePictureService.createAuthorProfilePicture(authorRequest.profilePictureUrl(), profilePictureFile);
-        Author author = AuthorMapper.toAuthor(authorRequest, picture);
+        Author author = authorRepository.save(AuthorMapper.toAuthor(authorRequest, picture));
         log.info("Author created with ID: {}", author.getId());
         return AuthorMapper.toAuthorResponse(author);
     }
@@ -86,15 +85,12 @@ public class AuthorService {
         return AuthorPageResponse.from(authorPage);
     }
 
+    @Transactional
     public Author findOrCreateAuthor(Long id, AuthorRequest authorRequest) {
         if (id != null) {
             return findAuthorById(id);
         }
 
-        return createAuthorEntity(authorRequest);
-    }
-
-    private Author createAuthorEntity(AuthorRequest authorRequest) {
         Author author = AuthorMapper.toAuthor(authorRequest);
         return authorRepository.save(author);
     }

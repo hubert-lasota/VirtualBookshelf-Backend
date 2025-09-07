@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -64,6 +65,7 @@ class ChallengeParticipantEventListener {
     }
 
     @EventListener
+    @Transactional
     public void handleReadPagesEvent(ReadPagesEvent event) {
         User user = userService.findUserById(event.userId());
         Pageable pageable = PageRequest.of(0, 1000);
@@ -76,6 +78,7 @@ class ChallengeParticipantEventListener {
                     participant.addCurrentCount(event.readPages());
                 }
             });
+            pageable = pageable.next();
         } while (page.hasNext());
     }
 

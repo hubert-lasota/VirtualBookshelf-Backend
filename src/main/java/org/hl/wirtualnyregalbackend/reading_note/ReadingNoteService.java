@@ -63,6 +63,14 @@ public class ReadingNoteService {
         return ReadingNoteMapper.toReadingNoteResponse(note);
     }
 
+    @Transactional
+    public void deleteReadingNoteById(Long noteId) {
+        ReadingNote note = findReadingNoteById(noteId);
+        noteRepository.delete(note);
+        eventPublisher.publishEvent(ReadingNoteDeletedEvent.from(note));
+        log.info("Deleted Reading Note: {}", note);
+    }
+
     public ReadingNoteListResponse findReadingNotes(Long readingBookId) {
         List<ReadingNoteResponse> notes = noteRepository
             .findReadingNotesByReadingBookId(readingBookId)
@@ -71,14 +79,6 @@ public class ReadingNoteService {
             .toList();
 
         return new ReadingNoteListResponse(notes);
-    }
-
-    @Transactional
-    public void deleteReadingNoteById(Long noteId) {
-        ReadingNote note = findReadingNoteById(noteId);
-        noteRepository.delete(note);
-        eventPublisher.publishEvent(ReadingNoteDeletedEvent.from(note));
-        log.info("Deleted Reading Note: {}", note);
     }
 
     public boolean isNoteAuthor(Long noteId, User user) {

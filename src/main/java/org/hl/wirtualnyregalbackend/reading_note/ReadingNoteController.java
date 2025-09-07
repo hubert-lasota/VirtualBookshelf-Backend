@@ -29,11 +29,6 @@ class ReadingNoteController {
     }
 
 
-    @GetMapping
-    public ReadingNoteListResponse findReadingNotes(@RequestParam Long readingBookId) {
-        return noteService.findReadingNotes(readingBookId);
-    }
-
     @PatchMapping("/{noteId}")
     @PreAuthorize("hasPermission(#noteId, 'READING_NOTE', 'UPDATE')")
     public ReadingNoteResponse updateReadingNote(@PathVariable
@@ -49,6 +44,12 @@ class ReadingNoteController {
     @PreAuthorize("hasPermission(#noteId, 'READING_NOTE', 'DELETE')")
     public void deleteReadingNote(@PathVariable Long noteId) {
         noteService.deleteReadingNoteById(noteId);
+    }
+
+
+    @GetMapping
+    public ReadingNoteListResponse findReadingNotes(@RequestParam Long readingBookId) {
+        return noteService.findReadingNotes(readingBookId);
     }
 
 }

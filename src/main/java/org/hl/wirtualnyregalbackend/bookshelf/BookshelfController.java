@@ -44,10 +44,6 @@ class BookshelfController {
         return ResponseEntity.created(location).body(response);
     }
 
-    @GetMapping
-    public BookshelfListResponse findCurrentUserBookshelves(@AuthenticationPrincipal User user) {
-        return bookshelfService.findUserBookshelves(user);
-    }
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasPermission(#id, 'BOOKSHELF', 'CREATE')")
@@ -67,6 +63,11 @@ class BookshelfController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBookshelf(@PathVariable Long id) {
         bookshelfService.deleteBookshelf(id);
+    }
+
+    @GetMapping
+    public BookshelfListResponse findCurrentUserBookshelves(@AuthenticationPrincipal User user) {
+        return bookshelfService.findUserBookshelves(user);
     }
 
 }

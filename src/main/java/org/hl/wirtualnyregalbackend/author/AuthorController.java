@@ -31,7 +31,7 @@ class AuthorController {
     public ResponseEntity<AuthorResponse> createAuthor(@RequestPart("author")
                                                        @Validated(CreateGroup.class)
                                                        AuthorRequest authorRequest,
-                                                       @RequestPart("profilePicture")
+                                                       @RequestPart(value = "profilePicture", required = false)
                                                        MultipartFile profilePicture,
                                                        UriComponentsBuilder uriBuilder) {
         AuthorResponse response = authorService.createAuthor(authorRequest, profilePicture);
@@ -45,7 +45,7 @@ class AuthorController {
     }
 
     @PatchMapping("/{authorId}")
-    public AuthorResponse createAuthor(@PathVariable Long authorId,
+    public AuthorResponse updateAuthor(@PathVariable Long authorId,
                                        @RequestPart("author")
                                        @Validated(UpdateGroup.class)
                                        AuthorRequest authorRequest,

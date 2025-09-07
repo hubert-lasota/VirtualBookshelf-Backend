@@ -6,13 +6,16 @@ import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeRequest;
 import org.hl.wirtualnyregalbackend.challenge.dto.ChallengeResponse;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengeParticipant;
+import org.hl.wirtualnyregalbackend.genre.GenreMapper;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.user.UserMapper;
 import org.hl.wirtualnyregalbackend.user.dto.UserResponse;
 import org.springframework.lang.Nullable;
 
-class ChallengeMapper {
+import java.util.Locale;
+
+public class ChallengeMapper {
 
     private ChallengeMapper() {
     }
@@ -33,11 +36,13 @@ class ChallengeMapper {
 
     public static ChallengeResponse toChallengeResponse(Challenge challenge,
                                                         @Nullable ChallengeParticipant currentUserParticipant,
-                                                        @Nullable GenreResponse genreDto,
-                                                        Long totalParticipants) {
+                                                        Locale locale) {
         Integer goalValue = challenge.getGoalValue();
-        ChallengeParticipation participation = toChallengeParticipation(currentUserParticipant, goalValue);
+        ChallengeParticipation participation = toChallengeParticipation(currentUserParticipant);
         UserResponse user = UserMapper.toUserResponse(challenge.getUser());
+        GenreResponse genreDto = challenge.getGenre() == null
+            ? null
+            : GenreMapper.toGenreResponse(challenge.getGenre(), locale);
         return new ChallengeResponse(
             challenge.getId(),
             challenge.getTitle(),
@@ -46,13 +51,13 @@ class ChallengeMapper {
             goalValue,
             challenge.getDurationRange(),
             genreDto,
-            totalParticipants,
+            challenge.getTotalParticipants(),
             participation,
             user
         );
     }
 
-    private static ChallengeParticipation toChallengeParticipation(@Nullable ChallengeParticipant participant, Integer challengeGoalValue) {
+    private static ChallengeParticipation toChallengeParticipation(@Nullable ChallengeParticipant participant) {
         if (participant == null) {
             return new ChallengeParticipation(false, null, null, null, null);
         }

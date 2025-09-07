@@ -31,18 +31,6 @@ public class PublisherService {
         return PublisherMapper.toPublisherResponse(publisher);
     }
 
-    public PublisherPageResponse findPublishers(Pageable pageable) {
-        Page<PublisherResponse> page = publisherRepository
-            .findAll(pageable)
-            .map(PublisherMapper::toPublisherResponse);
-        return PublisherPageResponse.from(page);
-    }
-
-    public PublisherDetailsResponse findPublisherDetailsById(Long publisherId) {
-        Publisher publisher = findPublisherById(publisherId);
-        return PublisherMapper.toPublisherDetailsResponse(publisher);
-    }
-
     @Transactional
     public Publisher findOrCreatePublisher(Long id, PublisherRequest publisherDto) {
         if (id != null) {
@@ -55,6 +43,18 @@ public class PublisherService {
     public Publisher createPublisherEntity(PublisherRequest publisherRequest) {
         Publisher publisher = PublisherMapper.toPublisher(publisherRequest);
         return publisherRepository.save(publisher);
+    }
+
+    public PublisherPageResponse findPublishers(Pageable pageable) {
+        Page<PublisherResponse> page = publisherRepository
+            .findAll(pageable)
+            .map(PublisherMapper::toPublisherResponse);
+        return PublisherPageResponse.from(page);
+    }
+
+    public PublisherDetailsResponse findPublisherDetailsById(Long publisherId) {
+        Publisher publisher = findPublisherById(publisherId);
+        return PublisherMapper.toPublisherDetailsResponse(publisher);
     }
 
     private Publisher findPublisherById(Long id) throws PublisherNotFoundException {

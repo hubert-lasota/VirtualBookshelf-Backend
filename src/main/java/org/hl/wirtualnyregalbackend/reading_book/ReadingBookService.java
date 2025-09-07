@@ -99,6 +99,17 @@ public class ReadingBookService {
         return ReadingBookMapper.toReadingBookResponse(book, locale);
     }
 
+
+    @Transactional
+    public void deleteReadingBook(Long readingBookId) {
+        ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
+        eventPublisher.publishEvent(ReadingBookDeletedEvent.from(readingBook));
+
+        noteHelper.deleteNotesByReadingBookId(readingBookId);
+        readingBookRepository.delete(readingBook);
+        log.info("Deleted Reading Book: {}", readingBook);
+    }
+
     public ReadingBookListResponse findUserReadingBooks(User user, @Nullable String query) {
         Specification<ReadingBook> spec = ReadingBookSpecification.byUser(user);
         if (query != null) {
@@ -111,17 +122,6 @@ public class ReadingBookService {
             .map((rb) -> ReadingBookMapper.toReadingBookResponse(rb, locale))
             .toList();
         return new ReadingBookListResponse(books);
-    }
-
-
-    @Transactional
-    public void deleteReadingBook(Long readingBookId) {
-        ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
-        eventPublisher.publishEvent(ReadingBookDeletedEvent.from(readingBook));
-
-        noteHelper.deleteNotesByReadingBookId(readingBookId);
-        readingBookRepository.delete(readingBook);
-        log.info("Deleted Reading Book: {}", readingBook);
     }
 
     public boolean isReadingBookAuthor(Long readingBookId, User user) {

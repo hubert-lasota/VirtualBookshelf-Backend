@@ -87,16 +87,6 @@ public class ReadingSessionService {
         return ReadingSessionMapper.toReadingSessionResponse(session, locale);
     }
 
-
-    public ReadingSessionPageResponse findReadingSessions(User user, Pageable pageable) {
-        Locale locale = LocaleContextHolder.getLocale();
-        Page<ReadingSessionResponse> page = sessionRepository
-            .findByUserId(user.getId(), pageable)
-            .map((session) -> ReadingSessionMapper.toReadingSessionResponse(session, locale));
-        return ReadingSessionPageResponse.from(page);
-    }
-
-
     @Transactional
     public void deleteReadingSession(Long sessionId) {
         ReadingSession rs = findReadingSessionById(sessionId);
@@ -105,6 +95,13 @@ public class ReadingSessionService {
         log.info("Deleted reading session: {}", rs);
     }
 
+    public ReadingSessionPageResponse findReadingSessions(User user, Pageable pageable) {
+        Locale locale = LocaleContextHolder.getLocale();
+        Page<ReadingSessionResponse> page = sessionRepository
+            .findByUserId(user.getId(), pageable)
+            .map((session) -> ReadingSessionMapper.toReadingSessionResponse(session, locale));
+        return ReadingSessionPageResponse.from(page);
+    }
 
     public boolean isSessionAuthor(Long sessionId, User user) {
         return sessionRepository.isAuthor(sessionId, user.getId());

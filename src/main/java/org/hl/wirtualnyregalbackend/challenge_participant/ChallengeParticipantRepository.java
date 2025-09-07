@@ -15,9 +15,6 @@ import java.util.Optional;
 @Repository
 interface ChallengeParticipantRepository extends JpaRepository<ChallengeParticipant, Long> {
 
-    @Query("select count(p) from ChallengeParticipant p where p.challenge.id = :challengeId")
-    Long countByChallengeId(Long challengeId);
-
     @Query("select p from ChallengeParticipant p where p.challenge.id = :challengeId and p.user.id = :userId")
     Optional<ChallengeParticipant> findByChallengeIdAndUserId(Long challengeId, Long userId);
 

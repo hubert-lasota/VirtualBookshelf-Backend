@@ -43,17 +43,17 @@ public class ChallengeController {
         return challengeService.updateChallenge(challengeId, challengeRequest);
     }
 
+    @DeleteMapping("/{challengeId}/quit")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void quitChallenge(@PathVariable Long challengeId, @AuthenticationPrincipal User user) {
+        challengeService.quitChallenge(challengeId, user);
+    }
+
     @GetMapping
     public ChallengePageResponse findChallenges(ChallengeFilter filter,
                                                 Pageable pageable,
                                                 @AuthenticationPrincipal User user) {
         return challengeService.findChallenges(filter, user, pageable);
-    }
-
-    @DeleteMapping("/{challengeId}/quit")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void quitChallenge(@PathVariable Long challengeId) {
-        challengeService.quitChallenge(challengeId);
     }
 
 }
