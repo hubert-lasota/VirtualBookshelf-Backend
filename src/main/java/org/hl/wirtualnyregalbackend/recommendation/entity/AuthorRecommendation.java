@@ -20,8 +20,8 @@ public class AuthorRecommendation extends BaseRecommendation {
     @JoinColumn(name = "author_id")
     private Author author;
 
-    public AuthorRecommendation(User user, Float score, Author author) {
-        super(user, score);
+    public AuthorRecommendation(User user, Author author) {
+        super(user, 0F);
         this.author = author;
     }
 

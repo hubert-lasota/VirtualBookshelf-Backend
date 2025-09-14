@@ -32,7 +32,8 @@ public class BaseRecommendation extends BaseEntity {
     }
 
     public void reduceScore() {
-        this.score -= SCORE_INCREMENT;
+        float newScore = this.score - SCORE_INCREMENT;
+        this.score = newScore < 0 ? 0F : newScore;
     }
 
 }

@@ -21,8 +21,8 @@ public class BookRecommendation extends BaseRecommendation {
     private Book book;
 
 
-    public BookRecommendation(User user, Float score, Book book) {
-        super(user, score);
+    public BookRecommendation(User user, Book book) {
+        super(user, 0F);
         this.book = book;
     }
 

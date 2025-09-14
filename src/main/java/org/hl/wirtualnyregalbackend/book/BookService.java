@@ -174,7 +174,7 @@ public class BookService {
 
     public BookDetailsResponse findBookDetailsById(Long bookId, User user) {
         Book book = bookHelper.findBookById(bookId);
-        BookFoundEvent event = new BookFoundEvent(book, user);
+        BookFoundEvent event = BookFoundEvent.of(book, user);
         eventPublisher.publishEvent(event);
 
         ReviewStatistics reviewStats = bookReviewService.getBookReviewStatistics(bookId);

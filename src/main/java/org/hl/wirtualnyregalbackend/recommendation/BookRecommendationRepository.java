@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.recommendation;
 
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.recommendation.entity.BookRecommendation;
 import org.springframework.data.domain.Page;
@@ -8,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 interface BookRecommendationRepository extends JpaRepository<BookRecommendation, Long> {
@@ -68,5 +71,7 @@ interface BookRecommendationRepository extends JpaRepository<BookRecommendation,
             """,
         nativeQuery = true)
     Page<Book> findRecommendedBooksForUser(@Param("userId") Long userId, Pageable pageable);
+
+    Optional<BookRecommendation> findByBookAndUser(Book book, User user);
 
 }
