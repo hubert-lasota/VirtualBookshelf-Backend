@@ -18,11 +18,11 @@ class AuthorizationController {
     private final AuthorizationService authorizationService;
 
 
-    @PostMapping(value = "/register")
+    @PostMapping("/register")
     public UserSignInResponse registerUser(@Validated(CreateGroup.class)
                                            @RequestPart("user")
                                            UserRequest userRequest,
-                                           @RequestPart("profilePicture")
+                                           @RequestPart(value = "profilePicture", required = false)
                                            MultipartFile profilePicture) {
         return authorizationService.registerUser(userRequest, profilePicture);
     }

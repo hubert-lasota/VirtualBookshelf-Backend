@@ -32,6 +32,10 @@ public class UserService implements UserDetailsService {
         return UserMapper.toUserProfile(profileDto, user, userProfilePicture);
     }
 
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository

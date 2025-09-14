@@ -46,6 +46,7 @@ class AuthorizationService {
         String encodedPassword = passwordEncoder.encode(userRequest.password());
         User user = new User(username, encodedPassword, AuthorityName.USER);
         user.setUserProfile(userService.createUserProfile(userRequest.profile(), profilePicture, user));
+        userService.save(user);
         userDefaultConfigurer.configure(user);
         String jwt = jwtService.generateToken(user);
         log.info("User successfully registered: {}", user.getUsername());

@@ -2,7 +2,7 @@ server:
   servlet:
     context-path: /api
   port: 8080
-  address: localhost
+  address: 0.0.0.0
 
 spring:
   application:
@@ -20,6 +20,7 @@ logging:
 
 app:
   protocol: http
+  host: localhost
   security:
     jwt:
       secret-key: b21a483517257c7ac0eb20b47a6fd8e6bdba832b7393edcdd73364d379eb7ad8

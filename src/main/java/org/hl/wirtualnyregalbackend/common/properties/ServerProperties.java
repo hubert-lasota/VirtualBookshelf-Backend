@@ -4,20 +4,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public record ServerProperties(String protocol, String address, String port) {
+public record ServerProperties(String protocol, String host, String port) {
 
     public ServerProperties(
         @Value("${app.protocol}") String protocol,
-        @Value("${server.address}") String address,
+        @Value("${app.host}") String host,
         @Value("${server.port}") String port
     ) {
         this.protocol = protocol;
-        this.address = address;
+        this.host = host;
         this.port = port;
     }
 
     public String origin() {
-        return protocol + "://" + address + ":" + port;
+        return protocol + "://" + host + ":" + port;
     }
 
 }
