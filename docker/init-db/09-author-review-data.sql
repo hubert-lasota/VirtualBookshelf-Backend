@@ -264,5 +264,5 @@ VALUES (1, 161, 5, 'Mistrz horroru, nie ma sobie równych.', now(), NULL),
 
 
 update author as a
-set total_reviews  = (select count(*) from author_review ar where ar.author_id = a.id),
-    average_rating = (select avg(ar.rating) from author_review ar where ar.author_id = a.id)
+set total_reviews  = COALESCE((select count(*) from author_review ar where ar.author_id = a.id), 0),
+    average_rating = COALESCE((select avg(ar.rating) from author_review ar where ar.author_id = a.id), 0.0)

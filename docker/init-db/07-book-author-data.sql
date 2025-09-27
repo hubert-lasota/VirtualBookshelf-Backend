@@ -717,10 +717,6 @@ VALUES (308, 2);
 INSERT INTO book_author (book_id, author_id)
 VALUES (309, 2);
 INSERT INTO book_author (book_id, author_id)
-VALUES (308, 2);
-INSERT INTO book_author (book_id, author_id)
-VALUES (309, 2);
-INSERT INTO book_author (book_id, author_id)
 VALUES (310, 161);
 INSERT INTO book_author (book_id, author_id)
 VALUES (311, 161);
@@ -771,8 +767,6 @@ VALUES (333, 162);
 INSERT INTO book_author (book_id, author_id)
 VALUES (334, 162);
 INSERT INTO book_author (book_id, author_id)
-VALUES (335, 162);
-INSERT INTO book_author (book_id, author_id)
 VALUES (336, 162);
 INSERT INTO book_author (book_id, author_id)
 VALUES (337, 162);
@@ -810,8 +804,6 @@ INSERT INTO book_author (book_id, author_id)
 VALUES (353, 165);
 INSERT INTO book_author (book_id, author_id)
 VALUES (354, 165);
-INSERT INTO book_author (book_id, author_id)
-VALUES (355, 165);
 INSERT INTO book_author (book_id, author_id)
 VALUES (356, 165);
 

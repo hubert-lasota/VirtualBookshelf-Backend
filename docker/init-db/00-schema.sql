@@ -291,7 +291,7 @@ CREATE TABLE book_length_statistics
     read_book_count BIGINT      NOT NULL,
     year_month      TEXT        NOT NULL,
     created_at      TIMESTAMPTZ NOT NULL,
-    updated_at      TIMESTAMPTZ NOT NULL
+    updated_at      TIMESTAMPTZ
 );
 
 CREATE TABLE genre_statistics
@@ -303,7 +303,7 @@ CREATE TABLE genre_statistics
     read_book_count BIGINT      NOT NULL,
     year_month      TEXT        NOT NULL,
     created_at      TIMESTAMPTZ NOT NULL,
-    updated_at      TIMESTAMPTZ NOT NULL
+    updated_at      TIMESTAMPTZ
 );
 
 CREATE TABLE user_reading_statistics

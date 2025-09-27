@@ -8,6 +8,11 @@ values (1, 'https://s.lubimyczytac.pl/upload/texts/20800/20820/20820_1721308292_
        (5, 'https://m.media-amazon.com/images/S/amzn-author-media-prod/8cigckin175jtpsk3gs361r4ss.jpg', now()),
        (6, 'https://upload.wikimedia.org/wikipedia/commons/2/27/Robert_C._Martin_surrounded_by_computers.jpg', now());
 
+
+ALTER TABLE author
+    ALTER COLUMN total_reviews SET DEFAULT 0,
+    ALTER COLUMN average_rating SET DEFAULT 0.0;
+
 INSERT INTO author (id, full_name, description, created_at, updated_at)
 VALUES (1, 'Olga Tokarczuk', 'Autor: Olga Tokarczuk. Twórca literatury polskiej.', now(), NULL);
 INSERT INTO author (id, full_name, description, created_at, updated_at, author_profile_picture_id)
@@ -354,3 +359,7 @@ VALUES (165, 'Robert C. Martin',
 
 
 SELECT setval(pg_get_serial_sequence('author', 'id'), (select MAX(id) from author), true);
+
+ALTER TABLE author
+    ALTER COLUMN total_reviews DROP DEFAULT,
+    ALTER COLUMN average_rating DROP DEFAULT;

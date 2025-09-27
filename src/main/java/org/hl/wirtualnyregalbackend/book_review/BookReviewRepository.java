@@ -21,7 +21,7 @@ interface BookReviewRepository extends JpaRepository<BookReview, Long> {
     @Query("select count(b) > 0 from BookReview b where b.book.id = :bookId and b.user.id = :userId")
     boolean existsByBookIdAndUserId(Long bookId, Long userId);
 
-    @Query("select avg(br.rating) from BookReview br where br.book == :book")
+    @Query("select avg(br.rating) from BookReview br where br.book = :book")
     Double calculateAverageRatingByBook(Book book);
 
     Optional<BookReview> findByBookIdAndUserId(Long bookId, Long userId);

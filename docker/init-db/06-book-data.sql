@@ -1,3 +1,7 @@
+ALTER table book
+    ALTER COLUMN total_reviews SET DEFAULT 0,
+    ALTER COLUMN average_rating SET DEFAULT 0.0;
+
 INSERT INTO book (id, book_format_id, publisher_id, isbn, title, publication_year, language_code, page_count,
                   description, created_at, updated_at)
 VALUES (1, 2, 29, '9783315098399', 'Droga ludzi', 2016, 'pl', 542,
@@ -1517,3 +1521,7 @@ VALUES (301, 'https://s.lubimyczytac.pl/upload/books/240000/240310/1114358-352x5
 
 
 SELECT setval(pg_get_serial_sequence('book', 'id'), (select MAX(id) from book), true);
+
+ALTER table book
+    ALTER COLUMN total_reviews DROP DEFAULT,
+    ALTER COLUMN average_rating DROP DEFAULT;

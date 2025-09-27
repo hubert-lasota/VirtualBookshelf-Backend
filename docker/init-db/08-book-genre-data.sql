@@ -667,8 +667,6 @@ VALUES (333, 2);
 INSERT INTO book_genre (book_id, genre_id)
 VALUES (334, 2);
 INSERT INTO book_genre (book_id, genre_id)
-VALUES (335, 2);
-INSERT INTO book_genre (book_id, genre_id)
 VALUES (336, 2);
 INSERT INTO book_genre (book_id, genre_id)
 VALUES (337, 2);
@@ -706,8 +704,6 @@ INSERT INTO book_genre (book_id, genre_id)
 VALUES (353, 51);
 INSERT INTO book_genre (book_id, genre_id)
 VALUES (354, 51);
-INSERT INTO book_genre (book_id, genre_id)
-VALUES (355, 51);
 INSERT INTO book_genre (book_id, genre_id)
 VALUES (356, 51);
 

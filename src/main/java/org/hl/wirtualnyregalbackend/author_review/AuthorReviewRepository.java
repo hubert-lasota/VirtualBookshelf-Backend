@@ -21,7 +21,7 @@ interface AuthorReviewRepository extends JpaRepository<AuthorReview, Long> {
 
     Optional<AuthorReview> findByAuthorIdAndUserId(Long authorId, Long userId);
 
-    @Query("select avg(ar.rating) from AuthorReview ar where ar.author == :author")
+    @Query("select avg(ar.rating) from AuthorReview ar where ar.author = :author")
     Double calculateAverageRatingByAuthor(Author author);
 
 }

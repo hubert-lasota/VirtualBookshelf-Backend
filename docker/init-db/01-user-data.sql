@@ -1,7 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 INSERT INTO users (id, username, password, created_at, updated_at)
-VALUES (1, 'admin', crypt('password1', gen_salt('bf')), now() - INTERVAL '200 days', NULL),
+VALUES (1, 'admin', crypt('pass', gen_salt('bf')), now() - INTERVAL '200 days', NULL),
        (2, 'user02', crypt('password2', gen_salt('bf')), now() - INTERVAL '198 days', NULL),
        (3, 'user03', crypt('password3', gen_salt('bf')), now() - INTERVAL '196 days', NULL),
        (4, 'user04', crypt('password4', gen_salt('bf')), now() - INTERVAL '194 days', NULL),
