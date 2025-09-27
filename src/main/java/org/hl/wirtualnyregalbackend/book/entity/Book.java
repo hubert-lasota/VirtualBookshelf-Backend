@@ -19,7 +19,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @ToString(callSuper = true)
 public class Book extends BaseEntity {
 
@@ -40,6 +39,13 @@ public class Book extends BaseEntity {
 
     @Column
     private String description;
+
+    @Column(name = "total_reviews")
+    @Setter(AccessLevel.NONE)
+    private Integer totalReviews;
+
+    @Column(name = "average_rating")
+    private Double averageRating;
 
     @OneToOne(mappedBy = "book", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private BookCover cover;
@@ -63,6 +69,41 @@ public class Book extends BaseEntity {
         joinColumns = @JoinColumn(name = "book_id"),
         inverseJoinColumns = @JoinColumn(name = "author_id"))
     private Set<Author> authors = new HashSet<>();
+
+    public Book(String isbn,
+                String title,
+                Integer publicationYear,
+                Locale language,
+                Integer pageCount,
+                String description,
+                BookCover cover,
+                BookFormat format,
+                Publisher publisher,
+                Set<Genre> genres,
+                Set<Author> authors) {
+        this.isbn = isbn;
+        this.title = title;
+        this.publicationYear = publicationYear;
+        this.language = language;
+        this.pageCount = pageCount;
+        this.description = description;
+        this.cover = cover;
+        this.format = format;
+        this.publisher = publisher;
+        this.genres = genres;
+        this.authors = authors;
+        this.totalReviews = 0;
+        this.averageRating = 0.0D;
+    }
+
+
+    public void incrementTotalReviews() {
+        this.totalReviews++;
+    }
+
+    public void decrementTotalReviews() {
+        this.totalReviews--;
+    }
 
     public Set<Genre> getGenres() {
         return Collections.unmodifiableSet(genres);

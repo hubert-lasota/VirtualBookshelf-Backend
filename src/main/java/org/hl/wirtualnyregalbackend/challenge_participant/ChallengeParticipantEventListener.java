@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.challenge_participant;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.book.BookHelper;
+import org.hl.wirtualnyregalbackend.book.BookService;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.challenge.model.ChallengeType;
@@ -30,7 +30,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 class ChallengeParticipantEventListener {
 
     private final ChallengeParticipantRepository participantRepository;
-    private final BookHelper bookHelper;
+    private final BookService bookService;
     private final ReadingBookHelper readingBookHelper;
     private final UserService userService;
 
@@ -41,7 +41,7 @@ class ChallengeParticipantEventListener {
         }
         Pageable pageable = PageRequest.of(0, 1000);
         Slice<ChallengeParticipant> page;
-        Book book = bookHelper.findBookById(event.bookId());
+        Book book = bookService.findBookById(event.bookId());
         User user = userService.findUserById(event.userId());
         do {
             page = participantRepository.findByUserAndStatus(user, ChallengeParticipantStatus.ACTIVE, pageable);

@@ -15,7 +15,6 @@ import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.common.review.ReviewMapper;
 import org.hl.wirtualnyregalbackend.common.review.ReviewResponse;
-import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.hl.wirtualnyregalbackend.genre.GenreMapper;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
@@ -66,12 +65,13 @@ public class BookMapper {
             toAuthorResponseList(book),
             toGenreResponseList(book, locale),
             getCoverUrl(book),
-            book.getPageCount()
+            book.getPageCount(),
+            book.getTotalReviews(),
+            book.getAverageRating()
         );
     }
 
     public static BookDetailsResponse toBookDetailsResponse(Book book,
-                                                            ReviewStatistics reviewStats,
                                                             @Nullable BookReview review,
                                                             Locale locale,
                                                             @Nullable ReadingBook readingBook) {
@@ -98,7 +98,8 @@ public class BookMapper {
             getCoverUrl(book),
             formatDto,
             toGenreResponseList(book, locale),
-            reviewStats,
+            book.getTotalReviews(),
+            book.getAverageRating(),
             reviewResponse,
             publisherResponse,
             book.getPageCount(),

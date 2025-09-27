@@ -13,12 +13,12 @@ import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.author.exception.AuthorNotFoundException;
 import org.hl.wirtualnyregalbackend.author_profile_picture.AuthorProfilePictureService;
 import org.hl.wirtualnyregalbackend.author_profile_picture.entity.AuthorProfilePicture;
-import org.hl.wirtualnyregalbackend.author_review.AuthorReviewService;
+import org.hl.wirtualnyregalbackend.author_review.AuthorReviewHelper;
 import org.hl.wirtualnyregalbackend.author_review.entity.AuthorReview;
-import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,9 +32,10 @@ public class AuthorService {
 
     private final AuthorRepository authorRepository;
     private final AuthorProfilePictureService profilePictureService;
-    private final AuthorReviewService reviewService;
+    private final AuthorReviewHelper reviewHelper;
 
 
+    @Transactional
     public AuthorResponse createAuthor(AuthorRequest authorRequest, MultipartFile profilePictureFile) {
         log.info("Creating new author: {}", authorRequest);
         AuthorProfilePicture picture = profilePictureService.createAuthorProfilePicture(authorRequest.profilePictureUrl(), profilePictureFile);
@@ -43,6 +44,7 @@ public class AuthorService {
         return AuthorMapper.toAuthorResponse(author);
     }
 
+    @Transactional
     public AuthorResponse updateAuthor(Long authorId, AuthorRequest authorRequest, MultipartFile profilePictureFile) {
         Author author = findAuthorById(authorId);
         log.info("Updating author: {} by request: {}", author, authorRequest);
@@ -67,9 +69,9 @@ public class AuthorService {
 
     public AuthorDetailsResponse findAuthorDetailsById(Long authorId) {
         Author author = findAuthorById(authorId);
-        ReviewStatistics stats = reviewService.getAuthorReviewStats(authorId);
-        AuthorReview review = reviewService.findOptionalAuthorReviewById(authorId).orElse(null);
-        return AuthorMapper.toAuthorDetailsResponse(author, stats, review);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AuthorReview review = reviewHelper.findAuthorReviewByAuthorIdAndUserId(authorId, user.getId());
+        return AuthorMapper.toAuthorDetailsResponse(author, review);
     }
 
     public AuthorPageResponse findAuthors(Boolean availableInBookshelf,
@@ -95,7 +97,7 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
-    private Author findAuthorById(Long id) throws AuthorNotFoundException {
+    Author findAuthorById(Long id) throws AuthorNotFoundException {
         Optional<Author> authorOpt = id != null ? authorRepository.findById(id) : Optional.empty();
         return authorOpt.orElseThrow(() -> {
             log.warn("Author not found with ID: {}", id);

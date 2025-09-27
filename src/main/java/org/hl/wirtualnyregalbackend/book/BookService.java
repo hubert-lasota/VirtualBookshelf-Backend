@@ -9,13 +9,13 @@ import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.book.dto.*;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.book.event.BookFoundEvent;
+import org.hl.wirtualnyregalbackend.book.exception.BookNotFoundException;
 import org.hl.wirtualnyregalbackend.book_cover.BookCoverService;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_format.BookFormatService;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
-import org.hl.wirtualnyregalbackend.book_review.BookReviewService;
+import org.hl.wirtualnyregalbackend.book_review.BookReviewHelper;
 import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
-import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.hl.wirtualnyregalbackend.genre.GenreService;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.publisher.PublisherService;
@@ -46,13 +46,12 @@ public class BookService {
 
     private final ApplicationEventPublisher eventPublisher;
     private final BookRepository bookRepository;
-    private final BookHelper bookHelper;
     private final BookFormatService bookFormatService;
     private final BookCoverService bookCoverService;
     private final GenreService genreService;
     private final AuthorService authorService;
     private final PublisherService publisherService;
-    private final BookReviewService bookReviewService;
+    private final BookReviewHelper bookReviewHelper;
     private final ReadingBookHelper readingBookHelper;
 
 
@@ -64,28 +63,28 @@ public class BookService {
     }
 
     @Transactional
-    public Book createBookEntity(BookRequest bookDto, MultipartFile coverFile) {
-        log.info("Creating book: {}", bookDto);
-        Set<Author> authors = findOrCreateAuthors(bookDto.authors());
-        Set<Genre> genres = genreService.findGenresByIds(bookDto.genreIds());
+    public Book createBookEntity(BookRequest bookRequest, MultipartFile coverFile) {
+        log.info("Creating book: {}", bookRequest);
+        Set<Author> authors = findOrCreateAuthors(bookRequest.authors());
+        Set<Genre> genres = genreService.findGenresByIds(bookRequest.genreIds());
         BookCover cover = null;
-        String coverUrl = bookDto.coverUrl();
+        String coverUrl = bookRequest.coverUrl();
         if (coverFile != null || coverUrl != null) {
-            cover = bookCoverService.createBookCover(bookDto.coverUrl(), coverFile);
+            cover = bookCoverService.createBookCover(bookRequest.coverUrl(), coverFile);
         }
 
-        Long formatId = bookDto.formatId();
+        Long formatId = bookRequest.formatId();
         BookFormat format = null;
         if (formatId != null) {
             format = bookFormatService.findBookFormatById(formatId);
         }
 
-        PublisherWithIdDto publisherWithIdDto = bookDto.publisher();
+        PublisherWithIdDto publisherWithIdDto = bookRequest.publisher();
         Publisher publisher = null;
         if (publisherWithIdDto != null) {
             publisher = publisherService.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
         }
-        Book book = bookRepository.save(BookMapper.toBook(bookDto, cover, format, publisher, authors, genres));
+        Book book = bookRepository.save(BookMapper.toBook(bookRequest, cover, format, publisher, authors, genres));
         log.info("Created book: {}", book);
         return book;
     }
@@ -94,7 +93,7 @@ public class BookService {
     public BookResponse updateBook(Long bookId,
                                    BookRequest bookRequest,
                                    MultipartFile coverFile) {
-        Book book = bookHelper.findBookById(bookId);
+        Book book = findBookById(bookId);
         log.info("Updating book: {} by request: {}", book, bookRequest);
         String isbn = bookRequest.isbn();
         if (isbn != null) {
@@ -173,18 +172,25 @@ public class BookService {
     }
 
     public BookDetailsResponse findBookDetailsById(Long bookId, User user) {
-        Book book = bookHelper.findBookById(bookId);
+        Book book = findBookById(bookId);
         BookFoundEvent event = BookFoundEvent.of(book, user);
         eventPublisher.publishEvent(event);
 
-        ReviewStatistics reviewStats = bookReviewService.getBookReviewStatistics(bookId);
-        BookReview review = bookReviewService.findOptionalBookReviewById(bookId).orElse(null);
+        BookReview review = bookReviewHelper.findBookReviewByBookIdAndUserId(bookId, user.getId());
         Locale locale = LocaleContextHolder.getLocale();
         ReadingBook rb = readingBookHelper.findUserReadingBookByBookId(bookId, user);
 
-        BookDetailsResponse response = BookMapper.toBookDetailsResponse(book, reviewStats, review, locale, rb);
+        BookDetailsResponse response = BookMapper.toBookDetailsResponse(book, review, locale, rb);
         log.info("Found Book Details: {}", response);
         return response;
+    }
+
+    public Book findBookById(Long id) throws BookNotFoundException {
+        Optional<Book> bookOpt = findBookOptById(id);
+        return bookOpt.orElseThrow(() -> {
+            log.warn("Book not found with ID: {}", id);
+            return new BookNotFoundException(id);
+        });
     }
 
     public Optional<Book> findBookOptById(@Nullable Long id) {

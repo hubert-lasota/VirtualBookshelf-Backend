@@ -11,19 +11,18 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 class ChallengeParticipantController {
 
-    private final ChallengeParticipantService challengeParticipantService;
+    private final ChallengeParticipantService participantService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ChallengeParticipantResponse createChallengeParticipant(ChallengeParticipantCreateRequest request) {
-        return challengeParticipantService.createChallengeParticipant(request);
+        return participantService.createChallengeParticipant(request);
     }
 
     @DeleteMapping("/{participantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteChallengeParticipant(@PathVariable Long participantId) {
-        challengeParticipantService.deleteParticipantById(participantId);
+        participantService.deleteParticipantById(participantId);
     }
-
 
 }

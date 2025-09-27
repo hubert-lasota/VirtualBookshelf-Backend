@@ -3,8 +3,8 @@ package org.hl.wirtualnyregalbackend.recommendation;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
-import org.hl.wirtualnyregalbackend.book.BookHelper;
 import org.hl.wirtualnyregalbackend.book.BookMapper;
+import org.hl.wirtualnyregalbackend.book.BookService;
 import org.hl.wirtualnyregalbackend.book.dto.BookPageResponse;
 import org.hl.wirtualnyregalbackend.book.dto.BookResponse;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
@@ -28,7 +28,7 @@ class RecommendationService {
     private final BookRecommendationRepository bookRecommendationRepository;
     private final AuthorRecommendationRepository authorRecommendationRepository;
     private final GenreRecommendationRepository genreRecommendationRepository;
-    private final BookHelper bookHelper;
+    private final BookService bookService;
     private final UserService userService;
 
     public BookPageResponse findRecommendedBooks(User user, Pageable pageable) {
@@ -41,7 +41,7 @@ class RecommendationService {
 
     @Transactional
     public void boostScoresForBook(Long bookId, Long userId) {
-        Book book = bookHelper.findBookById(bookId);
+        Book book = bookService.findBookById(bookId);
         User user = userService.findUserById(userId);
         BookRecommendation br = findOrCreateBookRecommendation(book, user);
         br.boostScore();
@@ -50,7 +50,7 @@ class RecommendationService {
 
     @Transactional
     public void reduceScoresForBook(Long bookId, Long userId) {
-        Book book = bookHelper.findBookById(bookId);
+        Book book = bookService.findBookById(bookId);
         User user = userService.findUserById(userId);
         BookRecommendation br = findOrCreateBookRecommendation(book, user);
         br.reduceScore();
@@ -59,7 +59,7 @@ class RecommendationService {
 
     @Transactional
     public void boostAuthorsAndGenresScore(Long bookId, Long userId) {
-        Book book = bookHelper.findBookById(bookId);
+        Book book = bookService.findBookById(bookId);
         User user = userService.findUserById(userId);
         boostAuthorsAndGenresScore(book, user);
     }
@@ -76,7 +76,7 @@ class RecommendationService {
 
     @Transactional
     public void reduceAuthorsAndGenresScore(Long bookId, Long userId) {
-        Book book = bookHelper.findBookById(bookId);
+        Book book = bookService.findBookById(bookId);
         User user = userService.findUserById(userId);
         reduceAuthorsAndGenresScore(book, user);
     }

@@ -8,7 +8,6 @@ import org.hl.wirtualnyregalbackend.author_profile_picture.entity.AuthorProfileP
 import org.hl.wirtualnyregalbackend.author_review.entity.AuthorReview;
 import org.hl.wirtualnyregalbackend.common.review.ReviewMapper;
 import org.hl.wirtualnyregalbackend.common.review.ReviewResponse;
-import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.springframework.lang.Nullable;
 
 public class AuthorMapper {
@@ -20,20 +19,21 @@ public class AuthorMapper {
         return new AuthorResponse(
             author.getId(),
             author.getFullName(),
-            getPictureUrl(author)
+            getPictureUrl(author),
+            author.getTotalReviews(),
+            author.getAverageRating()
         );
     }
 
-    public static AuthorDetailsResponse toAuthorDetailsResponse(Author author,
-                                                                ReviewStatistics reviewStats,
-                                                                @Nullable AuthorReview review) {
+    public static AuthorDetailsResponse toAuthorDetailsResponse(Author author, @Nullable AuthorReview review) {
         ReviewResponse reviewResponse = review != null ? ReviewMapper.toReviewResponse(review) : null;
         return new AuthorDetailsResponse(
             author.getId(),
             author.getFullName(),
             getPictureUrl(author),
             author.getDescription(),
-            reviewStats,
+            author.getTotalReviews(),
+            author.getAverageRating(),
             reviewResponse,
             author.getCreatedAt(),
             author.getUpdatedAt()

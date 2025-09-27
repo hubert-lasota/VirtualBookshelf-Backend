@@ -8,9 +8,11 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 import org.hl.wirtualnyregalbackend.reading_book.exception.InvalidReadingBookDurationRangeException;
 import org.hl.wirtualnyregalbackend.reading_book.model.ReadingBookDurationRange;
 import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
+import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 @Entity
 @Table(name = "reading_book")
@@ -55,13 +57,14 @@ public class ReadingBook extends BaseEntity {
     }
 
 
-    public void changeStatus(ReadingStatus status, ReadingBookDurationRange durationRange) {
+    public void changeStatus(ReadingStatus status, @Nullable ReadingBookDurationRange durationRange) {
         switch (status) {
             case WANT_TO_READ -> {
                 this.status = ReadingStatus.WANT_TO_READ;
                 this.durationRange = ReadingBookDurationRange.of(null, null);
             }
             case READ -> {
+                Objects.requireNonNull(durationRange, "DurationRange must be provided for ReadingStatus='%s'".formatted(ReadingStatus.READ.toString()));
                 if (durationRange.getFinishedAt() == null) {
                     throw new InvalidReadingBookDurationRangeException(durationRange, "FinishedAt must be provided for ReadingStatus='%s'".formatted(ReadingStatus.READ.toString()));
                 }
@@ -70,7 +73,8 @@ public class ReadingBook extends BaseEntity {
                 this.currentPage = this.book.getPageCount();
             }
             case READING -> {
-                if (durationRange == null || durationRange.getFinishedAt() == null) {
+                Objects.requireNonNull(durationRange, "DurationRange must be provided for ReadingStatus='%s'".formatted(ReadingStatus.READING.toString()));
+                if (durationRange.getFinishedAt() == null) {
                     throw new InvalidReadingBookDurationRangeException(durationRange, "StartedAt must be provided for ReadingStatus='%s'".formatted(ReadingStatus.READING.toString()));
                 }
                 this.status = ReadingStatus.READING;
@@ -79,13 +83,17 @@ public class ReadingBook extends BaseEntity {
         }
     }
 
-    public void addReadPages(Integer readPages) {
+    public void addReadPages(Integer readPages, @Nullable ReadingBookDurationRange durationRange) {
         int currentPage = this.currentPage + readPages;
+        ReadingStatus status;
         if (currentPage > book.getPageCount()) {
             this.currentPage = book.getPageCount();
+            status = ReadingStatus.READ;
         } else {
             this.currentPage = Math.max(currentPage, 0);
+            status = ReadingStatus.READING;
         }
+        changeStatus(status, durationRange);
     }
 
     public Float calculateProgressPercentage() {

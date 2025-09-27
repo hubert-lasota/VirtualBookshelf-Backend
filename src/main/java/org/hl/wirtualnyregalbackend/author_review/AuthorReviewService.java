@@ -7,12 +7,19 @@ import org.hl.wirtualnyregalbackend.author.AuthorHelper;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.author_review.dto.AuthorReviewCreateRequest;
 import org.hl.wirtualnyregalbackend.author_review.entity.AuthorReview;
+import org.hl.wirtualnyregalbackend.author_review.event.AuthorReviewCreatedOrUpdatedEvent;
+import org.hl.wirtualnyregalbackend.author_review.event.AuthorReviewDeletedEvent;
 import org.hl.wirtualnyregalbackend.author_review.exception.AuthorReviewAlreadyExistsException;
 import org.hl.wirtualnyregalbackend.author_review.exception.AuthorReviewNotFoundException;
-import org.hl.wirtualnyregalbackend.common.review.*;
+import org.hl.wirtualnyregalbackend.common.review.ReviewMapper;
+import org.hl.wirtualnyregalbackend.common.review.ReviewPageResponse;
+import org.hl.wirtualnyregalbackend.common.review.ReviewRequest;
+import org.hl.wirtualnyregalbackend.common.review.ReviewResponse;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -23,8 +30,10 @@ public class AuthorReviewService {
 
     private final AuthorReviewRepository authorReviewRepository;
     private final AuthorHelper authorHelper;
+    private final ApplicationEventPublisher eventPublisher;
 
 
+    @Transactional
     public ReviewResponse createAuthorReview(AuthorReviewCreateRequest reviewDto, User user) {
         Long authorId = reviewDto.getAuthorId();
         Author author = authorHelper.findAuthorById(authorId);
@@ -35,9 +44,11 @@ public class AuthorReviewService {
         AuthorReview authorReview = AuthorReviewMapper.toAuthorReview(reviewDto, author, user);
         authorReviewRepository.save(authorReview);
         log.info("AuthorReview created: {}", authorReview);
+        eventPublisher.publishEvent(AuthorReviewCreatedOrUpdatedEvent.from(authorReview));
         return ReviewMapper.toReviewResponse(authorReview);
     }
 
+    @Transactional
     public ReviewResponse updateAuthorReview(Long authorReviewId, ReviewRequest reviewRequest) {
         AuthorReview authorReview = findAuthorReviewById(authorReviewId);
         Float rating = reviewRequest.getRating();
@@ -48,19 +59,16 @@ public class AuthorReviewService {
         if (content != null) {
             authorReview.setContent(content);
         }
-        authorReviewRepository.save(authorReview);
+
+        eventPublisher.publishEvent(AuthorReviewCreatedOrUpdatedEvent.from(authorReview));
         return ReviewMapper.toReviewResponse(authorReview);
     }
 
+    @Transactional
     public void deleteAuthorReview(Long authorReviewId) {
         AuthorReview authorReview = findAuthorReviewById(authorReviewId);
         authorReviewRepository.delete(authorReview);
-    }
-
-    public ReviewStatistics getAuthorReviewStats(Long authorId) {
-        return authorReviewRepository
-            .getReviewStatsByAuthorId(authorId)
-            .orElse(new ReviewStatistics(authorId, 0D, 0L));
+        eventPublisher.publishEvent(AuthorReviewDeletedEvent.from(authorReview));
     }
 
     public ReviewPageResponse findAuthorReviews(Long authorId, Pageable pageable) {
@@ -75,14 +83,12 @@ public class AuthorReviewService {
     }
 
     private AuthorReview findAuthorReviewById(Long id) throws AuthorReviewNotFoundException {
-        return findOptionalAuthorReviewById(id).orElseThrow(() -> {
+        Optional<AuthorReview> reviewOpt = id != null ? authorReviewRepository.findById(id) : Optional.empty();
+        return reviewOpt.orElseThrow(() -> {
             log.warn("AuthorReview not found with ID: {}", id);
             return new AuthorReviewNotFoundException(id);
         });
     }
 
-    public Optional<AuthorReview> findOptionalAuthorReviewById(Long id) {
-        return id != null ? authorReviewRepository.findById(id) : Optional.empty();
-    }
 
 }

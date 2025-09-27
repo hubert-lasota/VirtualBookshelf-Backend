@@ -80,12 +80,14 @@ CREATE TABLE book
     book_format_id   BIGINT REFERENCES book_format (id),
     publisher_id     BIGINT REFERENCES publisher (id),
     isbn             VARCHAR(13),
-    title            TEXT        NOT NULL,
+    title            TEXT             NOT NULL,
     publication_year INT,
     language_code    TEXT,
     page_count       INT,
     description      TEXT,
-    created_at       TIMESTAMPTZ NOT NULL,
+    total_reviews    INT              NOT NULL,
+    average_rating   DOUBLE PRECISION NOT NULL,
+    created_at       TIMESTAMPTZ      NOT NULL,
     updated_at       TIMESTAMPTZ
 );
 
@@ -160,7 +162,9 @@ CREATE TABLE author
     author_profile_picture_id BIGINT REFERENCES author_profile_picture (id),
     full_name                 TEXT,
     description               TEXT,
-    created_at                TIMESTAMPTZ NOT NULL,
+    total_reviews             INT              NOT NULL,
+    average_rating            DOUBLE PRECISION NOT NULL,
+    created_at                TIMESTAMPTZ      NOT NULL,
     updated_at                TIMESTAMPTZ
 );
 

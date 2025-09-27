@@ -6,7 +6,6 @@ import org.hl.wirtualnyregalbackend.author.dto.AuthorResponse;
 import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
 import org.hl.wirtualnyregalbackend.common.json.LocaleDeserializer;
 import org.hl.wirtualnyregalbackend.common.review.ReviewResponse;
-import org.hl.wirtualnyregalbackend.common.review.ReviewStatistics;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponse;
 import org.hl.wirtualnyregalbackend.reading_book.dto.BookshelfSummaryResponse;
@@ -22,7 +21,8 @@ public record BookDetailsResponse(
     String coverUrl,
     BookFormatDto format,
     List<GenreResponse> genres,
-    ReviewStatistics reviewStatistics,
+    Integer totalReviews,
+    Double averageRating,
     ReviewResponse review,
     PublisherResponse publisher,
     Integer pageCount,

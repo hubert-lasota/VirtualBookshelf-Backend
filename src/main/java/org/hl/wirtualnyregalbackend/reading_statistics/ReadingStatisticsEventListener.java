@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.reading_statistics;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.book.BookHelper;
+import org.hl.wirtualnyregalbackend.book.BookService;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookChangedStatusEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookCreatedEvent;
@@ -24,14 +24,14 @@ class ReadingStatisticsEventListener {
     private final BookLengthStatisticsService bookLenStatsService;
     private final GenreStatisticsService genreStatsService;
     private final UserReadingStatisticsService userStatsService;
-    private final BookHelper bookHelper;
+    private final BookService bookService;
     private final UserService userService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReadingBookCreatedEvent(ReadingBookCreatedEvent event) {
         Long userId = event.userId();
         ReadingStatus status = event.status();
-        Book book = bookHelper.findBookById(event.bookId());
+        Book book = bookService.findBookById(event.bookId());
         User user = userService.findUserById(userId);
         bookLenStatsService.updateBookLengthStatistics(user, book, status);
         genreStatsService.updateGenreStatistics(user, book, status);

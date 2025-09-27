@@ -10,7 +10,6 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @ToString(callSuper = true)
 public class Author extends BaseEntity {
 
@@ -20,8 +19,33 @@ public class Author extends BaseEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "total_reviews")
+    @Setter(AccessLevel.NONE)
+    private Integer totalReviews;
+
+    @Column(name = "average_rating")
+    private Double averageRating;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "author_profile_picture_id")
-    private AuthorProfilePicture AuthorProfilePicture;
+    private AuthorProfilePicture authorProfilePicture;
+
+
+    public Author(String fullName, String description, AuthorProfilePicture authorProfilePicture) {
+        this.fullName = fullName;
+        this.description = description;
+        this.authorProfilePicture = authorProfilePicture;
+        this.totalReviews = 0;
+        this.averageRating = 0.0;
+    }
+
+
+    public void incrementTotalReviews() {
+        this.totalReviews++;
+    }
+
+    public void decrementTotalReviews() {
+        this.totalReviews--;
+    }
 
 }
