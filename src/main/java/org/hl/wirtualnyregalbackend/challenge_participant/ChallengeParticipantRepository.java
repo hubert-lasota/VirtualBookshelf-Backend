@@ -4,6 +4,7 @@ import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengeParticipant;
 import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,5 +26,7 @@ interface ChallengeParticipantRepository extends JpaRepository<ChallengeParticip
         ChallengeParticipantStatus status,
         Pageable pageable
     );
+
+    Page<ChallengeParticipant> findByChallengeId(Long challengeId, Pageable pageable);
 
 }

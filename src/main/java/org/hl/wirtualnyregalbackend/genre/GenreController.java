@@ -2,10 +2,12 @@ package org.hl.wirtualnyregalbackend.genre;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import org.hl.wirtualnyregalbackend.genre.dto.GenrePageResponse;
-import org.springframework.data.domain.Pageable;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
+import org.hl.wirtualnyregalbackend.genre.dto.GenreListResponse;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,8 +19,9 @@ class GenreController {
 
 
     @GetMapping
-    public GenrePageResponse findGenres(Pageable pageable) {
-        return genreService.findGenres(pageable);
+    public GenreListResponse findGenres(@RequestParam(required = false) Boolean availableInBookshelf,
+                                        @AuthenticationPrincipal User user) {
+        return genreService.findGenres(availableInBookshelf, user);
     }
 
 }

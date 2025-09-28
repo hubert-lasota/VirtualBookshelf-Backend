@@ -7,7 +7,7 @@ import java.time.Instant;
 public record AuthorDetailsResponse(
     Long id,
     String fullName,
-    String photoUrl,
+    String profilePictureUrl,
     String description,
     Integer totalReviews,
     Double averageRating,

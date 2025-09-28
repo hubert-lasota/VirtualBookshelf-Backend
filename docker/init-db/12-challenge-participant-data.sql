@@ -393,3 +393,6 @@ VALUES
 (25, 10, 28, 'ACTIVE', now() - interval '18 days', NULL, now(), NULL);
 
 
+
+update challenge as c
+set total_participants = (coalesce((select count(*) from challenge_participant cp where cp.challenge_id = c.id), 0))

@@ -3,10 +3,9 @@ package org.hl.wirtualnyregalbackend.reading_note;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteCreateRequest;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteListResponse;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteRequest;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponse;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteUpdateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +23,7 @@ class ReadingNoteController {
     @ResponseStatus(HttpStatus.CREATED)
     public ReadingNoteResponse createReadingNote(@Validated(CreateGroup.class)
                                                  @RequestBody
-                                                 ReadingNoteCreateRequest noteRequest) {
+                                                 ReadingNoteRequest noteRequest) {
         return noteService.createReadingNote(noteRequest);
     }
 
@@ -35,8 +34,8 @@ class ReadingNoteController {
                                                  Long noteId,
                                                  @Validated(UpdateGroup.class)
                                                  @RequestBody
-                                                 ReadingNoteUpdateRequest noteDto) {
-        return noteService.updateReadingNote(noteId, noteDto);
+                                                 ReadingNoteRequest noteRequest) {
+        return noteService.updateReadingNote(noteId, noteRequest);
     }
 
     @DeleteMapping("/{noteId}")
@@ -48,8 +47,8 @@ class ReadingNoteController {
 
 
     @GetMapping
-    public ReadingNoteListResponse findReadingNotes(@RequestParam Long readingBookId) {
-        return noteService.findReadingNotes(readingBookId);
+    public ReadingNoteListResponse findReadingNotes(@RequestParam Long readingBookId, @RequestParam(required = false) String query) {
+        return noteService.findReadingNotes(readingBookId, query);
     }
 
 }

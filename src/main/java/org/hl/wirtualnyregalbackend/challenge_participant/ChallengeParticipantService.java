@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.challenge.ChallengeHelper;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.challenge_participant.dto.ChallengeParticipantCreateRequest;
+import org.hl.wirtualnyregalbackend.challenge_participant.dto.ChallengeParticipantPageResponse;
 import org.hl.wirtualnyregalbackend.challenge_participant.dto.ChallengeParticipantResponse;
 import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengeParticipant;
 import org.hl.wirtualnyregalbackend.challenge_participant.event.ChallengeParticipantCreatedEvent;
@@ -13,6 +14,7 @@ import org.hl.wirtualnyregalbackend.challenge_participant.exception.ChallengePar
 import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantDurationRange;
 import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantStatus;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,7 @@ public class ChallengeParticipantService {
     private final Clock clock;
     private final ApplicationEventPublisher eventPublisher;
 
+    @Transactional
     public ChallengeParticipantResponse createChallengeParticipant(ChallengeParticipantCreateRequest participantRequest) {
         Challenge challenge = challengeHelper.findChallengeById(participantRequest.challengeId());
         ChallengeParticipant participant = createChallengeParticipant(challenge);
@@ -65,6 +68,13 @@ public class ChallengeParticipantService {
         participantRepository.delete(participant);
     }
 
+
+    public ChallengeParticipantPageResponse findParticipantsByChallengeId(Long challengeId, Pageable pageable) {
+        var page = participantRepository
+            .findByChallengeId(challengeId, pageable)
+            .map(ChallengeParticipantMapper::toChallengeParticipantResponse);
+        return ChallengeParticipantPageResponse.from(page);
+    }
 
     public ChallengeParticipant findParticipantByChallengeIdAndUserId(Long challengeId, Long userId)
         throws ChallengeParticipantNotFoundException {

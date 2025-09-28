@@ -47,5 +47,6 @@ GROUP BY bs.user_id, a.id;
 INSERT INTO book_recommendation (user_id, book_id, score, created_at, updated_at)
 SELECT 1, b.id, (random() * 4 + 1)::numeric(2, 1), now(), NULL
 FROM book b
-WHERE b.id BETWEEN 300 AND 356 AND b.id NOT IN (355, 335);
+WHERE b.id BETWEEN 300 AND 356
+  AND b.id NOT IN (355, 335);
 

@@ -1315,7 +1315,6 @@ VALUES (1, 334, 4.0, 'Wciągająca książka.', now(), NULL),
 
 
 
-
 INSERT INTO book_review (user_id, book_id, rating, content, created_at, updated_at)
 VALUES (1, 336, 4.5, 'Świetna książka, polecam każdemu.', now(), NULL),
        (2, 336, 5, 'Nie mogłem się oderwać.', now(), NULL),

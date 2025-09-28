@@ -230,25 +230,26 @@ CREATE TABLE reading_session
 (
     id                  BIGSERIAL PRIMARY KEY,
     reading_book_id     BIGINT      NOT NULL REFERENCES reading_book (id),
+    title               TEXT        NOT NULL,
     page_from           INT         NOT NULL,
     page_to             INT         NOT NULL,
     started_reading_at  TIMESTAMPTZ NOT NULL,
     finished_reading_at TIMESTAMPTZ NOT NULL,
-    description         TEXT,
     created_at          TIMESTAMPTZ NOT NULL,
     updated_at          TIMESTAMPTZ
 );
 
 CREATE TABLE reading_note
 (
-    id              BIGSERIAL PRIMARY KEY,
-    reading_book_id BIGINT      NOT NULL REFERENCES reading_book (id),
-    title           TEXT        NOT NULL,
-    content         TEXT        NOT NULL,
-    page_from       INT         NOT NULL,
-    page_to         INT         NOT NULL,
-    created_at      TIMESTAMPTZ NOT NULL,
-    updated_at      TIMESTAMPTZ
+    id                 BIGSERIAL PRIMARY KEY,
+    reading_book_id    BIGINT      NOT NULL REFERENCES reading_book (id),
+    reading_session_id BIGINT REFERENCES reading_session (id),
+    title              TEXT        NOT NULL,
+    content            TEXT        NOT NULL,
+    page_from          INT         NOT NULL,
+    page_to            INT         NOT NULL,
+    created_at         TIMESTAMPTZ NOT NULL,
+    updated_at         TIMESTAMPTZ
 );
 
 -- CHALLENGE

@@ -7,10 +7,11 @@ import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.model.PageRange;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionCreateRequest;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionPageResponse;
+import org.hl.wirtualnyregalbackend.reading_note.ReadingNoteService;
+import org.hl.wirtualnyregalbackend.reading_note.entity.ReadingNote;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionListResponse;
+import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionRequest;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponse;
-import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionUpdateRequest;
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadPagesEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadTodayEvent;
@@ -19,9 +20,6 @@ import org.hl.wirtualnyregalbackend.reading_session.event.ReadingSessionDeletedE
 import org.hl.wirtualnyregalbackend.reading_session.exception.ReadingSessionNotFoundException;
 import org.hl.wirtualnyregalbackend.reading_session.model.SessionReadingDurationRange;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +27,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Locale;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,41 +37,40 @@ public class ReadingSessionService {
 
     private final ReadingSessionRepository sessionRepository;
     private final ReadingBookHelper readingBookHelper;
+    private final ReadingNoteService readingNoteService;
     private final ApplicationEventPublisher eventPublisher;
     private final Clock clock;
 
     @Transactional
-    public ReadingSessionResponse createReadingSession(ReadingSessionCreateRequest sessionRequest) {
-        ReadingBook rb = readingBookHelper.findReadingBookById(sessionRequest.getReadingBookId());
+    public ReadingSessionResponse createReadingSession(ReadingSessionRequest sessionRequest) {
+        ReadingBook rb = readingBookHelper.findReadingBookById(sessionRequest.readingBookId());
         ReadingSession session = ReadingSessionMapper.toReadingSession(sessionRequest, rb);
-        sessionRepository.save(session);
+        sessionRepository.saveAndFlush(session);
+        if (sessionRequest.notes() != null) {
+            List<ReadingNote> notes = readingNoteService.createReadingNotesInSession(session, sessionRequest.notes());
+            session.setNotes(notes);
+        }
 
         publishReadTodayEventIfRequired(rb.getBookshelf().getUser());
-
         eventPublisher.publishEvent(ReadPagesEvent.from(session));
         eventPublisher.publishEvent(ReadingSessionCreatedEvent.from(session));
+
         log.info("Reading session created: {}", session);
-        Locale locale = LocaleContextHolder.getLocale();
-        return ReadingSessionMapper.toReadingSessionResponse(session, locale);
+        return ReadingSessionMapper.toReadingSessionResponse(session);
     }
 
     @Transactional
-    public ReadingSessionResponse updateReadingSession(Long sessionId, ReadingSessionUpdateRequest sessionRequest) {
+    public ReadingSessionResponse updateReadingSession(Long sessionId, ReadingSessionRequest sessionRequest) {
         ReadingSession session = findReadingSessionById(sessionId);
         log.info("Updating reading session: {} by request: {}", session, sessionRequest);
 
-        String description = sessionRequest.getDescription();
-        if (description != null) {
-            session.setDescription(description);
-        }
-
         PageRange oldPr = session.getPageRange();
-        PageRange newPr = sessionRequest.getPageRange();
+        PageRange newPr = sessionRequest.pageRange();
         PageRange pr = PageRange.merge(oldPr, newPr);
         session.setPageRange(pr);
 
         SessionReadingDurationRange oldDr = session.getDurationRange();
-        SessionReadingDurationRange newDr = sessionRequest.getDurationRange();
+        SessionReadingDurationRange newDr = sessionRequest.durationRange();
         SessionReadingDurationRange dr = SessionReadingDurationRange.merge(oldDr, newDr);
         session.setDurationRange(dr);
 
@@ -82,9 +79,7 @@ public class ReadingSessionService {
             eventPublisher.publishEvent(rpEvent);
         }
         log.info("Updated reading session: {}", session);
-
-        Locale locale = LocaleContextHolder.getLocale();
-        return ReadingSessionMapper.toReadingSessionResponse(session, locale);
+        return ReadingSessionMapper.toReadingSessionResponse(session);
     }
 
     @Transactional
@@ -95,12 +90,13 @@ public class ReadingSessionService {
         log.info("Deleted reading session: {}", rs);
     }
 
-    public ReadingSessionPageResponse findReadingSessions(User user, Pageable pageable) {
-        Locale locale = LocaleContextHolder.getLocale();
-        Page<ReadingSessionResponse> page = sessionRepository
-            .findByUserId(user.getId(), pageable)
-            .map((session) -> ReadingSessionMapper.toReadingSessionResponse(session, locale));
-        return ReadingSessionPageResponse.from(page);
+    public ReadingSessionListResponse findReadingSessions(Long readingBookId) {
+        List<ReadingSessionResponse> sessions = sessionRepository
+            .findByReadingBookId(readingBookId)
+            .stream()
+            .map(ReadingSessionMapper::toReadingSessionResponse)
+            .toList();
+        return new ReadingSessionListResponse(sessions);
     }
 
     public boolean isSessionAuthor(Long sessionId, User user) {

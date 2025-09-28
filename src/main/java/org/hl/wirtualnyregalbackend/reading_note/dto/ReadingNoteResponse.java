@@ -10,6 +10,7 @@ public record ReadingNoteResponse(
     String title,
     String content,
     PageRange pageRange,
+    SessionInNoteResponse session,
     Instant createdAt,
     Instant updatedAt
 ) {

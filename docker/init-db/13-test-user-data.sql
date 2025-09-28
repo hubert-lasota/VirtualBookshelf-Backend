@@ -74,7 +74,7 @@ VALUES
 (6, 'Notatka kończąca aktualny etap', 'Skończyłem czytać na tej stronie.', 86, 90, now(), NULL);
 
 
-INSERT INTO reading_session (reading_book_id, page_from, page_to, started_reading_at, finished_reading_at, description,
+INSERT INTO reading_session (reading_book_id, page_from, page_to, started_reading_at, finished_reading_at, title,
                              created_at, updated_at)
 VALUES
 -- Book_id 301 (READ, 288 stron)
@@ -114,21 +114,21 @@ VALUES
 INSERT INTO reading_book (bookshelf_id, book_id, status, current_page, total_notes, total_sessions,
                           started_reading_at, finished_reading_at, created_at, updated_at)
 VALUES (3, 310, 'READ', 823, 5, 4, '2023-01-05', '2023-02-15', now(), NULL),
-       ( 3, 311, 'READ', 640, 5, 3, '2023-03-01', '2023-03-28', now(), NULL),
-       ( 3, 312, 'READ', 515, 5, 3, '2023-04-10', '2023-05-02', now(), NULL),
-       ( 3, 313, 'READ', 790, 5, 4, '2023-06-01', '2023-07-05', now(), NULL),
+       (3, 311, 'READ', 640, 5, 3, '2023-03-01', '2023-03-28', now(), NULL),
+       (3, 312, 'READ', 515, 5, 3, '2023-04-10', '2023-05-02', now(), NULL),
+       (3, 313, 'READ', 790, 5, 4, '2023-06-01', '2023-07-05', now(), NULL),
 
-       ( 2, 314, 'READING', 230, 5, 3, '2024-01-10', NULL, now(), NULL),
-       ( 2, 315, 'READING', 120, 5, 2, '2024-02-01', NULL, now(), NULL),
-       ( 2, 316, 'READING', 340, 5, 4, '2024-03-05', NULL, now(), NULL),
-       ( 2, 317, 'READING', 90, 5, 2, '2024-03-20', NULL, now(), NULL),
+       (2, 314, 'READING', 230, 5, 3, '2024-01-10', NULL, now(), NULL),
+       (2, 315, 'READING', 120, 5, 2, '2024-02-01', NULL, now(), NULL),
+       (2, 316, 'READING', 340, 5, 4, '2024-03-05', NULL, now(), NULL),
+       (2, 317, 'READING', 90, 5, 2, '2024-03-20', NULL, now(), NULL),
 
-       ( 1, 318, 'WANT_TO_READ', 0, 0, 0, NULL, NULL, now(), NULL),
-       ( 1, 319, 'WANT_TO_READ', 0, 0, 0, NULL, NULL, now(), NULL),
-       ( 1, 320, 'WANT_TO_READ', 0, 0, 0, NULL, NULL, now(), NULL),
-       ( 1, 321, 'WANT_TO_READ', 0, 0, 0, NULL, NULL, now(), NULL),
-       ( 1, 322, 'WANT_TO_READ', 0, 0, 0, NULL, NULL, now(), NULL),
-       ( 1, 323, 'WANT_TO_READ', 0, 0, 0, NULL, NULL, now(), NULL);
+       (1, 318, 'WANT_TO_READ', 0, 0, 0, NULL, NULL, now(), NULL),
+       (1, 319, 'WANT_TO_READ', 0, 0, 0, NULL, NULL, now(), NULL),
+       (1, 320, 'WANT_TO_READ', 0, 0, 0, NULL, NULL, now(), NULL),
+       (1, 321, 'WANT_TO_READ', 0, 0, 0, NULL, NULL, now(), NULL),
+       (1, 322, 'WANT_TO_READ', 0, 0, 0, NULL, NULL, now(), NULL),
+       (1, 323, 'WANT_TO_READ', 0, 0, 0, NULL, NULL, now(), NULL);
 
 -- READING BOOK END-ID=22
 
@@ -192,7 +192,7 @@ VALUES
 (16, 'Scena grozy', 'Mocny moment pełen napięcia.', 85, 90, now(), NULL);
 
 -- READING_SESSION
-INSERT INTO reading_session (reading_book_id, page_from, page_to, started_reading_at, finished_reading_at, description,
+INSERT INTO reading_session (reading_book_id, page_from, page_to, started_reading_at, finished_reading_at, title,
                              created_at, updated_at)
 VALUES
 -- reading_book_id 9 (book_id 310)
@@ -356,7 +356,7 @@ VALUES
 (34, 'Notatka 5', 'Podsumowanie.', 201, 250, now());
 
 -- reading_session (READ + READING)
-INSERT INTO reading_session(reading_book_id, page_from, page_to, started_reading_at, finished_reading_at, description,
+INSERT INTO reading_session(reading_book_id, page_from, page_to, started_reading_at, finished_reading_at, title,
                             created_at)
 VALUES
 -- READ sessions
@@ -425,7 +425,7 @@ VALUES
 (44, 'Zakończenie', 'Rozwiązanie historii i losy bohaterów.', 449, 450, now());
 
 -- reading_session
-INSERT INTO reading_session(reading_book_id, page_from, page_to, started_reading_at, finished_reading_at, description,
+INSERT INTO reading_session(reading_book_id, page_from, page_to, started_reading_at, finished_reading_at, title,
                             created_at)
 VALUES
 -- Hobbit
@@ -495,7 +495,7 @@ VALUES
 (48, 'Ciągłe doskonalenie', 'Retrospektywy i poprawa procesów.', 201, 150, now());
 
 -- reading_session
-INSERT INTO reading_session(reading_book_id, page_from, page_to, started_reading_at, finished_reading_at, description,
+INSERT INTO reading_session(reading_book_id, page_from, page_to, started_reading_at, finished_reading_at, title,
                             created_at)
 VALUES
 -- Book 353
@@ -524,6 +524,11 @@ set total_notes    = COALESCE((select count(*) from reading_note where reading_b
                               0),
     total_sessions = COALESCE(
             (select count(*) from reading_session where reading_book.id = reading_session.reading_book_id), 0);
+
+update reading_book as rb
+set current_page = (select b.page_count from book as b where b.id = rb.book_id)
+where status = 'READ';
+
 update bookshelf
 set total_books = COALESCE((select count(*) from reading_book where bookshelf.id = reading_book.bookshelf_id), 0);
 

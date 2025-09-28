@@ -7,15 +7,18 @@ import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.model.PageRange;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteCreateRequest;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteListResponse;
+import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteRequest;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponse;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteUpdateRequest;
 import org.hl.wirtualnyregalbackend.reading_note.entity.ReadingNote;
 import org.hl.wirtualnyregalbackend.reading_note.event.ReadingNoteCreatedEvent;
 import org.hl.wirtualnyregalbackend.reading_note.event.ReadingNoteDeletedEvent;
 import org.hl.wirtualnyregalbackend.reading_note.exception.ReadingNoteNotFoundException;
+import org.hl.wirtualnyregalbackend.reading_session.dto.NoteInSessionDto;
+import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,28 +36,40 @@ public class ReadingNoteService {
 
 
     @Transactional
-    public ReadingNoteResponse createReadingNote(ReadingNoteCreateRequest noteRequest) {
-        ReadingBook book = readingBookHelper.findReadingBookById(noteRequest.getReadingBookId());
-        ReadingNote note = ReadingNoteMapper.toReadingNote(noteRequest, book);
+    public ReadingNoteResponse createReadingNote(ReadingNoteRequest noteRequest) {
+        ReadingBook book = readingBookHelper.findReadingBookById(noteRequest.readingBookId());
+        ReadingNote note = ReadingNoteMapper.toReadingNote(noteRequest, book, null);
         eventPublisher.publishEvent(ReadingNoteCreatedEvent.from(note));
         log.info("Created Reading Note: {}", note);
         return ReadingNoteMapper.toReadingNoteResponse(note);
     }
 
     @Transactional
-    public ReadingNoteResponse updateReadingNote(Long noteId, ReadingNoteUpdateRequest noteRequest) {
+    public List<ReadingNote> createReadingNotesInSession(ReadingSession session, List<NoteInSessionDto> notes) {
+        List<ReadingNote> noteEntities = notes
+            .stream()
+            .map((note) -> ReadingNoteMapper.toReadingNote(session, note))
+            .toList();
+
+        noteEntities.forEach((note) -> eventPublisher.publishEvent(ReadingNoteCreatedEvent.from(note)));
+
+        return noteRepository.saveAll(noteEntities);
+    }
+
+    @Transactional
+    public ReadingNoteResponse updateReadingNote(Long noteId, ReadingNoteRequest noteRequest) {
         ReadingNote note = findReadingNoteById(noteId);
         log.info("Updating Reading Note: {} by request: {}", note, noteRequest);
 
-        PageRange pr = PageRange.merge(note.getPageRange(), noteRequest.getPageRange());
+        PageRange pr = PageRange.merge(note.getPageRange(), noteRequest.pageRange());
         note.setPageRange(pr);
 
-        String title = noteRequest.getTitle();
+        String title = noteRequest.title();
         if (title != null) {
             note.setTitle(title);
         }
 
-        String content = noteRequest.getContent();
+        String content = noteRequest.content();
         if (content != null) {
             note.setContent(content);
         }
@@ -71,9 +86,14 @@ public class ReadingNoteService {
         log.info("Deleted Reading Note: {}", note);
     }
 
-    public ReadingNoteListResponse findReadingNotes(Long readingBookId) {
+    public ReadingNoteListResponse findReadingNotes(Long readingBookId, @Nullable String query) {
+        Specification<ReadingNote> spec = Specification.where(ReadingNoteSpecification.byReadingBookId(readingBookId));
+        if (query != null) {
+            spec = spec.and(ReadingNoteSpecification.byQuery(query));
+        }
+
         List<ReadingNoteResponse> notes = noteRepository
-            .findReadingNotesByReadingBookId(readingBookId)
+            .findAll(spec)
             .stream()
             .map(ReadingNoteMapper::toReadingNoteResponse)
             .toList();

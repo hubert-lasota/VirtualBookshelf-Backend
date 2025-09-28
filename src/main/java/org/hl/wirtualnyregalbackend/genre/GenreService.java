@@ -1,13 +1,13 @@
 package org.hl.wirtualnyregalbackend.genre;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hl.wirtualnyregalbackend.genre.dto.GenrePageResponse;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
+import org.hl.wirtualnyregalbackend.genre.dto.GenreListResponse;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.genre.exception.GenreNotFoundException;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,12 +29,18 @@ public class GenreService {
         return genreRepository.findByIds(ids);
     }
 
-    public GenrePageResponse findGenres(Pageable pageable) {
+    public GenreListResponse findGenres(Boolean availableInBookshelf, User user) {
         Locale locale = LocaleContextHolder.getLocale();
-        Page<GenreResponse> page = genreRepository
-            .findAll(pageable)
-            .map((genre) -> GenreMapper.toGenreResponse(genre, locale));
-        return GenrePageResponse.from(page);
+        Specification<Genre> spec = Specification.where(null);
+        if (availableInBookshelf != null) {
+            spec = spec.and(GenreSpecification.byAvailableInBookshelf(availableInBookshelf, user));
+        }
+        List<GenreResponse> genres = genreRepository
+            .findAll(spec)
+            .stream()
+            .map((genre) -> GenreMapper.toGenreResponse(genre, locale))
+            .toList();
+        return new GenreListResponse(genres);
     }
 
     public Genre findGenreById(Long genreId) throws GenreNotFoundException {
