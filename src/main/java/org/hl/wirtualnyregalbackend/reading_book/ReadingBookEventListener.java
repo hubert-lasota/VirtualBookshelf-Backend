@@ -22,12 +22,12 @@ import java.time.Instant;
 @Transactional
 class ReadingBookEventListener {
 
-    private final ReadingBookHelper readingBookHelper;
+    private final ReadingBookQueryService query;
 
 
     @EventListener
     public void handleReadPagesEvent(ReadPagesEvent event) {
-        ReadingBook rb = readingBookHelper.findReadingBookById(event.readingBookId());
+        ReadingBook rb = query.findReadingBookById(event.readingBookId());
         SessionReadingDurationRange srdr = event.durationRange();
         Instant startedAt = rb.getDurationRange().getStartedAt() != null
             ? rb.getDurationRange().getStartedAt()
@@ -38,25 +38,25 @@ class ReadingBookEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReadingSessionCreatedEvent(ReadingSessionCreatedEvent event) {
-        ReadingBook readingBook = readingBookHelper.findReadingBookById(event.readingBookId());
+        ReadingBook readingBook = query.findReadingBookById(event.readingBookId());
         readingBook.incrementTotalSessions();
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReadingSessionDeletedEvent(ReadingSessionDeletedEvent event) {
-        ReadingBook rb = readingBookHelper.findReadingBookById(event.readingBookId());
+        ReadingBook rb = query.findReadingBookById(event.readingBookId());
         rb.decrementTotalSessions();
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReadingNoteCreatedEvent(ReadingNoteCreatedEvent event) {
-        ReadingBook rb = readingBookHelper.findReadingBookById(event.readingBookId());
+        ReadingBook rb = query.findReadingBookById(event.readingBookId());
         rb.incrementTotalNotes();
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReadingNoteDeletedEvent(ReadingNoteDeletedEvent event) {
-        ReadingBook rb = readingBookHelper.findReadingBookById(event.readingBookId());
+        ReadingBook rb = query.findReadingBookById(event.readingBookId());
         rb.decrementTotalNotes();
     }
 

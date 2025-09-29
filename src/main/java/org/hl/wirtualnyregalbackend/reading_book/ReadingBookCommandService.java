@@ -3,21 +3,21 @@ package org.hl.wirtualnyregalbackend.reading_book;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.book.BookService;
-import org.hl.wirtualnyregalbackend.book.dto.BookRequest;
+import org.hl.wirtualnyregalbackend.book.BookCommandService;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
-import org.hl.wirtualnyregalbackend.book.model.BookFilter;
-import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
+import org.hl.wirtualnyregalbackend.bookshelf.BookshelfQueryService;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
-import org.hl.wirtualnyregalbackend.reading_book.dto.*;
+import org.hl.wirtualnyregalbackend.reading_book.dto.BookWithIdDto;
+import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookCreateRequest;
+import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookResponse;
+import org.hl.wirtualnyregalbackend.reading_book.dto.ReadingBookUpdateRequest;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookChangedStatusEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookCreatedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.event.ReadingBookDeletedEvent;
 import org.hl.wirtualnyregalbackend.reading_book.model.ReadingBookDurationRange;
 import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
-import org.hl.wirtualnyregalbackend.reading_note.ReadingNoteHelper;
+import org.hl.wirtualnyregalbackend.reading_note.ReadingNoteCommandService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,27 +26,27 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Clock;
 import java.time.Instant;
-import java.util.List;
 import java.util.Locale;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Slf4j
-public class ReadingBookService {
+public class ReadingBookCommandService {
 
-    private final ReadingBookRepository readingBookRepository;
-    private final ReadingBookHelper readingBookHelper;
-    private final BookshelfService bookshelfService;
-    private final BookService bookService;
-    private final ReadingNoteHelper noteHelper;
+    private final ReadingBookRepository repository;
+    private final ReadingBookQueryService readingBookQuery;
+    private final BookshelfQueryService bookshelfQuery;
+    private final BookCommandService bookCommand;
+    private final ReadingNoteCommandService noteCommand;
     private final ApplicationEventPublisher eventPublisher;
     private final Clock clock;
 
+
     @Transactional
     public ReadingBookResponse createReadingBook(ReadingBookCreateRequest readingBookRequest, MultipartFile bookCover) {
-        Bookshelf bookshelf = bookshelfService.findBookshelfById(readingBookRequest.bookshelfId());
+        Bookshelf bookshelf = bookshelfQuery.findBookshelfById(readingBookRequest.bookshelfId());
         BookWithIdDto bookWithIdDto = readingBookRequest.book();
-        Book book = findOrCreateBook(bookWithIdDto.getId(), bookWithIdDto.getBookRequest(), bookCover);
+        Book book = bookCommand.findOrCreateBook(bookWithIdDto.getId(), bookWithIdDto.getBookRequest(), bookCover);
         ReadingBook readingBook = ReadingBookMapper.toReadingBook(readingBookRequest, bookshelf, book);
         eventPublisher.publishEvent(ReadingBookCreatedEvent.from(readingBook));
         log.info("Created Reading Book: {}", readingBook);
@@ -56,7 +56,7 @@ public class ReadingBookService {
 
     @Transactional
     public ReadingBookResponse updateReadingBook(Long readingBookId, ReadingBookUpdateRequest readingBookRequest) {
-        ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
+        ReadingBook readingBook = readingBookQuery.findReadingBookById(readingBookId);
         log.info("Updating Reading Book: {} by request: {}", readingBook, readingBookRequest);
 
         ReadingStatus status = readingBookRequest.status();
@@ -71,18 +71,18 @@ public class ReadingBookService {
     }
 
     public ReadingBookResponse moveReadingBook(Long readingBookId, Long bookshelfId) {
-        Bookshelf bookshelf = bookshelfService.findBookshelfById(bookshelfId);
-        ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
+        Bookshelf bookshelf = bookshelfQuery.findBookshelfById(bookshelfId);
+        ReadingBook readingBook = readingBookQuery.findReadingBookById(readingBookId);
         log.info("Moving Reading Book: {} to bookshelf: {}", readingBook, bookshelf);
         readingBook.setBookshelf(bookshelf);
-        readingBookRepository.save(readingBook);
+        repository.save(readingBook);
         Locale locale = LocaleContextHolder.getLocale();
         return ReadingBookMapper.toReadingBookResponse(readingBook, locale);
     }
 
     @Transactional
     public ReadingBookResponse changeReadingBookStatus(Long readingBookId, ReadingStatus status) {
-        ReadingBook book = readingBookHelper.findReadingBookById(readingBookId);
+        ReadingBook book = readingBookQuery.findReadingBookById(readingBookId);
         ReadingStatus previousStatus = book.getStatus();
         ReadingBookDurationRange rbdr = null;
         Instant now = Instant.now(clock);
@@ -101,35 +101,12 @@ public class ReadingBookService {
 
     @Transactional
     public void deleteReadingBook(Long readingBookId) {
-        ReadingBook readingBook = readingBookHelper.findReadingBookById(readingBookId);
+        ReadingBook readingBook = readingBookQuery.findReadingBookById(readingBookId);
         eventPublisher.publishEvent(ReadingBookDeletedEvent.from(readingBook));
 
-        noteHelper.deleteNotesByReadingBookId(readingBookId);
-        readingBookRepository.delete(readingBook);
+        noteCommand.deleteNotesByReadingBookId(readingBookId);
+        repository.delete(readingBook);
         log.info("Deleted Reading Book: {}", readingBook);
-    }
-
-    public ReadingBookListResponse findUserReadingBooks(User user, BookFilter filter) {
-        var spec = ReadingBookSpecification
-            .byFilter(filter)
-            .and(ReadingBookSpecification.byUser(user));
-        Locale locale = LocaleContextHolder.getLocale();
-        List<ReadingBookResponse> books = readingBookRepository
-            .findAll(spec)
-            .stream()
-            .map((rb) -> ReadingBookMapper.toReadingBookResponse(rb, locale))
-            .toList();
-        return new ReadingBookListResponse(books);
-    }
-
-    public boolean isReadingBookAuthor(Long readingBookId, User user) {
-        return readingBookRepository.isAuthor(readingBookId, user.getId());
-    }
-
-
-    private Book findOrCreateBook(Long bookId, BookRequest bookDto, MultipartFile cover) {
-        return bookService.findBookOptById(bookId)
-            .orElseGet(() -> bookService.createBookEntity(bookDto, cover));
     }
 
 }

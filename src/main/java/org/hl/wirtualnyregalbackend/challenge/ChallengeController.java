@@ -22,7 +22,8 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class ChallengeController {
 
-    private final ChallengeService challengeService;
+    private final ChallengeCommandService challengeService;
+    private final ChallengeQueryService query;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -54,7 +55,7 @@ public class ChallengeController {
     public ChallengePageResponse findChallenges(@Valid ChallengeFilter filter,
                                                 Pageable pageable,
                                                 @AuthenticationPrincipal User user) {
-        return challengeService.findChallenges(filter, user, pageable);
+        return query.findChallenges(filter, user, pageable);
     }
 
 }

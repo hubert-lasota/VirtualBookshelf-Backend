@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.book;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
-import org.hl.wirtualnyregalbackend.book_review.BookReviewHelper;
+import org.hl.wirtualnyregalbackend.book_review.BookReviewQueryService;
 import org.hl.wirtualnyregalbackend.book_review.event.BookReviewCreatedOrUpdatedEvent;
 import org.hl.wirtualnyregalbackend.book_review.event.BookReviewDeletedEvent;
 import org.springframework.scheduling.annotation.Async;
@@ -17,21 +17,21 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @AllArgsConstructor
 class BookEventListener {
 
-    private final BookService bookService;
-    private final BookReviewHelper bookReviewHelper;
+    private final BookQueryService bookQuery;
+    private final BookReviewQueryService reviewQuery;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleEvent(BookReviewCreatedOrUpdatedEvent event) {
-        Book book = bookService.findBookById(event.bookId());
-        Double average = bookReviewHelper.calculateBookRatingAverage(book);
+        Book book = bookQuery.findBookById(event.bookId());
+        Double average = reviewQuery.calculateBookRatingAverage(book);
         book.setAverageRating(average);
         book.incrementTotalReviews();
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleEvent(BookReviewDeletedEvent event) {
-        Book book = bookService.findBookById(event.bookId());
-        Double average = bookReviewHelper.calculateBookRatingAverage(book);
+        Book book = bookQuery.findBookById(event.bookId());
+        Double average = reviewQuery.calculateBookRatingAverage(book);
         book.setAverageRating(average);
         book.decrementTotalReviews();
     }

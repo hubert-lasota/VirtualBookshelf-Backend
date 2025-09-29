@@ -19,7 +19,8 @@ import java.net.URI;
 @AllArgsConstructor
 class PublisherController {
 
-    private final PublisherService publisherService;
+    private final PublisherCommandService command;
+    private final PublisherQueryService query;
 
 
     @PostMapping
@@ -27,7 +28,7 @@ class PublisherController {
                                                              @Validated(CreateGroup.class)
                                                              PublisherRequest publisherRequest,
                                                              UriComponentsBuilder uriBuilder) {
-        PublisherResponse response = publisherService.createPublisher(publisherRequest);
+        PublisherResponse response = command.createPublisher(publisherRequest);
 
         URI location = uriBuilder
             .path("/v1/books/{id}")
@@ -39,12 +40,12 @@ class PublisherController {
 
     @GetMapping("/{publisherId}")
     public PublisherDetailsResponse findPublisherDetailsById(@PathVariable Long publisherId) {
-        return publisherService.findPublisherDetailsById(publisherId);
+        return query.findPublisherDetailsById(publisherId);
     }
 
     @GetMapping
     public PublisherPageResponse findPublishers(Pageable pageable) {
-        return publisherService.findPublishers(pageable);
+        return query.findPublishers(pageable);
     }
 
 }

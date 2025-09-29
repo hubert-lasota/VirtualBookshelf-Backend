@@ -14,17 +14,17 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Transactional
 class BookshelfEventListener {
 
-    private final BookshelfService bookshelfService;
+    private final BookshelfQueryService query;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReadingBookCreatedEvent(ReadingBookCreatedEvent event) {
-        Bookshelf bookshelf = bookshelfService.findBookshelfById(event.bookshelfId());
+        Bookshelf bookshelf = query.findBookshelfById(event.bookshelfId());
         bookshelf.incrementTotalBooks();
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReadingBookDeletedEvent(ReadingBookDeletedEvent event) {
-        Bookshelf bookshelf = bookshelfService.findBookshelfById(event.bookshelfId());
+        Bookshelf bookshelf = query.findBookshelfById(event.bookshelfId());
         bookshelf.decrementTotalBooks();
     }
 

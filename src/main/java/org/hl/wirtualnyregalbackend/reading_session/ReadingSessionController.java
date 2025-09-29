@@ -18,14 +18,15 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 class ReadingSessionController {
 
-    private final ReadingSessionService sessionService;
+    private final ReadingSessionCommandService command;
+    private final ReadingSessionQueryService query;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ReadingSessionResponse createReadingSession(@Validated(CreateGroup.class)
                                                        @RequestBody
                                                        ReadingSessionRequest sessionRequest) {
-        return sessionService.createReadingSession(sessionRequest);
+        return command.createReadingSession(sessionRequest);
     }
 
     @PatchMapping("/{sessionId}")
@@ -36,19 +37,19 @@ class ReadingSessionController {
         @RequestBody
         ReadingSessionRequest sessionRequest
     ) {
-        return sessionService.updateReadingSession(sessionId, sessionRequest);
+        return command.updateReadingSession(sessionId, sessionRequest);
     }
 
     @DeleteMapping("/{sessionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReadingSession(@PathVariable Long sessionId) {
-        sessionService.deleteReadingSession(sessionId);
+        command.deleteReadingSession(sessionId);
     }
 
     @GetMapping
     @PreAuthorize("hasPermission(#filter.readingBookId, 'READING_BOOK', 'READ')")
     public ReadingSessionListResponse findReadingSessions(@Valid ReadingSessionFilter filter) {
-        return sessionService.findReadingSessions(filter);
+        return query.findReadingSessions(filter);
     }
 
 }

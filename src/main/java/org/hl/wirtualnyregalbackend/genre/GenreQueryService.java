@@ -1,5 +1,7 @@
 package org.hl.wirtualnyregalbackend.genre;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreListResponse;
@@ -17,16 +19,14 @@ import java.util.Set;
 
 @Service
 @Slf4j
-public class GenreService {
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+public class GenreQueryService {
 
-    private final GenreRepository genreRepository;
+    private final GenreRepository repository;
 
-    public GenreService(GenreRepository genreRepository) {
-        this.genreRepository = genreRepository;
-    }
 
     public Set<Genre> findGenresByIds(List<Long> ids) {
-        return genreRepository.findByIds(ids);
+        return repository.findByIds(ids);
     }
 
     public GenreListResponse findGenres(Boolean availableInBookshelf, User user) {
@@ -35,7 +35,7 @@ public class GenreService {
         if (availableInBookshelf != null) {
             spec = spec.and(GenreSpecification.byAvailableInBookshelf(availableInBookshelf, user));
         }
-        List<GenreResponse> genres = genreRepository
+        List<GenreResponse> genres = repository
             .findAll(spec)
             .stream()
             .map((genre) -> GenreMapper.toGenreResponse(genre, locale))
@@ -46,7 +46,7 @@ public class GenreService {
     public Genre findGenreById(Long genreId) throws GenreNotFoundException {
         Optional<Genre> genreOpt = genreId == null
             ? Optional.empty()
-            : genreRepository.findById(genreId);
+            : repository.findById(genreId);
         return genreOpt.orElseThrow(() -> {
             log.warn("Genre not found with ID: {}", genreId);
             return new GenreNotFoundException(genreId);

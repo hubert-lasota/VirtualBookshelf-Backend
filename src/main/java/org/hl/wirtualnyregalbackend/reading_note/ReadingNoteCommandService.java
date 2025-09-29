@@ -3,41 +3,36 @@ package org.hl.wirtualnyregalbackend.reading_note;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.model.PageRange;
-import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
+import org.hl.wirtualnyregalbackend.reading_book.ReadingBookQueryService;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteListResponse;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteRequest;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponse;
 import org.hl.wirtualnyregalbackend.reading_note.entity.ReadingNote;
 import org.hl.wirtualnyregalbackend.reading_note.event.ReadingNoteCreatedEvent;
 import org.hl.wirtualnyregalbackend.reading_note.event.ReadingNoteDeletedEvent;
-import org.hl.wirtualnyregalbackend.reading_note.exception.ReadingNoteNotFoundException;
-import org.hl.wirtualnyregalbackend.reading_note.model.ReadingNoteFilter;
 import org.hl.wirtualnyregalbackend.reading_session.dto.NoteInSessionDto;
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Slf4j
-public class ReadingNoteService {
+public class ReadingNoteCommandService {
 
-    private final ReadingNoteRepository noteRepository;
-    private final ReadingBookHelper readingBookHelper;
+    private final ReadingNoteRepository repository;
+    private final ReadingNoteQueryService noteQuery;
+    private final ReadingBookQueryService readingBookQuery;
     private final ApplicationEventPublisher eventPublisher;
 
 
     @Transactional
     public ReadingNoteResponse createReadingNote(ReadingNoteRequest noteRequest) {
-        ReadingBook book = readingBookHelper.findReadingBookById(noteRequest.readingBookId());
+        ReadingBook book = readingBookQuery.findReadingBookById(noteRequest.readingBookId());
         ReadingNote note = ReadingNoteMapper.toReadingNote(noteRequest, book, null);
         eventPublisher.publishEvent(ReadingNoteCreatedEvent.from(note));
         log.info("Created Reading Note: {}", note);
@@ -53,12 +48,12 @@ public class ReadingNoteService {
 
         noteEntities.forEach((note) -> eventPublisher.publishEvent(ReadingNoteCreatedEvent.from(note)));
 
-        return noteRepository.saveAll(noteEntities);
+        return repository.saveAll(noteEntities);
     }
 
     @Transactional
     public ReadingNoteResponse updateReadingNote(Long noteId, ReadingNoteRequest noteRequest) {
-        ReadingNote note = findReadingNoteById(noteId);
+        ReadingNote note = noteQuery.findReadingNoteById(noteId);
         log.info("Updating Reading Note: {} by request: {}", note, noteRequest);
 
         PageRange pr = PageRange.merge(note.getPageRange(), noteRequest.pageRange());
@@ -80,50 +75,15 @@ public class ReadingNoteService {
 
     @Transactional
     public void deleteReadingNoteById(Long noteId) {
-        ReadingNote note = findReadingNoteById(noteId);
-        noteRepository.delete(note);
+        ReadingNote note = noteQuery.findReadingNoteById(noteId);
+        repository.delete(note);
         eventPublisher.publishEvent(ReadingNoteDeletedEvent.from(note));
         log.info("Deleted Reading Note: {}", note);
     }
 
-    public ReadingNoteListResponse findReadingNotes(ReadingNoteFilter filter) {
-        Specification<ReadingNote> spec = Specification.where(ReadingNoteSpecification.byReadingBookId(filter.readingBookId()));
-        if (filter.query() != null) {
-            spec = spec.and(ReadingNoteSpecification.byQuery(filter.query()));
-        }
-
-        if (filter.pageRange() != null) {
-            Integer lte = filter.pageRange().lte();
-            Integer gte = filter.pageRange().gte();
-            if (lte != null) {
-                spec = spec.and(ReadingNoteSpecification.ltePageTo(lte));
-            }
-            if (gte != null) {
-                spec = spec.and(ReadingNoteSpecification.gtePageFrom(gte));
-            }
-        }
-
-        List<ReadingNoteResponse> notes = noteRepository
-            .findAll(spec)
-            .stream()
-            .map(ReadingNoteMapper::toReadingNoteResponse)
-            .toList();
-
-        return new ReadingNoteListResponse(notes);
-    }
-
-    public boolean isNoteAuthor(Long noteId, User user) {
-        return noteRepository.isNoteAuthor(noteId, user.getId());
-    }
-
-    private ReadingNote findReadingNoteById(Long noteId) throws ReadingNoteNotFoundException {
-        Optional<ReadingNote> noteOpt = noteId == null
-            ? Optional.empty()
-            : noteRepository.findById(noteId);
-        return noteOpt.orElseThrow(() -> {
-            log.warn("ReadingNote not found with ID: {}", noteId);
-            return new ReadingNoteNotFoundException(noteId);
-        });
+    public void deleteNotesByReadingBookId(Long readingBookId) {
+        log.info("Deleting notes for reading book with ID: {}", readingBookId);
+        repository.deleteByReadingBookId(readingBookId);
     }
 
 }

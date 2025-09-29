@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 class GenreController {
 
-    private final GenreService genreService;
+    private final GenreQueryService query;
 
 
     @GetMapping
     public GenreListResponse findGenres(@RequestParam(required = false) Boolean availableInBookshelf,
                                         @AuthenticationPrincipal User user) {
-        return genreService.findGenres(availableInBookshelf, user);
+        return query.findGenres(availableInBookshelf, user);
     }
 
 }

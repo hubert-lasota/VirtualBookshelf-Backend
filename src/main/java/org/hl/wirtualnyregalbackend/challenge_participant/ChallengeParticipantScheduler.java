@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.challenge_participant;
 
 import lombok.AllArgsConstructor;
-import org.hl.wirtualnyregalbackend.challenge.ChallengeService;
+import org.hl.wirtualnyregalbackend.challenge.ChallengeQueryService;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengeParticipant;
 import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantDurationRange;
@@ -21,8 +21,8 @@ import java.time.ZoneId;
 @AllArgsConstructor
 class ChallengeParticipantScheduler {
 
-    private final ChallengeService challengeService;
-    private final ChallengeParticipantRepository participantRepository;
+    private final ChallengeQueryService challengeQuery;
+    private final ChallengeParticipantRepository repository;
     private final Clock clock;
 
     @Scheduled(cron = "0 0 0 * * *", zone = "UTC")
@@ -32,7 +32,7 @@ class ChallengeParticipantScheduler {
         Slice<Challenge> challenges;
         Pageable pageable = PageRequest.of(0, 1000);
         do {
-            challenges = challengeService.findChallengesByEndAt(endAt, pageable);
+            challenges = challengeQuery.findChallengesByEndAt(endAt, pageable);
             challenges.forEach(challenge -> findAndChangeParticipantStatus(challenge, now));
             pageable = challenges.nextPageable();
         } while (challenges.hasNext());
@@ -44,7 +44,7 @@ class ChallengeParticipantScheduler {
 
         final var duration = ChallengeParticipantDurationRange.of(null, now);
         do {
-            participants = participantRepository.findByChallengeAndStatus(challenge, ChallengeParticipantStatus.ACTIVE, pageable);
+            participants = repository.findByChallengeAndStatus(challenge, ChallengeParticipantStatus.ACTIVE, pageable);
             participants.forEach(participant -> {
                 var newDuration = ChallengeParticipantDurationRange.merge(participant.getDurationRange(), duration);
                 participant.changeStatus(ChallengeParticipantStatus.UNCOMPLETED, newDuration);

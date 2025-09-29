@@ -9,9 +9,10 @@ import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.auth.exception.InvalidCredentialsException;
 import org.hl.wirtualnyregalbackend.auth.exception.UsernameAlreadyExistsException;
 import org.hl.wirtualnyregalbackend.auth.jwt.JwtService;
+import org.hl.wirtualnyregalbackend.user.UserCommandService;
 import org.hl.wirtualnyregalbackend.user.UserDefaultConfigurer;
 import org.hl.wirtualnyregalbackend.user.UserMapper;
-import org.hl.wirtualnyregalbackend.user.UserService;
+import org.hl.wirtualnyregalbackend.user.UserQueryService;
 import org.hl.wirtualnyregalbackend.user.dto.UserRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,7 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 class AuthorizationService {
 
-    private final UserService userService;
+    private final UserQueryService userQuery;
+    private final UserCommandService userCommand;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
@@ -38,15 +40,15 @@ class AuthorizationService {
     public UserSignInResponse registerUser(UserRequest userRequest, MultipartFile profilePicture) {
         String username = userRequest.username();
         log.info("User registration started for username: {}", username);
-        if (userService.existsByUsername(username)) {
+        if (userQuery.existsByUsername(username)) {
             log.warn("User registration failed - username already exists: {}", username);
             throw new UsernameAlreadyExistsException("Username: %s already exists.".formatted(username));
         }
 
         String encodedPassword = passwordEncoder.encode(userRequest.password());
         User user = new User(username, encodedPassword, AuthorityName.USER);
-        user.setUserProfile(userService.createUserProfile(userRequest.profile(), profilePicture, user));
-        userService.save(user);
+        user.setUserProfile(userCommand.createUserProfile(userRequest.profile(), profilePicture, user));
+        userCommand.save(user);
         userDefaultConfigurer.configure(user);
         String jwt = jwtService.generateToken(user);
         log.info("User successfully registered: {}", user.getUsername());

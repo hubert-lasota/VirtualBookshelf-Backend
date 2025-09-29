@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 class ReadingNoteController {
 
-    private final ReadingNoteService noteService;
+    private final ReadingNoteCommandService command;
+    private final ReadingNoteQueryService query;
 
 
     @PostMapping
@@ -26,7 +27,7 @@ class ReadingNoteController {
     public ReadingNoteResponse createReadingNote(@Validated(CreateGroup.class)
                                                  @RequestBody
                                                  ReadingNoteRequest noteRequest) {
-        return noteService.createReadingNote(noteRequest);
+        return command.createReadingNote(noteRequest);
     }
 
 
@@ -37,20 +38,20 @@ class ReadingNoteController {
                                                  @Validated(UpdateGroup.class)
                                                  @RequestBody
                                                  ReadingNoteRequest noteRequest) {
-        return noteService.updateReadingNote(noteId, noteRequest);
+        return command.updateReadingNote(noteId, noteRequest);
     }
 
     @DeleteMapping("/{noteId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasPermission(#noteId, 'READING_NOTE', 'DELETE')")
     public void deleteReadingNote(@PathVariable Long noteId) {
-        noteService.deleteReadingNoteById(noteId);
+        command.deleteReadingNoteById(noteId);
     }
 
 
     @GetMapping
     public ReadingNoteListResponse findReadingNotes(@Valid ReadingNoteFilter filter) {
-        return noteService.findReadingNotes(filter);
+        return query.findReadingNotes(filter);
     }
 
 }

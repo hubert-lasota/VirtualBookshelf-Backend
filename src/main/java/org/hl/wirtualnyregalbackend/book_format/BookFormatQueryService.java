@@ -2,6 +2,7 @@ package org.hl.wirtualnyregalbackend.book_format;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatDto;
 import org.hl.wirtualnyregalbackend.book_format.dto.BookFormatListResponse;
@@ -17,9 +18,10 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class BookFormatService {
+@Slf4j
+public class BookFormatQueryService {
 
-    private final BookFormatRepository bookFormatRepository;
+    private final BookFormatRepository repository;
 
 
     public BookFormatListResponse findBookFormats(Boolean availableInBookshelf, User user) {
@@ -28,7 +30,7 @@ public class BookFormatService {
             : Specification.where(null);
 
         Locale locale = LocaleContextHolder.getLocale();
-        List<BookFormatDto> formats = bookFormatRepository
+        List<BookFormatDto> formats = repository
             .findAll(spec)
             .stream()
             .map(format -> BookFormatMapper.toBookFormatDto(format, locale))
@@ -37,8 +39,11 @@ public class BookFormatService {
     }
 
     public BookFormat findBookFormatById(Long id) throws BookFormatNotFoundException {
-        Optional<BookFormat> formatOpt = id != null ? bookFormatRepository.findById(id) : Optional.empty();
-        return formatOpt.orElseThrow(() -> new BookFormatNotFoundException(id));
+        Optional<BookFormat> formatOpt = id != null ? repository.findById(id) : Optional.empty();
+        return formatOpt.orElseThrow(() -> {
+            log.warn("BookFormat not found with ID: {}", id);
+            return new BookFormatNotFoundException(id);
+        });
     }
 
 }

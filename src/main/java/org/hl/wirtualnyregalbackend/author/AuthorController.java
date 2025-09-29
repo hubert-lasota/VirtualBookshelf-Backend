@@ -24,7 +24,8 @@ import java.net.URI;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 class AuthorController {
 
-    private final AuthorService authorService;
+    private final AuthorCommandService command;
+    private final AuthorQueryService query;
 
 
     @PostMapping
@@ -34,7 +35,7 @@ class AuthorController {
                                                        @RequestPart(value = "profilePicture", required = false)
                                                        MultipartFile profilePicture,
                                                        UriComponentsBuilder uriBuilder) {
-        AuthorResponse response = authorService.createAuthor(authorRequest, profilePicture);
+        AuthorResponse response = command.createAuthor(authorRequest, profilePicture);
 
         URI location = uriBuilder
             .path("/v1/authors/{id}")
@@ -51,19 +52,19 @@ class AuthorController {
                                        AuthorRequest authorRequest,
                                        @RequestPart("profilePicture")
                                        MultipartFile profilePicture) {
-        return authorService.updateAuthor(authorId, authorRequest, profilePicture);
+        return command.updateAuthor(authorId, authorRequest, profilePicture);
     }
 
     @GetMapping("/{authorId}")
     public AuthorDetailsResponse findAuthorDetailsById(@PathVariable Long authorId) {
-        return authorService.findAuthorDetailsById(authorId);
+        return query.findAuthorDetailsById(authorId);
     }
 
     @GetMapping
     public AuthorPageResponse findAuthors(@RequestParam(required = false) Boolean availableInBookshelf,
                                           @AuthenticationPrincipal User user,
                                           Pageable pageable) {
-        return authorService.findAuthors(availableInBookshelf, user, pageable);
+        return query.findAuthors(availableInBookshelf, user, pageable);
     }
 
 }

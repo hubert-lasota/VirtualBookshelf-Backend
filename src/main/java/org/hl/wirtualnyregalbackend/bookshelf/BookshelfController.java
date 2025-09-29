@@ -23,7 +23,8 @@ import java.net.URI;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 class BookshelfController {
 
-    private final BookshelfService bookshelfService;
+    private final BookshelfCommandService command;
+    private final BookshelfQueryService query;
 
 
     @PostMapping
@@ -34,7 +35,7 @@ class BookshelfController {
         @AuthenticationPrincipal User user,
         UriComponentsBuilder uriBuilder
     ) {
-        BookshelfResponse response = bookshelfService.createBookshelf(bookshelfRequest, user);
+        BookshelfResponse response = command.createBookshelf(bookshelfRequest, user);
 
         URI location = uriBuilder
             .path("/v1/bookshelves/{bookshelfId}")
@@ -54,7 +55,7 @@ class BookshelfController {
         @Validated(UpdateGroup.class)
         BookshelfRequest bookshelfRequest
     ) {
-        return bookshelfService.updateBookshelf(id, bookshelfRequest);
+        return command.updateBookshelf(id, bookshelfRequest);
     }
 
 
@@ -62,12 +63,12 @@ class BookshelfController {
     @PreAuthorize("hasPermission(#id, 'BOOKSHELF', 'DELETE')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBookshelf(@PathVariable Long id) {
-        bookshelfService.deleteBookshelf(id);
+        command.deleteBookshelf(id);
     }
 
     @GetMapping
     public BookshelfListResponse findCurrentUserBookshelves(@AuthenticationPrincipal User user) {
-        return bookshelfService.findUserBookshelves(user);
+        return query.findUserBookshelves(user);
     }
 
 }

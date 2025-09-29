@@ -3,55 +3,43 @@ package org.hl.wirtualnyregalbackend.book;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.author.AuthorService;
+import org.hl.wirtualnyregalbackend.author.AuthorCommandService;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
-import org.hl.wirtualnyregalbackend.book.dto.*;
+import org.hl.wirtualnyregalbackend.book.dto.AuthorWithIdDto;
+import org.hl.wirtualnyregalbackend.book.dto.BookRequest;
+import org.hl.wirtualnyregalbackend.book.dto.BookResponse;
+import org.hl.wirtualnyregalbackend.book.dto.PublisherWithIdDto;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
-import org.hl.wirtualnyregalbackend.book.event.BookFoundEvent;
-import org.hl.wirtualnyregalbackend.book.exception.BookNotFoundException;
-import org.hl.wirtualnyregalbackend.book.model.BookFilter;
 import org.hl.wirtualnyregalbackend.book_cover.BookCoverService;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
-import org.hl.wirtualnyregalbackend.book_format.BookFormatService;
+import org.hl.wirtualnyregalbackend.book_format.BookFormatQueryService;
 import org.hl.wirtualnyregalbackend.book_format.entity.BookFormat;
-import org.hl.wirtualnyregalbackend.book_review.BookReviewHelper;
-import org.hl.wirtualnyregalbackend.book_review.entity.BookReview;
-import org.hl.wirtualnyregalbackend.genre.GenreService;
+import org.hl.wirtualnyregalbackend.genre.GenreQueryService;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
-import org.hl.wirtualnyregalbackend.publisher.PublisherService;
+import org.hl.wirtualnyregalbackend.publisher.PublisherCommandService;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
-import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
-import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Pageable;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Slf4j
-public class BookService {
+public class BookCommandService {
 
-    private final ApplicationEventPublisher eventPublisher;
-    private final BookRepository bookRepository;
-    private final BookFormatService bookFormatService;
-    private final BookCoverService bookCoverService;
-    private final GenreService genreService;
-    private final AuthorService authorService;
-    private final PublisherService publisherService;
-    private final BookReviewHelper bookReviewHelper;
-    private final ReadingBookHelper readingBookHelper;
+    private final BookRepository repository;
+    private final BookQueryService bookQuery;
+    private final BookFormatQueryService formatService;
+    private final BookCoverService coverService;
+    private final GenreQueryService genreQuery;
+    private final AuthorCommandService authorCommand;
+    private final PublisherCommandService publisherCommand;
 
 
     @Transactional
@@ -65,25 +53,25 @@ public class BookService {
     public Book createBookEntity(BookRequest bookRequest, MultipartFile coverFile) {
         log.info("Creating book: {}", bookRequest);
         Set<Author> authors = findOrCreateAuthors(bookRequest.authors());
-        Set<Genre> genres = genreService.findGenresByIds(bookRequest.genreIds());
+        Set<Genre> genres = genreQuery.findGenresByIds(bookRequest.genreIds());
         BookCover cover = null;
         String coverUrl = bookRequest.coverUrl();
         if (coverFile != null || coverUrl != null) {
-            cover = bookCoverService.createBookCover(bookRequest.coverUrl(), coverFile);
+            cover = coverService.createBookCover(bookRequest.coverUrl(), coverFile);
         }
 
         Long formatId = bookRequest.formatId();
         BookFormat format = null;
         if (formatId != null) {
-            format = bookFormatService.findBookFormatById(formatId);
+            format = formatService.findBookFormatById(formatId);
         }
 
         PublisherWithIdDto publisherWithIdDto = bookRequest.publisher();
         Publisher publisher = null;
         if (publisherWithIdDto != null) {
-            publisher = publisherService.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
+            publisher = publisherCommand.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
         }
-        Book book = bookRepository.save(BookMapper.toBook(bookRequest, cover, format, publisher, authors, genres));
+        Book book = repository.save(BookMapper.toBook(bookRequest, cover, format, publisher, authors, genres));
         log.info("Created book: {}", book);
         return book;
     }
@@ -92,7 +80,7 @@ public class BookService {
     public BookResponse updateBook(Long bookId,
                                    BookRequest bookRequest,
                                    MultipartFile coverFile) {
-        Book book = findBookById(bookId);
+        Book book = bookQuery.findBookById(bookId);
         log.info("Updating book: {} by request: {}", book, bookRequest);
         String isbn = bookRequest.isbn();
         if (isbn != null) {
@@ -126,13 +114,13 @@ public class BookService {
 
         Long formatId = bookRequest.formatId();
         if (formatId != null) {
-            BookFormat format = bookFormatService.findBookFormatById(formatId);
+            BookFormat format = formatService.findBookFormatById(formatId);
             book.setFormat(format);
         }
 
         PublisherWithIdDto publisherWithIdDto = bookRequest.publisher();
         if (publisherWithIdDto != null) {
-            Publisher publisher = publisherService.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
+            Publisher publisher = publisherCommand.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
             book.setPublisher(publisher);
         }
 
@@ -144,11 +132,11 @@ public class BookService {
 
         List<Long> genreIds = bookRequest.genreIds();
         if (genreIds != null) {
-            Set<Genre> genres = genreService.findGenresByIds(genreIds);
+            Set<Genre> genres = genreQuery.findGenresByIds(genreIds);
             book.setGenres(genres);
         }
 
-        BookCover cover = bookCoverService.createBookCover(bookRequest.coverUrl(), coverFile);
+        BookCover cover = coverService.createBookCover(bookRequest.coverUrl(), coverFile);
         book.setCover(cover);
 
         log.info("Book updated: {}", book);
@@ -156,48 +144,16 @@ public class BookService {
         return BookMapper.toBookResponse(book, locale);
     }
 
-    public BookPageResponse findBooks(BookFilter filter, Pageable pageable) {
-        var spec = BookSpecification.byFilter(filter);
-        Locale locale = LocaleContextHolder.getLocale();
-        var bookPage = bookRepository
-            .findAll(spec, pageable)
-            .map((book) -> BookMapper.toBookResponse(book, locale));
-        return BookPageResponse.from(bookPage);
-    }
-
-    public BookDetailsResponse findBookDetailsById(Long bookId, User user) {
-        Book book = findBookById(bookId);
-        BookFoundEvent event = BookFoundEvent.of(book, user);
-        eventPublisher.publishEvent(event);
-
-        BookReview review = bookReviewHelper.findBookReviewByBookIdAndUserId(bookId, user.getId());
-        Locale locale = LocaleContextHolder.getLocale();
-        ReadingBook rb = readingBookHelper.findUserReadingBookByBookId(bookId, user);
-
-        BookDetailsResponse response = BookMapper.toBookDetailsResponse(book, review, locale, rb);
-        log.info("Found Book Details: {}", response);
-        return response;
-    }
-
-    public Book findBookById(Long id) throws BookNotFoundException {
-        Optional<Book> bookOpt = findBookOptById(id);
-        return bookOpt.orElseThrow(() -> {
-            log.warn("Book not found with ID: {}", id);
-            return new BookNotFoundException(id);
-        });
-    }
-
-    public Optional<Book> findBookOptById(@Nullable Long id) {
-        if (id == null) {
-            return Optional.empty();
-        }
-        return bookRepository.findById(id);
+    @Transactional
+    public Book findOrCreateBook(Long bookId, BookRequest bookDto, MultipartFile cover) {
+        return bookQuery.findBookOptById(bookId)
+            .orElseGet(() -> createBookEntity(bookDto, cover));
     }
 
     private Set<Author> findOrCreateAuthors(List<AuthorWithIdDto> authorDtos) {
         return authorDtos
             .stream()
-            .map((authorWithIdDto) -> authorService.findOrCreateAuthor(authorWithIdDto.getId(), authorWithIdDto.getAuthorRequest()))
+            .map((authorWithIdDto) -> authorCommand.findOrCreateAuthor(authorWithIdDto.getId(), authorWithIdDto.getAuthorRequest()))
             .collect(Collectors.toSet());
     }
 

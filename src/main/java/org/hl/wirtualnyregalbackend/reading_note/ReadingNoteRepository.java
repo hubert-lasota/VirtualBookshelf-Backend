@@ -14,9 +14,9 @@ interface ReadingNoteRepository extends JpaRepository<ReadingNote, Long>, JpaSpe
     @Transactional
     @Modifying
     @Query("DELETE FROM ReadingNote n WHERE n.readingBook.id = :readingBookId")
-    void deleteNotesByReadingBookId(Long readingBookId);
+    void deleteByReadingBookId(Long readingBookId);
 
     @Query("select count(n) > 0 from ReadingNote n where n.id = :noteId and n.readingBook.bookshelf.user = :userId")
-    boolean isNoteAuthor(Long noteId, Long userId);
+    boolean isAuthor(Long noteId, Long userId);
 
 }

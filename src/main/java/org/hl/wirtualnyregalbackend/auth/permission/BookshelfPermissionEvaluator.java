@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.auth.permission;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
+import org.hl.wirtualnyregalbackend.bookshelf.BookshelfQueryService;
 import org.springframework.stereotype.Component;
 
 
@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 class BookshelfPermissionEvaluator implements ResourcePermissionEvaluator {
 
-    private final BookshelfService bookshelfService;
+    private final BookshelfQueryService query;
 
     @Override
     public boolean hasPermission(User user, Object targetId, ActionType actionType) {
         Long bookshelfId = (Long) targetId;
-        return bookshelfService.isUserBookshelfAuthor(bookshelfId, user.getId());
+        return query.isUserBookshelfAuthor(bookshelfId, user.getId());
     }
 
 }

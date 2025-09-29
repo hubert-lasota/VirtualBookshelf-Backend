@@ -27,7 +27,8 @@ import java.net.URI;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 class BookController {
 
-    private final BookService bookService;
+    private final BookQueryService query;
+    private final BookCommandService command;
 
     @PostMapping
     public ResponseEntity<BookResponse> createBook(
@@ -38,7 +39,7 @@ class BookController {
         MultipartFile coverFile,
         UriComponentsBuilder uriBuilder
     ) {
-        BookResponse response = bookService.createBook(bookRequest, coverFile);
+        BookResponse response = command.createBook(bookRequest, coverFile);
 
         URI location = uriBuilder
             .path("/v1/books/{bookId}")
@@ -58,19 +59,19 @@ class BookController {
         @RequestPart("cover")
         MultipartFile coverFile
     ) {
-        return bookService.updateBook(id, bookRequest, coverFile);
+        return command.updateBook(id, bookRequest, coverFile);
     }
 
     @GetMapping
     public BookPageResponse findBooks(@Valid BookFilter bookFilter,
                                       @PageableDefault Pageable pageable) {
-        return bookService.findBooks(bookFilter, pageable);
+        return query.findBooks(bookFilter, pageable);
     }
 
     @GetMapping("/{id}")
     public BookDetailsResponse findBookDetailsById(@PathVariable Long id,
                                                    @AuthenticationPrincipal User user) {
-        return bookService.findBookDetailsById(id, user);
+        return query.findBookDetailsById(id, user);
     }
 
 }

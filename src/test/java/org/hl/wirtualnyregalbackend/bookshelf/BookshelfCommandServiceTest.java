@@ -13,15 +13,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class BookshelfServiceTest {
+public class BookshelfCommandServiceTest {
 
     private BookshelfRepository bookshelfRepository;
-    private BookshelfService bookshelfService;
+    private BookshelfQueryService bookshelfQuery;
+    private BookshelfCommandService bookshelfCommand;
 
     @BeforeEach
     void setUp() {
         bookshelfRepository = mock(BookshelfRepository.class);
-        bookshelfService = new BookshelfService(bookshelfRepository);
+        bookshelfQuery = mock(BookshelfQueryService.class);
+        bookshelfCommand = new BookshelfCommandService(bookshelfRepository, bookshelfQuery);
     }
 
 
@@ -34,7 +36,7 @@ public class BookshelfServiceTest {
         ArgumentCaptor<Bookshelf> captor = ArgumentCaptor.forClass(Bookshelf.class);
 
         // When
-        BookshelfResponse response = bookshelfService.createBookshelf(request, user);
+        BookshelfResponse response = bookshelfCommand.createBookshelf(request, user);
 
         // Then
         verify(bookshelfRepository).save(captor.capture());

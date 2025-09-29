@@ -18,7 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class ReadingBookController {
 
-    private final ReadingBookService readingBookService;
+    private final ReadingBookQueryService query;
+    private final ReadingBookCommandService command;
 
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -31,7 +32,7 @@ public class ReadingBookController {
         @RequestPart(value = "cover", required = false)
         MultipartFile cover
     ) {
-        return readingBookService.createReadingBook(readingBookRequest, cover);
+        return command.createReadingBook(readingBookRequest, cover);
     }
 
     @PatchMapping("/{readingBookId}")
@@ -43,32 +44,32 @@ public class ReadingBookController {
         @Validated
         ReadingBookUpdateRequest readingBookRequest
     ) {
-        return readingBookService.updateReadingBook(readingBookId, readingBookRequest);
+        return command.updateReadingBook(readingBookId, readingBookRequest);
     }
 
     @PatchMapping("/{readingBookId}/move")
     @PreAuthorize("hasPermission(#request.bookshelfId, 'BOOKSHELF', 'UPDATE')")
     public ReadingBookResponse moveReadingBook(@PathVariable Long readingBookId,
                                                @Valid @RequestBody MoveReadingBookRequest request) {
-        return readingBookService.moveReadingBook(readingBookId, request.bookshelfId());
+        return command.moveReadingBook(readingBookId, request.bookshelfId());
     }
 
     @PatchMapping("/{readingBookId}/change-status")
     @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'UPDATE')")
     public ReadingBookResponse markReadingBookAsRead(@PathVariable Long readingBookId, @RequestBody ChangeStatusRequest body) {
-        return readingBookService.changeReadingBookStatus(readingBookId, body.status());
+        return command.changeReadingBookStatus(readingBookId, body.status());
     }
 
     @DeleteMapping("/{readingBookId}")
     @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'DELETE')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReadingBook(@PathVariable Long readingBookId) {
-        readingBookService.deleteReadingBook(readingBookId);
+        command.deleteReadingBook(readingBookId);
     }
 
     @GetMapping
     public ReadingBookListResponse findCurrentUserReadingBooks(@Valid BookFilter bookFilter, @AuthenticationPrincipal User user) {
-        return readingBookService.findUserReadingBooks(user, bookFilter);
+        return query.findUserReadingBooks(user, bookFilter);
     }
 
 }

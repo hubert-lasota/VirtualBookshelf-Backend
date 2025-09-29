@@ -5,48 +5,25 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherDetailsResponse;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherPageResponse;
-import org.hl.wirtualnyregalbackend.publisher.dto.PublisherRequest;
 import org.hl.wirtualnyregalbackend.publisher.dto.PublisherResponse;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
 import org.hl.wirtualnyregalbackend.publisher.exception.PublisherNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Slf4j
-public class PublisherService {
+class PublisherQueryService {
 
-    private final PublisherRepository publisherRepository;
+    private final PublisherRepository repository;
 
-
-    @Transactional
-    public PublisherResponse createPublisher(PublisherRequest publisherRequest) {
-        Publisher publisher = createPublisherEntity(publisherRequest);
-        log.info("Publisher created with ID: {}", publisher.getId());
-        return PublisherMapper.toPublisherResponse(publisher);
-    }
-
-    @Transactional
-    public Publisher findOrCreatePublisher(Long id, PublisherRequest publisherDto) {
-        if (id != null) {
-            return findPublisherById(id);
-        }
-        return createPublisherEntity(publisherDto);
-    }
-
-    @Transactional
-    public Publisher createPublisherEntity(PublisherRequest publisherRequest) {
-        Publisher publisher = PublisherMapper.toPublisher(publisherRequest);
-        return publisherRepository.save(publisher);
-    }
 
     public PublisherPageResponse findPublishers(Pageable pageable) {
-        Page<PublisherResponse> page = publisherRepository
+        Page<PublisherResponse> page = repository
             .findAll(pageable)
             .map(PublisherMapper::toPublisherResponse);
         return PublisherPageResponse.from(page);
@@ -57,8 +34,8 @@ public class PublisherService {
         return PublisherMapper.toPublisherDetailsResponse(publisher);
     }
 
-    private Publisher findPublisherById(Long id) throws PublisherNotFoundException {
-        Optional<Publisher> publisherOpt = id != null ? publisherRepository.findById(id) : Optional.empty();
+    public Publisher findPublisherById(Long id) throws PublisherNotFoundException {
+        Optional<Publisher> publisherOpt = id != null ? repository.findById(id) : Optional.empty();
         return publisherOpt.orElseThrow(() -> {
             log.warn("Publisher not found with ID: {}", id);
             return new PublisherNotFoundException(id);

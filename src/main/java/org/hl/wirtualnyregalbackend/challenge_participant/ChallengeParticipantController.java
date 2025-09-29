@@ -13,24 +13,26 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 class ChallengeParticipantController {
 
-    private final ChallengeParticipantService participantService;
+    private final ChallengeParticipantCommandService command;
+    private final ChallengeParticipantQueryService query;
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ChallengeParticipantResponse createChallengeParticipant(ChallengeParticipantCreateRequest request) {
-        return participantService.createChallengeParticipant(request);
+        return command.createChallengeParticipant(request);
     }
 
     @DeleteMapping("/{participantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteChallengeParticipant(@PathVariable Long participantId) {
-        participantService.deleteParticipantById(participantId);
+        command.deleteParticipantById(participantId);
     }
 
 
     @GetMapping
     public ChallengeParticipantPageResponse findChallengeParticipants(@RequestParam Long challengeId, Pageable pageable) {
-        return participantService.findParticipantsByChallengeId(challengeId, pageable);
+        return query.findParticipantsByChallengeId(challengeId, pageable);
     }
 
 }

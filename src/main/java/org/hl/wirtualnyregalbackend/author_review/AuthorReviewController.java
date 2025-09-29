@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 class AuthorReviewController {
 
-    private final AuthorReviewService authorReviewService;
+    private final AuthorReviewQueryService query;
+    private final AuthorReviewCommandService command;
 
     @PostMapping
     public ReviewResponse createAuthorReview(
@@ -30,7 +31,7 @@ class AuthorReviewController {
         @AuthenticationPrincipal
         User user
     ) {
-        return authorReviewService.createAuthorReview(reviewCreateRequest, user);
+        return command.createAuthorReview(reviewCreateRequest, user);
     }
 
     @PatchMapping("/{authorReviewId}")
@@ -42,19 +43,19 @@ class AuthorReviewController {
         @RequestBody
         ReviewRequest reviewRequest
     ) {
-        return authorReviewService.updateAuthorReview(authorReviewId, reviewRequest);
+        return command.updateAuthorReview(authorReviewId, reviewRequest);
     }
 
     @DeleteMapping("/{authorReviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasPermission(#authorReviewId, 'AUTHOR_REVIEW', 'DELETE')")
     public void deleteAuthorReview(@PathVariable Long authorReviewId) {
-        authorReviewService.deleteAuthorReview(authorReviewId);
+        command.deleteAuthorReview(authorReviewId);
     }
 
     @GetMapping
     public ReviewPageResponse findAuthorReviews(@RequestParam Long authorId, Pageable pageable) {
-        return authorReviewService.findAuthorReviews(authorId, pageable);
+        return query.findAuthorReviews(authorId, pageable);
     }
 
 }

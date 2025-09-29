@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 class BookReviewController {
 
-    private final BookReviewService bookReviewService;
+    private final BookReviewQueryService query;
+    private final BookReviewCommandService command;
 
 
     @PostMapping
@@ -30,7 +31,7 @@ class BookReviewController {
         @AuthenticationPrincipal
         User user
     ) {
-        return bookReviewService.createBookReview(reviewDto, user);
+        return command.createBookReview(reviewDto, user);
     }
 
     @PatchMapping("/{bookReviewId}")
@@ -42,19 +43,19 @@ class BookReviewController {
         @RequestBody
         BookReviewCreateRequest reviewDto
     ) {
-        return bookReviewService.updateBookReview(bookReviewId, reviewDto);
+        return command.updateBookReview(bookReviewId, reviewDto);
     }
 
     @DeleteMapping("/{bookReviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasPermission(#bookReviewId, 'BOOK_REVIEW', 'DELETE')")
     public void deleteBookReview(@PathVariable Long bookReviewId) {
-        bookReviewService.deleteBookReview(bookReviewId);
+        command.deleteBookReview(bookReviewId);
     }
 
     @GetMapping
     public ReviewPageResponse findBookReviews(@RequestParam Long bookId, Pageable pageable) {
-        return bookReviewService.findBookReviews(bookId, pageable);
+        return query.findBookReviews(bookId, pageable);
     }
 
 }

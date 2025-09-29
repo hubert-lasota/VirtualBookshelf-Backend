@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 class BookFormatController {
 
-    private final BookFormatService bookFormatService;
+    private final BookFormatQueryService formatQuery;
 
 
     @GetMapping
     public BookFormatListResponse findBookFormats(@RequestParam(required = false) Boolean availableInBookshelf,
                                                   @AuthenticationPrincipal User user) {
-        return bookFormatService.findBookFormats(availableInBookshelf, user);
+        return formatQuery.findBookFormats(availableInBookshelf, user);
     }
 
 }
