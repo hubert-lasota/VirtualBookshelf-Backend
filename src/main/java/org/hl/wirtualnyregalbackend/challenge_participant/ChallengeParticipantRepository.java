@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,5 +29,13 @@ interface ChallengeParticipantRepository extends JpaRepository<ChallengeParticip
     );
 
     Page<ChallengeParticipant> findByChallengeId(Long challengeId, Pageable pageable);
+
+    @Query("""
+            select p 
+            from ChallengeParticipant p 
+            where p.challenge.id in :challengeIds 
+              and p.user.id = :userId
+        """)
+    List<ChallengeParticipant> findByChallengeIdsAndUserId(List<Long> challengeIds, Long userId);
 
 }

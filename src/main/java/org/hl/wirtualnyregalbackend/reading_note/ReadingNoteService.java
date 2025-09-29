@@ -14,11 +14,11 @@ import org.hl.wirtualnyregalbackend.reading_note.entity.ReadingNote;
 import org.hl.wirtualnyregalbackend.reading_note.event.ReadingNoteCreatedEvent;
 import org.hl.wirtualnyregalbackend.reading_note.event.ReadingNoteDeletedEvent;
 import org.hl.wirtualnyregalbackend.reading_note.exception.ReadingNoteNotFoundException;
+import org.hl.wirtualnyregalbackend.reading_note.model.ReadingNoteFilter;
 import org.hl.wirtualnyregalbackend.reading_session.dto.NoteInSessionDto;
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,10 +86,21 @@ public class ReadingNoteService {
         log.info("Deleted Reading Note: {}", note);
     }
 
-    public ReadingNoteListResponse findReadingNotes(Long readingBookId, @Nullable String query) {
-        Specification<ReadingNote> spec = Specification.where(ReadingNoteSpecification.byReadingBookId(readingBookId));
-        if (query != null) {
-            spec = spec.and(ReadingNoteSpecification.byQuery(query));
+    public ReadingNoteListResponse findReadingNotes(ReadingNoteFilter filter) {
+        Specification<ReadingNote> spec = Specification.where(ReadingNoteSpecification.byReadingBookId(filter.readingBookId()));
+        if (filter.query() != null) {
+            spec = spec.and(ReadingNoteSpecification.byQuery(filter.query()));
+        }
+
+        if (filter.pageRange() != null) {
+            Integer lte = filter.pageRange().lte();
+            Integer gte = filter.pageRange().gte();
+            if (lte != null) {
+                spec = spec.and(ReadingNoteSpecification.ltePageTo(lte));
+            }
+            if (gte != null) {
+                spec = spec.and(ReadingNoteSpecification.gtePageFrom(gte));
+            }
         }
 
         List<ReadingNoteResponse> notes = noteRepository

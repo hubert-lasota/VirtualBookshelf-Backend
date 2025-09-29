@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.book;
 
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
@@ -7,6 +8,7 @@ import org.hl.wirtualnyregalbackend.book.dto.BookDetailsResponse;
 import org.hl.wirtualnyregalbackend.book.dto.BookPageResponse;
 import org.hl.wirtualnyregalbackend.book.dto.BookRequest;
 import org.hl.wirtualnyregalbackend.book.dto.BookResponse;
+import org.hl.wirtualnyregalbackend.book.model.BookFilter;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.springframework.data.domain.Pageable;
@@ -60,9 +62,9 @@ class BookController {
     }
 
     @GetMapping
-    public BookPageResponse findBooks(@RequestParam String query,
+    public BookPageResponse findBooks(@Valid BookFilter bookFilter,
                                       @PageableDefault Pageable pageable) {
-        return bookService.findBooks(query, pageable);
+        return bookService.findBooks(bookFilter, pageable);
     }
 
     @GetMapping("/{id}")

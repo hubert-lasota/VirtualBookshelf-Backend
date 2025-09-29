@@ -2,6 +2,7 @@ package org.hl.wirtualnyregalbackend.challenge_participant;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.challenge.ChallengeHelper;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.challenge_participant.dto.ChallengeParticipantCreateRequest;
@@ -20,7 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -74,6 +78,13 @@ public class ChallengeParticipantService {
             .findByChallengeId(challengeId, pageable)
             .map(ChallengeParticipantMapper::toChallengeParticipantResponse);
         return ChallengeParticipantPageResponse.from(page);
+    }
+
+    public Map<Long, ChallengeParticipant> findCurrentUserParticipantsByChallengeIds(List<Long> challengeIds, User currentUser) {
+        return participantRepository
+            .findByChallengeIdsAndUserId(challengeIds, currentUser.getId())
+            .stream()
+            .collect(Collectors.toMap(p -> p.getChallenge().getId(), p -> p));
     }
 
     public ChallengeParticipant findParticipantByChallengeIdAndUserId(Long challengeId, Long userId)

@@ -18,6 +18,7 @@ import org.hl.wirtualnyregalbackend.reading_session.event.ReadTodayEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadingSessionCreatedEvent;
 import org.hl.wirtualnyregalbackend.reading_session.event.ReadingSessionDeletedEvent;
 import org.hl.wirtualnyregalbackend.reading_session.exception.ReadingSessionNotFoundException;
+import org.hl.wirtualnyregalbackend.reading_session.model.ReadingSessionFilter;
 import org.hl.wirtualnyregalbackend.reading_session.model.SessionReadingDurationRange;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,7 @@ public class ReadingSessionService {
             session.setNotes(notes);
         }
 
-        publishReadTodayEventIfRequired(rb.getBookshelf().getUser());
+        publishReadTodayEventIfRequired(rb.getBookshelf().getUser(), session.getId());
         eventPublisher.publishEvent(ReadPagesEvent.from(session));
         eventPublisher.publishEvent(ReadingSessionCreatedEvent.from(session));
 
@@ -90,9 +91,10 @@ public class ReadingSessionService {
         log.info("Deleted reading session: {}", rs);
     }
 
-    public ReadingSessionListResponse findReadingSessions(Long readingBookId) {
+    public ReadingSessionListResponse findReadingSessions(ReadingSessionFilter filter) {
+        var spec = ReadingSessionSpecification.byFilter(filter);
         List<ReadingSessionResponse> sessions = sessionRepository
-            .findByReadingBookId(readingBookId)
+            .findAll(spec)
             .stream()
             .map(ReadingSessionMapper::toReadingSessionResponse)
             .toList();
@@ -112,8 +114,8 @@ public class ReadingSessionService {
     }
 
 
-    private void publishReadTodayEventIfRequired(User user) {
-        Optional<ReadingSession> lastSessionOpt = sessionRepository.findLastByUserId(user.getId());
+    private void publishReadTodayEventIfRequired(User user, Long skipSessionId) {
+        Optional<ReadingSession> lastSessionOpt = sessionRepository.findLastByUserIdAndNotSessionId(user.getId(), skipSessionId);
         if (!checkIfUserReadToday(lastSessionOpt)) {
             Instant lastReadAt = lastSessionOpt
                 .map((session) -> session.getDurationRange().getStartedAt())

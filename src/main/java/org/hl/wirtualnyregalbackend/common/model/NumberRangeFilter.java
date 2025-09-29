@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.common.model;
 import jakarta.validation.constraints.AssertTrue;
 import org.springframework.lang.Nullable;
 
-public record RangeFilter(
+public record NumberRangeFilter(
     @Nullable Integer lte,
     @Nullable Integer gte
 ) {

@@ -15,16 +15,16 @@ import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengePartic
 import org.hl.wirtualnyregalbackend.genre.GenreService;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -86,16 +86,20 @@ public class ChallengeService {
     }
 
     public ChallengePageResponse findChallenges(ChallengeFilter filter, User participant, Pageable pageable) {
-        Specification<Challenge> spec = Specification.where(null);
-        if (filter.participating() != null) {
-            spec = ChallengeSpecification.byParticipant(participant);
-        }
-
-        Page<ChallengeResponse> page = challengeRepository
-            .findAll(spec, pageable)
-            .map(this::mapToChallengeResponse);
-
-        return ChallengePageResponse.from(page);
+        var spec = ChallengeSpecification.byFilterAndParticipant(filter, participant);
+        var page = challengeRepository.findAll(spec, pageable);
+        List<Long> challengeIds = page
+            .getContent()
+            .stream()
+            .map(Challenge::getId)
+            .toList();
+        Map<Long, ChallengeParticipant> participants = participantService.findCurrentUserParticipantsByChallengeIds(challengeIds, participant);
+        Locale locale = LocaleContextHolder.getLocale();
+        var responsePage = page.map((challenge) -> {
+            var p = participants.get(challenge.getId());
+            return ChallengeMapper.toChallengeResponse(challenge, p, locale);
+        });
+        return ChallengePageResponse.from(responsePage);
     }
 
     public boolean isChallengeAuthor(Long challengeId, User user) {

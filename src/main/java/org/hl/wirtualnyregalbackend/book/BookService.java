@@ -10,6 +10,7 @@ import org.hl.wirtualnyregalbackend.book.dto.*;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.book.event.BookFoundEvent;
 import org.hl.wirtualnyregalbackend.book.exception.BookNotFoundException;
+import org.hl.wirtualnyregalbackend.book.model.BookFilter;
 import org.hl.wirtualnyregalbackend.book_cover.BookCoverService;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_format.BookFormatService;
@@ -24,9 +25,7 @@ import org.hl.wirtualnyregalbackend.reading_book.ReadingBookHelper;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -157,17 +156,12 @@ public class BookService {
         return BookMapper.toBookResponse(book, locale);
     }
 
-    public BookPageResponse findBooks(String query, Pageable pageable) {
-        Specification<Book> spec = Specification
-            .where(BookSpecification.titleIgnoreCaseLike(query))
-            .or(BookSpecification.authorFullNameIgnoreCaseLike(query))
-            .or(BookSpecification.isbnEqual(query));
-
+    public BookPageResponse findBooks(BookFilter filter, Pageable pageable) {
+        var spec = BookSpecification.byFilter(filter);
         Locale locale = LocaleContextHolder.getLocale();
-        Page<BookResponse> bookPage = bookRepository
+        var bookPage = bookRepository
             .findAll(spec, pageable)
             .map((book) -> BookMapper.toBookResponse(book, locale));
-
         return BookPageResponse.from(bookPage);
     }
 

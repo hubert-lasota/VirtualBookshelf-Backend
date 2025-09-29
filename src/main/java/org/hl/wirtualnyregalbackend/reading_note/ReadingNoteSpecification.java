@@ -22,4 +22,13 @@ class ReadingNoteSpecification {
         };
     }
 
+    public static Specification<ReadingNote> gtePageFrom(int gte) {
+        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("pageRange").get("from"), gte);
+    }
+
+
+    public static Specification<ReadingNote> ltePageTo(int lte) {
+        return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("pageRange").get("to"), lte);
+    }
+
 }

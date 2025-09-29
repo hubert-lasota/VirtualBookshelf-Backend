@@ -1,11 +1,13 @@
 package org.hl.wirtualnyregalbackend.reading_session;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionListResponse;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionRequest;
 import org.hl.wirtualnyregalbackend.reading_session.dto.ReadingSessionResponse;
+import org.hl.wirtualnyregalbackend.reading_session.model.ReadingSessionFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -44,9 +46,9 @@ class ReadingSessionController {
     }
 
     @GetMapping
-    @PreAuthorize("hasPermission(#readingBookId, 'READING_BOOK', 'READ')")
-    public ReadingSessionListResponse findReadingSessions(@RequestParam Long readingBookId) {
-        return sessionService.findReadingSessions(readingBookId);
+    @PreAuthorize("hasPermission(#filter.readingBookId, 'READING_BOOK', 'READ')")
+    public ReadingSessionListResponse findReadingSessions(@Valid ReadingSessionFilter filter) {
+        return sessionService.findReadingSessions(filter);
     }
 
 }

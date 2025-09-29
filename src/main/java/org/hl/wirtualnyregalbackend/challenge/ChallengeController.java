@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.challenge;
 
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
@@ -50,7 +51,7 @@ public class ChallengeController {
     }
 
     @GetMapping
-    public ChallengePageResponse findChallenges(ChallengeFilter filter,
+    public ChallengePageResponse findChallenges(@Valid ChallengeFilter filter,
                                                 Pageable pageable,
                                                 @AuthenticationPrincipal User user) {
         return challengeService.findChallenges(filter, user, pageable);

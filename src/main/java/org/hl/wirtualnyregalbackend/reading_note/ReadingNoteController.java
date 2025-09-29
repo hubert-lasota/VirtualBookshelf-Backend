@@ -1,11 +1,13 @@
 package org.hl.wirtualnyregalbackend.reading_note;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteListResponse;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteRequest;
 import org.hl.wirtualnyregalbackend.reading_note.dto.ReadingNoteResponse;
+import org.hl.wirtualnyregalbackend.reading_note.model.ReadingNoteFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -47,8 +49,8 @@ class ReadingNoteController {
 
 
     @GetMapping
-    public ReadingNoteListResponse findReadingNotes(@RequestParam Long readingBookId, @RequestParam(required = false) String query) {
-        return noteService.findReadingNotes(readingBookId, query);
+    public ReadingNoteListResponse findReadingNotes(@Valid ReadingNoteFilter filter) {
+        return noteService.findReadingNotes(filter);
     }
 
 }

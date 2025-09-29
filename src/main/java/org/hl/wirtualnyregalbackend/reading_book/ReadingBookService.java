@@ -7,6 +7,7 @@ import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.book.BookService;
 import org.hl.wirtualnyregalbackend.book.dto.BookRequest;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
+import org.hl.wirtualnyregalbackend.book.model.BookFilter;
 import org.hl.wirtualnyregalbackend.bookshelf.BookshelfService;
 import org.hl.wirtualnyregalbackend.bookshelf.entity.Bookshelf;
 import org.hl.wirtualnyregalbackend.reading_book.dto.*;
@@ -19,8 +20,6 @@ import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
 import org.hl.wirtualnyregalbackend.reading_note.ReadingNoteHelper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -110,11 +109,10 @@ public class ReadingBookService {
         log.info("Deleted Reading Book: {}", readingBook);
     }
 
-    public ReadingBookListResponse findUserReadingBooks(User user, @Nullable String query) {
-        Specification<ReadingBook> spec = ReadingBookSpecification.byUser(user);
-        if (query != null) {
-            spec = spec.and(ReadingBookSpecification.byQuery(query));
-        }
+    public ReadingBookListResponse findUserReadingBooks(User user, BookFilter filter) {
+        var spec = ReadingBookSpecification
+            .byFilter(filter)
+            .and(ReadingBookSpecification.byUser(user));
         Locale locale = LocaleContextHolder.getLocale();
         List<ReadingBookResponse> books = readingBookRepository
             .findAll(spec)

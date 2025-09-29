@@ -3,6 +3,7 @@ package org.hl.wirtualnyregalbackend.reading_book;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
+import org.hl.wirtualnyregalbackend.book.model.BookFilter;
 import org.hl.wirtualnyregalbackend.reading_book.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -66,13 +67,8 @@ public class ReadingBookController {
     }
 
     @GetMapping
-    public ReadingBookListResponse findCurrentUserReadingBooks(
-        @RequestParam(required = false)
-        String query,
-        @AuthenticationPrincipal
-        User user
-    ) {
-        return readingBookService.findUserReadingBooks(user, query);
+    public ReadingBookListResponse findCurrentUserReadingBooks(@Valid BookFilter bookFilter, @AuthenticationPrincipal User user) {
+        return readingBookService.findUserReadingBooks(user, bookFilter);
     }
 
 }

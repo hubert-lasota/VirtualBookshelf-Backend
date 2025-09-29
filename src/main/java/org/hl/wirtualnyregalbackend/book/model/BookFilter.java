@@ -1,16 +1,18 @@
 package org.hl.wirtualnyregalbackend.book.model;
 
 import jakarta.validation.Valid;
-import org.hl.wirtualnyregalbackend.common.model.RangeFilter;
+import org.hl.wirtualnyregalbackend.common.model.NumberRangeFilter;
 import org.springframework.lang.Nullable;
 
 public record BookFilter(
     @Nullable
-    @Valid
-    RangeFilter publicationYearRange,
+    String query,
     @Nullable
     @Valid
-    RangeFilter pageCountRange,
+    NumberRangeFilter publicationYearRange,
+    @Nullable
+    @Valid
+    NumberRangeFilter pageCountRange,
     @Nullable
     Long authorId,
     @Nullable
