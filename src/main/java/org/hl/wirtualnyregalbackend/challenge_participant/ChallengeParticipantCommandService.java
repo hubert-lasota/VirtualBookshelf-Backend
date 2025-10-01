@@ -3,6 +3,7 @@ package org.hl.wirtualnyregalbackend.challenge_participant;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.challenge.ChallengeQueryService;
 import org.hl.wirtualnyregalbackend.challenge.entity.Challenge;
 import org.hl.wirtualnyregalbackend.challenge_participant.dto.ChallengeParticipantCreateRequest;
@@ -31,21 +32,21 @@ public class ChallengeParticipantCommandService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public ChallengeParticipantResponse createChallengeParticipant(ChallengeParticipantCreateRequest participantRequest) {
+    public ChallengeParticipantResponse createChallengeParticipant(ChallengeParticipantCreateRequest participantRequest, User user) {
         Challenge challenge = challengeQuery.findChallengeById(participantRequest.challengeId());
-        ChallengeParticipant participant = createChallengeParticipant(challenge);
+        ChallengeParticipant participant = createChallengeParticipant(challenge, user);
         return ChallengeParticipantMapper.toChallengeParticipantResponse(participant);
     }
 
     @Transactional
-    public ChallengeParticipant createChallengeParticipant(Challenge challenge) {
+    public ChallengeParticipant createChallengeParticipant(Challenge challenge, User user) {
         var durationRange = new ChallengeParticipantDurationRange(Instant.now(clock), null);
         ChallengeParticipant participant = new ChallengeParticipant(
             0,
             ChallengeParticipantStatus.ACTIVE,
             durationRange,
             challenge,
-            challenge.getUser()
+            user
         );
         participant = repository.save(participant);
         log.info("Created participant: {}", participant);

@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+// TODO @NamedEntityGraph or Join All relations in specification
 @Entity
 @Table(name = "book")
 @Getter

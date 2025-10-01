@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/challenges")
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class ChallengeController {
+class ChallengeController {
 
-    private final ChallengeCommandService challengeService;
+    private final ChallengeCommandService command;
     private final ChallengeQueryService query;
 
     @PostMapping
@@ -32,7 +32,7 @@ public class ChallengeController {
                                              ChallengeRequest challengeRequest,
                                              @AuthenticationPrincipal
                                              User user) {
-        return challengeService.createChallenge(challengeRequest, user);
+        return command.createChallenge(challengeRequest, user);
     }
 
     @PatchMapping("/{challengeId}")
@@ -42,13 +42,18 @@ public class ChallengeController {
                                              @Validated(UpdateGroup.class)
                                              @RequestBody
                                              ChallengeRequest challengeRequest) {
-        return challengeService.updateChallenge(challengeId, challengeRequest);
+        return command.updateChallenge(challengeId, challengeRequest);
+    }
+
+    @PostMapping("/{challengeId}/join")
+    public ChallengeResponse joinChallenge(@PathVariable Long challengeId, @AuthenticationPrincipal User user) {
+        return command.joinChallenge(challengeId, user);
     }
 
     @DeleteMapping("/{challengeId}/quit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void quitChallenge(@PathVariable Long challengeId, @AuthenticationPrincipal User user) {
-        challengeService.quitChallenge(challengeId, user);
+        command.quitChallenge(challengeId, user);
     }
 
     @GetMapping

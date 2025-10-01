@@ -19,7 +19,7 @@ class ChallengeSpecification {
     public static Specification<Challenge> byFilterAndParticipant(ChallengeFilter filter, User participant) {
         Specification<Challenge> spec = Specification.where(null);
         if (filter.participating() != null) {
-            spec = ChallengeSpecification.byParticipant(participant);
+            spec = ChallengeSpecification.byParticipating(participant, filter.participating());
         }
 
         if (filter.query() != null) {
@@ -45,14 +45,17 @@ class ChallengeSpecification {
         return spec;
     }
 
-    private static Specification<Challenge> byParticipant(User user) {
+    private static Specification<Challenge> byParticipating(User user, boolean participating) {
         return (root, query, cb) -> {
             Subquery<Long> sq = query.subquery(Long.class);
-            Root<ChallengeParticipant> cpRoot = sq.from(ChallengeParticipant.class);
-            sq.select(cpRoot.get("challenge").get("id"))
-                .where(cb.equal(cpRoot.get("user"), user), cb.equal(cpRoot.get("challenge"), root));
+            Root<ChallengeParticipant> sqRoot = sq.from(ChallengeParticipant.class);
 
-            return root.get("id").in(sq);
+            sq.select(sqRoot.get("challenge").get("id"))
+                .where(cb.equal(sqRoot.get("user"), user), cb.equal(sqRoot.get("challenge"), root));
+
+            return participating
+                ? root.get("id").in(sq)
+                : cb.not(root.get("id").in(sq));
         };
     }
 

@@ -38,11 +38,12 @@ public class ChallengeCommandService {
             : genreQuery.findGenreById(challengeRequest.genreId());
         Challenge challenge = ChallengeMapper.toChallenge(challengeRequest, genre, user);
         repository.save(challenge);
-        ChallengeParticipant participant = participantCommand.createChallengeParticipant(challenge);
+        ChallengeParticipant participant = participantCommand.createChallengeParticipant(challenge, user);
         log.info("Created challenge: {} and participant: {}", challenge, participant);
-        return mapToChallengeResponse(challenge);
+        return mapToChallengeResponse(challenge, participant);
     }
 
+    @Transactional
     public ChallengeResponse updateChallenge(Long challengeId, ChallengeRequest challengeRequest) {
         Challenge challenge = challengeQuery.findChallengeById(challengeId);
         log.info("Updating challenge: {} by request: {}", challenge, challengeRequest);
@@ -69,23 +70,34 @@ public class ChallengeCommandService {
         ChallengeDurationRange newDr = challengeRequest.durationRange();
         challenge.setDurationRange(ChallengeDurationRange.merge(oldDr, newDr));
 
-        repository.save(challenge);
         log.info("Updated challenge: {}", challenge);
         return mapToChallengeResponse(challenge);
     }
 
-
-    private ChallengeResponse mapToChallengeResponse(Challenge challenge) {
-        Locale locale = LocaleContextHolder.getLocale();
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ChallengeParticipant participant = participantQuery.findParticipantByChallengeIdAndUserId(challenge.getId(), user.getId());
-        return ChallengeMapper.toChallengeResponse(challenge, participant, locale);
+    @Transactional
+    public ChallengeResponse joinChallenge(Long challengeId, User user) {
+        Challenge challenge = challengeQuery.findChallengeById(challengeId);
+        log.info("Joining challenge: {} with user: {}", challenge, user);
+        ChallengeParticipant participant = participantCommand.createChallengeParticipant(challenge, user);
+        return mapToChallengeResponse(challenge, participant);
     }
 
     public void quitChallenge(Long challengeId, User user) {
         ChallengeParticipant participant = participantQuery.findParticipantByChallengeIdAndUserId(challengeId, user.getId());
         log.info("Quit challenge: {} with participant: {}", challengeId, participant);
         participantCommand.deleteParticipant(participant);
+    }
+
+
+    private ChallengeResponse mapToChallengeResponse(Challenge challenge) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ChallengeParticipant participant = participantQuery.findParticipantByChallengeIdAndUserId(challenge.getId(), user.getId());
+        return mapToChallengeResponse(challenge, participant);
+    }
+
+    private ChallengeResponse mapToChallengeResponse(Challenge challenge, ChallengeParticipant participant) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return ChallengeMapper.toChallengeResponse(challenge, participant, locale);
     }
 
 }

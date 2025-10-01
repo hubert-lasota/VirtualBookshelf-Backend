@@ -39,7 +39,7 @@ public class ChallengeQueryService {
         });
     }
 
-    public ChallengePageResponse findChallenges(ChallengeFilter filter, User participant, Pageable pageable) {
+    ChallengePageResponse findChallenges(ChallengeFilter filter, User participant, Pageable pageable) {
         var spec = ChallengeSpecification.byFilterAndParticipant(filter, participant);
         var page = repository.findAll(spec, pageable);
         List<Long> challengeIds = page

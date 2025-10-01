@@ -1,11 +1,13 @@
 package org.hl.wirtualnyregalbackend.challenge_participant;
 
 import lombok.AllArgsConstructor;
+import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.challenge_participant.dto.ChallengeParticipantCreateRequest;
 import org.hl.wirtualnyregalbackend.challenge_participant.dto.ChallengeParticipantPageResponse;
 import org.hl.wirtualnyregalbackend.challenge_participant.dto.ChallengeParticipantResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,8 +21,9 @@ class ChallengeParticipantController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ChallengeParticipantResponse createChallengeParticipant(ChallengeParticipantCreateRequest request) {
-        return command.createChallengeParticipant(request);
+    public ChallengeParticipantResponse createChallengeParticipant(ChallengeParticipantCreateRequest request,
+                                                                   @AuthenticationPrincipal User user) {
+        return command.createChallengeParticipant(request, user);
     }
 
     @DeleteMapping("/{participantId}")
