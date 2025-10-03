@@ -29,13 +29,25 @@ import java.util.Optional;
 public class BookQueryService {
 
     private final BookRepository repository;
+    private final BookSpecification bookSpec;
     private final ApplicationEventPublisher eventPublisher;
     private final BookReviewQueryService reviewQuery;
     private final ReadingBookQueryService readingBookQuery;
 
 
-    public BookPageResponse findBooks(BookFilter filter, Pageable pageable) {
-        var spec = BookSpecification.byFilter(filter);
+    public BookPageResponse findRecommendedBooks(User recommendedFor, BookFilter filter, Pageable pageable) {
+        return findBooks(recommendedFor, filter, pageable);
+    }
+
+    BookPageResponse findBooks(BookFilter filter, Pageable pageable) {
+        return findBooks(null, filter, pageable);
+    }
+
+    private BookPageResponse findBooks(User recommendedFor, BookFilter filter, Pageable pageable) {
+        var spec = bookSpec.byFilter(filter);
+        if (recommendedFor != null) {
+            spec = spec.and(bookSpec.sortByRecommendation(recommendedFor));
+        }
         Locale locale = LocaleContextHolder.getLocale();
         var bookPage = repository
             .findAll(spec, pageable)
@@ -43,7 +55,8 @@ public class BookQueryService {
         return BookPageResponse.from(bookPage);
     }
 
-    public BookDetailsResponse findBookDetailsById(Long bookId, User user) {
+
+    BookDetailsResponse findBookDetailsById(Long bookId, User user) {
         Book book = findBookById(bookId);
         BookFoundEvent event = BookFoundEvent.of(book, user);
         eventPublisher.publishEvent(event);
@@ -65,12 +78,11 @@ public class BookQueryService {
         });
     }
 
-    public Optional<Book> findBookOptById(@Nullable Long id) {
+    Optional<Book> findBookOptById(@Nullable Long id) {
         if (id == null) {
             return Optional.empty();
         }
         return repository.findById(id);
     }
-
 
 }

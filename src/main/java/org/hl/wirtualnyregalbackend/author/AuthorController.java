@@ -7,6 +7,7 @@ import org.hl.wirtualnyregalbackend.author.dto.AuthorDetailsResponse;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorPageResponse;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorRequest;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorResponse;
+import org.hl.wirtualnyregalbackend.author.model.AuthorFilter;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.UpdateGroup;
 import org.springframework.data.domain.Pageable;
@@ -61,10 +62,10 @@ class AuthorController {
     }
 
     @GetMapping
-    public AuthorPageResponse findAuthors(@RequestParam(required = false) Boolean availableInBookshelf,
+    public AuthorPageResponse findAuthors(AuthorFilter filter,
                                           @AuthenticationPrincipal User user,
                                           Pageable pageable) {
-        return query.findAuthors(availableInBookshelf, user, pageable);
+        return query.findAuthors(filter, user, pageable);
     }
 
 }

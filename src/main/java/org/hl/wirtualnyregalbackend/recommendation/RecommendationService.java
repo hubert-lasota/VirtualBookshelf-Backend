@@ -3,23 +3,15 @@ package org.hl.wirtualnyregalbackend.recommendation;
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
-import org.hl.wirtualnyregalbackend.book.BookMapper;
 import org.hl.wirtualnyregalbackend.book.BookQueryService;
-import org.hl.wirtualnyregalbackend.book.dto.BookPageResponse;
-import org.hl.wirtualnyregalbackend.book.dto.BookResponse;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.recommendation.entity.AuthorRecommendation;
 import org.hl.wirtualnyregalbackend.recommendation.entity.BookRecommendation;
 import org.hl.wirtualnyregalbackend.recommendation.entity.GenreRecommendation;
 import org.hl.wirtualnyregalbackend.user.UserQueryService;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Locale;
 
 @Service
 @AllArgsConstructor
@@ -31,13 +23,6 @@ class RecommendationService {
     private final BookQueryService bookQuery;
     private final UserQueryService userQuery;
 
-    public BookPageResponse findRecommendedBooks(User user, Pageable pageable) {
-        Locale locale = LocaleContextHolder.getLocale();
-        Page<BookResponse> page = bookRecommendationRepository
-            .findRecommendedBooksForUser(user.getId(), pageable)
-            .map((book) -> BookMapper.toBookResponse(book, locale));
-        return BookPageResponse.from(page);
-    }
 
     @Transactional
     public void boostScoresForBook(Long bookId, Long userId) {

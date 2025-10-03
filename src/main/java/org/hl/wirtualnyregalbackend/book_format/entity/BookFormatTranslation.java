@@ -13,7 +13,6 @@ import org.hl.wirtualnyregalbackend.common.translation.TranslatedNamedEntity;
 @Table(name = "book_format_translation")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@ToString(callSuper = true)
 public class BookFormatTranslation extends BaseEntity implements TranslatedNamedEntity {
 
     @Embedded
@@ -28,6 +27,16 @@ public class BookFormatTranslation extends BaseEntity implements TranslatedNamed
     @Override
     public TranslatedName getTranslatedName() {
         return translatedName;
+    }
+
+
+    @Override
+    public String toString() {
+        return "BookFormatTranslation{" +
+            "id=" + getId() +
+            "translatedName=" + translatedName +
+            ", formatId=" + format.getId() +
+            '}';
     }
 
 }

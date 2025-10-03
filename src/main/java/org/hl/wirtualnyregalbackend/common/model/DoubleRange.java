@@ -3,9 +3,9 @@ package org.hl.wirtualnyregalbackend.common.model;
 import jakarta.validation.constraints.AssertTrue;
 import org.springframework.lang.Nullable;
 
-public record NumberRangeFilter(
-    @Nullable Integer lte,
-    @Nullable Integer gte
+public record DoubleRange(
+    @Nullable Double lte,
+    @Nullable Double gte
 ) {
 
     @AssertTrue(message = "lte must be lower or equals to gte")
@@ -16,5 +16,4 @@ public record NumberRangeFilter(
 
         return lte >= gte;
     }
-
 }

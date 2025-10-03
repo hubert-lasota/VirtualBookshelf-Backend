@@ -2,7 +2,7 @@ package org.hl.wirtualnyregalbackend.reading_note.model;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.hl.wirtualnyregalbackend.common.model.NumberRangeFilter;
+import org.hl.wirtualnyregalbackend.common.model.IntegerRange;
 import org.springframework.lang.Nullable;
 
 
@@ -13,6 +13,6 @@ public record ReadingNoteFilter(
     String query,
     @Nullable
     @Valid
-    NumberRangeFilter pageRange
+    IntegerRange pageRange
 ) {
 }

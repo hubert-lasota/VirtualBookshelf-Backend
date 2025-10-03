@@ -8,8 +8,8 @@ import org.hl.wirtualnyregalbackend.genre.dto.GenreListResponse;
 import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.genre.exception.GenreNotFoundException;
+import org.hl.wirtualnyregalbackend.genre.model.GenreFilter;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,11 +29,19 @@ public class GenreQueryService {
         return repository.findByIds(ids);
     }
 
-    public GenreListResponse findGenres(Boolean availableInBookshelf, User user) {
+    public GenreListResponse findRecommendedGenres(GenreFilter filter, User recommendedFor) {
+        return findGenres(true, filter, recommendedFor);
+    }
+
+    GenreListResponse findGenres(GenreFilter filter, User user) {
+        return findGenres(false, filter, user);
+    }
+
+    private GenreListResponse findGenres(boolean sortByRecommendation, GenreFilter filter, User user) {
         Locale locale = LocaleContextHolder.getLocale();
-        Specification<Genre> spec = Specification.where(null);
-        if (availableInBookshelf != null) {
-            spec = spec.and(GenreSpecification.byAvailableInBookshelf(availableInBookshelf, user));
+        var spec = GenreSpecification.byFilterAndUser(filter, user);
+        if (sortByRecommendation) {
+            spec = spec.and(GenreSpecification.sortByRecommendation(user));
         }
         List<GenreResponse> genres = repository
             .findAll(spec)

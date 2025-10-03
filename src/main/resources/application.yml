@@ -43,3 +43,8 @@ app:
     url-prefix: /api/v1/author-profile-pictures/
   review:
     valid-ratings: [ 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5 ]
+  recommendation:
+    book-scores-multiplier:
+      book: 1.0
+      author: 0.8
+      genre: 0.6

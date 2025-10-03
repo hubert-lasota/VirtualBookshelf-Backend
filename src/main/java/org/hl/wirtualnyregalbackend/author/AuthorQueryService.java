@@ -1,5 +1,6 @@
 package org.hl.wirtualnyregalbackend.author;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
@@ -8,18 +9,18 @@ import org.hl.wirtualnyregalbackend.author.dto.AuthorPageResponse;
 import org.hl.wirtualnyregalbackend.author.dto.AuthorResponse;
 import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.author.exception.AuthorNotFoundException;
+import org.hl.wirtualnyregalbackend.author.model.AuthorFilter;
 import org.hl.wirtualnyregalbackend.author_review.AuthorReviewQueryService;
 import org.hl.wirtualnyregalbackend.author_review.entity.AuthorReview;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor(access = lombok.AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Slf4j
 public class AuthorQueryService {
 
@@ -43,13 +44,25 @@ public class AuthorQueryService {
         return AuthorMapper.toAuthorDetailsResponse(author, review);
     }
 
-    AuthorPageResponse findAuthors(Boolean availableInBookshelf,
+
+    public AuthorPageResponse findRecommendedAuthors(User recommendedFor, AuthorFilter filter, Pageable pageable) {
+        return findAuthors(true, filter, recommendedFor, pageable);
+    }
+
+    AuthorPageResponse findAuthors(AuthorFilter filter,
                                    User user,
                                    Pageable pageable) {
-        Specification<Author> spec = availableInBookshelf != null
-            ? AuthorSpecification.availableInBookshelf(availableInBookshelf, user)
-            : Specification.where(null);
+        return findAuthors(false, filter, user, pageable);
+    }
 
+    private AuthorPageResponse findAuthors(boolean sortByRecommendation,
+                                           AuthorFilter filter,
+                                           User user,
+                                           Pageable pageable) {
+        var spec = AuthorSpecification.byFilterAndUser(filter, user);
+        if (sortByRecommendation) {
+            spec = spec.and(AuthorSpecification.sortByRecommendation(user));
+        }
         Page<AuthorResponse> authorPage = repository
             .findAll(spec, pageable)
             .map(AuthorMapper::toAuthorResponse);

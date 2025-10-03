@@ -31,4 +31,14 @@ public class GenreTranslation extends BaseEntity implements TranslatedNamedEntit
         return translatedName;
     }
 
+
+    @Override
+    public String toString() {
+        return "GenreTranslation{" +
+            "id=" + getId() +
+            "translatedName=" + translatedName +
+            ", genreId=" + genre.getId() +
+            '}';
+    }
+
 }
