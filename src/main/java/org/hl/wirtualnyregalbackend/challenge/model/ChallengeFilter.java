@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.challenge.model;
 
 import jakarta.validation.Valid;
-import org.hl.wirtualnyregalbackend.common.model.InstantRange;
+import org.hl.wirtualnyregalbackend.common.model.InstantRangeFilter;
 import org.springframework.lang.Nullable;
 
 public record ChallengeFilter(
@@ -11,7 +11,7 @@ public record ChallengeFilter(
     String query,
     @Nullable
     @Valid
-    InstantRange durationRange,
+    InstantRangeFilter durationRange,
     @Nullable
     ChallengeType type
 ) {

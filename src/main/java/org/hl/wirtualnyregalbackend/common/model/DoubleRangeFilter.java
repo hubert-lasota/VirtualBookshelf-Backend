@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.common.model;
 import jakarta.validation.constraints.AssertTrue;
 import org.springframework.lang.Nullable;
 
-public record DoubleRange(
+public record DoubleRangeFilter(
     @Nullable Double lte,
     @Nullable Double gte
 ) {

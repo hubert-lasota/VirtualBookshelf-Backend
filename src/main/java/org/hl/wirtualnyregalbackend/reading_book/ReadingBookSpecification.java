@@ -6,7 +6,7 @@ import org.hl.wirtualnyregalbackend.author.entity.Author;
 import org.hl.wirtualnyregalbackend.book.BookSpecification;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.book.model.BookFilter;
-import org.hl.wirtualnyregalbackend.common.model.IntegerRange;
+import org.hl.wirtualnyregalbackend.common.model.IntegerRangeFilter;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,7 +24,7 @@ class ReadingBookSpecification {
             spec = spec.and(ReadingBookSpecification.byQuery(query));
         }
 
-        IntegerRange yearRange = filter.publicationYearRange();
+        IntegerRangeFilter yearRange = filter.publicationYearRange();
         if (yearRange != null) {
             Integer lte = yearRange.lte();
             Integer gte = yearRange.gte();
@@ -36,7 +36,7 @@ class ReadingBookSpecification {
             }
         }
 
-        IntegerRange pageRange = filter.pageCountRange();
+        IntegerRangeFilter pageRange = filter.pageCountRange();
         if (pageRange != null) {
             Integer lte = pageRange.lte();
             if (lte != null) {

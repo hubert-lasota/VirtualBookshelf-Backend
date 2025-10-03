@@ -2,8 +2,8 @@ package org.hl.wirtualnyregalbackend.reading_session.model;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.hl.wirtualnyregalbackend.common.model.InstantRange;
-import org.hl.wirtualnyregalbackend.common.model.IntegerRange;
+import org.hl.wirtualnyregalbackend.common.model.InstantRangeFilter;
+import org.hl.wirtualnyregalbackend.common.model.IntegerRangeFilter;
 import org.springframework.lang.Nullable;
 
 public record ReadingSessionFilter(
@@ -13,9 +13,9 @@ public record ReadingSessionFilter(
     String query,
     @Nullable
     @Valid
-    InstantRange durationRange,
+    InstantRangeFilter durationRange,
     @Nullable
     @Valid
-    IntegerRange pageRange
+    IntegerRangeFilter pageRange
 ) {
 }

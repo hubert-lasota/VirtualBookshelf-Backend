@@ -3,18 +3,20 @@ package org.hl.wirtualnyregalbackend.common.model;
 import jakarta.validation.constraints.AssertTrue;
 import org.springframework.lang.Nullable;
 
-public record IntegerRange(
-    @Nullable Integer lte,
-    @Nullable Integer gte
+import java.time.Instant;
+
+public record InstantRangeFilter(
+    @Nullable Instant lte,
+    @Nullable Instant gte
 ) {
 
-    @AssertTrue(message = "lte must be lower or equals to gte")
+    @AssertTrue(message = "lte must be before or equals to gte")
     public boolean isValid() {
         if (lte == null || gte == null) {
             return true;
         }
 
-        return lte >= gte;
+        return lte.equals(gte) || lte.isBefore(gte);
     }
 
 }
