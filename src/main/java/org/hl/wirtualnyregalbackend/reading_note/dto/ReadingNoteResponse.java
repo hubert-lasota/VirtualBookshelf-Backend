@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.reading_note.dto;
 
 
-import org.hl.wirtualnyregalbackend.common.model.PageRange;
+import org.hl.wirtualnyregalbackend.common.reading.PageRange;
 
 import java.time.Instant;
 

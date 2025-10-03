@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.reading_note.dto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
-import org.hl.wirtualnyregalbackend.common.model.PageRange;
+import org.hl.wirtualnyregalbackend.common.reading.PageRange;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.hl.wirtualnyregalbackend.common.validation.StringConstraints;
 

@@ -1,6 +1,6 @@
 package org.hl.wirtualnyregalbackend.reading_session.event;
 
-import org.hl.wirtualnyregalbackend.common.model.PageRange;
+import org.hl.wirtualnyregalbackend.common.reading.PageRange;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.hl.wirtualnyregalbackend.reading_session.model.SessionReadingDurationRange;

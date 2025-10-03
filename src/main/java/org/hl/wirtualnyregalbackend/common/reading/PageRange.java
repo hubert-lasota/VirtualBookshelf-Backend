@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.common.model;
+package org.hl.wirtualnyregalbackend.common.reading;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
@@ -7,7 +7,6 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hl.wirtualnyregalbackend.book.entity.Book;
 import org.hl.wirtualnyregalbackend.common.error.exception.InvalidPageRangeException;
 import org.hl.wirtualnyregalbackend.common.validation.CreateGroup;
 import org.springframework.lang.Nullable;
@@ -49,13 +48,6 @@ public class PageRange {
 
     public Integer getReadPages() {
         return to - from;
-    }
-
-    @JsonIgnore
-    public void validate(Book book) {
-        if (to > book.getPageCount()) {
-            throw new InvalidPageRangeException(this, book);
-        }
     }
 
     @AssertTrue(groups = CreateGroup.class, message = "to must be greater or equal from")

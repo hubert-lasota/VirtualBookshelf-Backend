@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
-import org.hl.wirtualnyregalbackend.common.model.PageRange;
+import org.hl.wirtualnyregalbackend.common.reading.PageRange;
 import org.hl.wirtualnyregalbackend.reading_book.ReadingBookQueryService;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_note.ReadingNoteCommandService;

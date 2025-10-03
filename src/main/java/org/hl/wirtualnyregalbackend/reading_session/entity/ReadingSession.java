@@ -3,7 +3,7 @@ package org.hl.wirtualnyregalbackend.reading_session.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.common.model.PageRange;
+import org.hl.wirtualnyregalbackend.common.reading.PageRange;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_note.entity.ReadingNote;
 import org.hl.wirtualnyregalbackend.reading_session.model.SessionReadingDurationRange;

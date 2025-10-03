@@ -5,8 +5,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hl.wirtualnyregalbackend.book.entity.Book;
+import org.hl.wirtualnyregalbackend.common.error.exception.InvalidPageRangeException;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
-import org.hl.wirtualnyregalbackend.common.model.PageRange;
+import org.hl.wirtualnyregalbackend.common.reading.PageRange;
 import org.hl.wirtualnyregalbackend.reading_book.entity.ReadingBook;
 import org.hl.wirtualnyregalbackend.reading_session.entity.ReadingSession;
 import org.springframework.lang.Nullable;
@@ -49,7 +51,12 @@ public class ReadingNote extends BaseEntity {
     }
 
     public void setPageRange(PageRange pageRange) {
-        pageRange.validate(readingBook.getBook());
+        Book book = readingBook.getBook();
+        if (pageRange.getTo() > book.getPageCount()) {
+            String mess = "Invalid page range. Field 'to' must be lower than page count(%d) of book(id='%d')"
+                .formatted(book.getId(), book.getPageCount());
+            throw new InvalidPageRangeException(mess, pageRange);
+        }
         this.pageRange = pageRange;
     }
 
