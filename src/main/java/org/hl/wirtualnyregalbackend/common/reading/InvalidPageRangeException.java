@@ -1,8 +1,7 @@
-package org.hl.wirtualnyregalbackend.common.error.exception;
+package org.hl.wirtualnyregalbackend.common.reading;
 
 import lombok.Getter;
 import org.hl.wirtualnyregalbackend.common.error.FieldValidationError;
-import org.hl.wirtualnyregalbackend.common.reading.PageRange;
 
 @Getter
 public class InvalidPageRangeException extends RuntimeException {

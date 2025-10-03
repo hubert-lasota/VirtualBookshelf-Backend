@@ -1,7 +1,7 @@
 package org.hl.wirtualnyregalbackend.common.error;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import org.hl.wirtualnyregalbackend.common.error.exception.InvalidPageRangeException;
+import org.hl.wirtualnyregalbackend.common.reading.InvalidPageRangeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
