@@ -1,3 +1,6 @@
+ALTER table genre
+    ALTER COLUMN total_books SET DEFAULT 0;
+
 INSERT INTO genre (id, created_at, updated_at)
 VALUES (1, NOW(), NULL);
 INSERT INTO genre (id, created_at, updated_at)
@@ -358,4 +361,8 @@ VALUES (51, 'Informatyka', 'pl', NOW(), NULL);
 INSERT INTO genre_translation (genre_id, name, language_code, created_at, updated_at)
 VALUES (51, 'Computer Science', 'en', NOW(), NULL);
 
+update genre
+set total_books = (select count(bg.genre_id) from book_genre bg where bg.genre_id = genre.id);
 
+ALTER table genre
+    ALTER COLUMN total_books DROP DEFAULT;

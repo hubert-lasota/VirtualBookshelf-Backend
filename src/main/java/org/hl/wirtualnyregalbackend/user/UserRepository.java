@@ -2,12 +2,13 @@ package org.hl.wirtualnyregalbackend.user;
 
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-interface UserRepository extends JpaRepository<User, Long> {
+interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
     Optional<User> findByUsername(String username);
 

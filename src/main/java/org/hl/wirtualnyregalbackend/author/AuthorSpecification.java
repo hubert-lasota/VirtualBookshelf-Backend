@@ -38,6 +38,10 @@ class AuthorSpecification {
             spec = byAvailableInBookshelf(filter.availableInBookshelf(), user);
         }
 
+        if (filter.query() != null) {
+            spec = spec.and(byQuery(filter.query()));
+        }
+
         return spec;
     }
 
@@ -57,6 +61,10 @@ class AuthorSpecification {
             Predicate predicate = root.get("id").in(subquery);
             return availableInBookshelf ? predicate : cb.not(predicate);
         };
+    }
+
+    private static Specification<Author> byQuery(String query) {
+        return (root, cq, cb) -> cb.like(cb.lower(root.get("fullName")), "%" + query.toLowerCase() + "%");
     }
 
 }

@@ -10,6 +10,7 @@ import org.hl.wirtualnyregalbackend.book.dto.BookRequest;
 import org.hl.wirtualnyregalbackend.book.dto.BookResponse;
 import org.hl.wirtualnyregalbackend.book.dto.PublisherWithIdDto;
 import org.hl.wirtualnyregalbackend.book.entity.Book;
+import org.hl.wirtualnyregalbackend.book.event.BookGenreUpdatedEvent;
 import org.hl.wirtualnyregalbackend.book_cover.BookCoverService;
 import org.hl.wirtualnyregalbackend.book_cover.entity.BookCover;
 import org.hl.wirtualnyregalbackend.book_format.BookFormatQueryService;
@@ -18,6 +19,7 @@ import org.hl.wirtualnyregalbackend.genre.GenreQueryService;
 import org.hl.wirtualnyregalbackend.genre.entity.Genre;
 import org.hl.wirtualnyregalbackend.publisher.PublisherCommandService;
 import org.hl.wirtualnyregalbackend.publisher.entity.Publisher;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,7 @@ public class BookCommandService {
     private final GenreQueryService genreQuery;
     private final AuthorCommandService authorCommand;
     private final PublisherCommandService publisherCommand;
+    private final ApplicationEventPublisher eventPublisher;
 
 
     @Transactional
@@ -72,6 +75,7 @@ public class BookCommandService {
             publisher = publisherCommand.findOrCreatePublisher(publisherWithIdDto.getId(), publisherWithIdDto.getPublisherDto());
         }
         Book book = repository.save(BookMapper.toBook(bookRequest, cover, format, publisher, authors, genres));
+        eventPublisher.publishEvent(BookGenreUpdatedEvent.fromCreatedBook(book));
         log.info("Created book: {}", book);
         return book;
     }
@@ -133,6 +137,7 @@ public class BookCommandService {
         List<Long> genreIds = bookRequest.genreIds();
         if (genreIds != null) {
             Set<Genre> genres = genreQuery.findGenresByIds(genreIds);
+            eventPublisher.publishEvent(BookGenreUpdatedEvent.fromUpdatedBook(book, genres));
             book.setGenres(genres);
         }
 

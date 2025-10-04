@@ -4,6 +4,8 @@ import org.springframework.lang.Nullable;
 
 public record AuthorFilter(
     @Nullable
-    Boolean availableInBookshelf
+    Boolean availableInBookshelf,
+    @Nullable
+    String query
 ) {
 }

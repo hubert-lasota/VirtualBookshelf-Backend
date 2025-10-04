@@ -93,9 +93,10 @@ CREATE TABLE book
 
 CREATE TABLE genre
 (
-    id         BIGSERIAL PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    id          BIGSERIAL PRIMARY KEY,
+    total_books INT         NOT NULL,
+    created_at  TIMESTAMPTZ NOT NULL,
+    updated_at  TIMESTAMPTZ
 );
 
 CREATE TABLE genre_translation

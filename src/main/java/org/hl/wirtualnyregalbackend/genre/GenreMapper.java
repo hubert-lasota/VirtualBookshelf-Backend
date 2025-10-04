@@ -13,7 +13,7 @@ public class GenreMapper {
 
     public static GenreResponse toGenreResponse(Genre genre, Locale locale) {
         String localizedName = TranslationUtils.getTranslatedName(genre.getTranslations(), locale);
-        return new GenreResponse(genre.getId(), localizedName);
+        return new GenreResponse(genre.getId(), localizedName, genre.getTotalBooks());
     }
 
 }

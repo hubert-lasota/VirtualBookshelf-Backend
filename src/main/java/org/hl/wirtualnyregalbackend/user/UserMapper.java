@@ -34,8 +34,8 @@ public class UserMapper {
         return new UserProfileDto(
             profile.getFirstName(),
             profile.getLastName(),
-            pictureUrl,
-            profile.getDescription()
+            profile.getDescription(),
+            pictureUrl
         );
     }
 
