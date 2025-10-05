@@ -3,6 +3,7 @@ package org.hl.wirtualnyregalbackend.auth.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
+import org.hl.wirtualnyregalbackend.recommendation.entity.UserGenrePreferences;
 import org.hl.wirtualnyregalbackend.user.entity.UserProfile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +33,9 @@ public class User extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Authority> authorities = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserGenrePreferences> genrePreferences = new ArrayList<>();
+
     public User(
         String username,
         String password,
@@ -39,7 +43,7 @@ public class User extends BaseEntity implements UserDetails {
     ) {
         this.username = username;
         this.password = password;
-        this.authorities.add(new Authority(this, authorityName));
+        this.authorities = List.of(new Authority(this, authorityName));
     }
 
 
@@ -56,6 +60,10 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.unmodifiableList(authorities);
+    }
+
+    public List<UserGenrePreferences> getGenrePreferences() {
+        return Collections.unmodifiableList(genrePreferences);
     }
 
 }

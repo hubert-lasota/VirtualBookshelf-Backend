@@ -10,11 +10,13 @@ import org.hl.wirtualnyregalbackend.book_review.exception.BookReviewNotFoundExce
 import org.hl.wirtualnyregalbackend.common.review.ReviewMapper;
 import org.hl.wirtualnyregalbackend.common.review.ReviewPageResponse;
 import org.hl.wirtualnyregalbackend.common.review.ReviewResponse;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -39,9 +41,10 @@ public class BookReviewQueryService {
     }
 
     ReviewPageResponse findBookReviews(Long bookId, Pageable pageable) {
+        Locale locale = LocaleContextHolder.getLocale();
         Page<ReviewResponse> page = repository
             .findByBookId(bookId, pageable)
-            .map(ReviewMapper::toReviewResponse);
+            .map((review) -> ReviewMapper.toReviewResponse(review, locale));
         return ReviewPageResponse.from(page);
     }
 

@@ -12,11 +12,13 @@ import org.hl.wirtualnyregalbackend.author.exception.AuthorNotFoundException;
 import org.hl.wirtualnyregalbackend.author.model.AuthorFilter;
 import org.hl.wirtualnyregalbackend.author_review.AuthorReviewQueryService;
 import org.hl.wirtualnyregalbackend.author_review.entity.AuthorReview;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -41,7 +43,8 @@ public class AuthorQueryService {
         Author author = findAuthorById(authorId);
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AuthorReview review = reviewQuery.findAuthorReviewByAuthorIdAndUserId(authorId, user.getId());
-        return AuthorMapper.toAuthorDetailsResponse(author, review);
+        Locale locale = LocaleContextHolder.getLocale();
+        return AuthorMapper.toAuthorDetailsResponse(author, review, locale);
     }
 
 

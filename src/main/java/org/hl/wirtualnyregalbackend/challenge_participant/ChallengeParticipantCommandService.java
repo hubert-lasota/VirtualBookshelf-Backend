@@ -14,11 +14,13 @@ import org.hl.wirtualnyregalbackend.challenge_participant.event.ChallengePartici
 import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantDurationRange;
 import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengeParticipantStatus;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.util.Locale;
 
 @Service
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -35,7 +37,8 @@ public class ChallengeParticipantCommandService {
     public ChallengeParticipantResponse createChallengeParticipant(ChallengeParticipantCreateRequest participantRequest, User user) {
         Challenge challenge = challengeQuery.findChallengeById(participantRequest.challengeId());
         ChallengeParticipant participant = createChallengeParticipant(challenge, user);
-        return ChallengeParticipantMapper.toChallengeParticipantResponse(participant);
+        Locale locale = LocaleContextHolder.getLocale();
+        return ChallengeParticipantMapper.toChallengeParticipantResponse(participant, locale);
     }
 
     @Transactional

@@ -7,14 +7,17 @@ import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengePartic
 import org.hl.wirtualnyregalbackend.user.UserMapper;
 import org.hl.wirtualnyregalbackend.user.dto.UserResponse;
 
+import java.util.Locale;
+
 class ChallengeParticipantMapper {
 
     private ChallengeParticipantMapper() {
     }
 
 
-    public static ChallengeParticipantResponse toChallengeParticipantResponse(ChallengeParticipant challengeParticipant) {
-        UserResponse user = UserMapper.toUserResponse(challengeParticipant.getUser());
+    public static ChallengeParticipantResponse toChallengeParticipantResponse(ChallengeParticipant challengeParticipant,
+                                                                              Locale locale) {
+        UserResponse user = UserMapper.toUserResponse(challengeParticipant.getUser(), locale);
         Challenge ch = challengeParticipant.getChallenge();
         ChallengeSummaryResponse challenge = new ChallengeSummaryResponse(ch.getId(), ch.getTitle());
         return new ChallengeParticipantResponse(

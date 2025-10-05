@@ -37,9 +37,8 @@ public class ChallengeMapper {
     public static ChallengeResponse toChallengeResponse(Challenge challenge,
                                                         @Nullable ChallengeParticipant currentUserParticipant,
                                                         Locale locale) {
-        Integer goalValue = challenge.getGoalValue();
         ChallengeParticipation participation = toChallengeParticipation(currentUserParticipant);
-        UserResponse user = UserMapper.toUserResponse(challenge.getUser());
+        UserResponse user = UserMapper.toUserResponse(challenge.getUser(), locale);
         GenreResponse genreDto = challenge.getGenre() == null
             ? null
             : GenreMapper.toGenreResponse(challenge.getGenre(), locale);
@@ -48,7 +47,7 @@ public class ChallengeMapper {
             challenge.getTitle(),
             challenge.getDescription(),
             challenge.getType(),
-            goalValue,
+            challenge.getGoalValue(),
             challenge.getDurationRange(),
             genreDto,
             challenge.getTotalParticipants(),
@@ -57,14 +56,13 @@ public class ChallengeMapper {
         );
     }
 
+    @Nullable
     private static ChallengeParticipation toChallengeParticipation(@Nullable ChallengeParticipant participant) {
         if (participant == null) {
-            return new ChallengeParticipation(false, null, null, null, null);
+            return null;
         }
-        Integer currentGoalValue = participant.getCurrentGoalValue();
         return new ChallengeParticipation(
-            true,
-            currentGoalValue,
+            participant.getCurrentGoalValue(),
             participant.calculateProgressPercentage(),
             participant.getStatus(),
             participant.getDurationRange()

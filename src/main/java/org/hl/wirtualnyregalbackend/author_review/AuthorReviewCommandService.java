@@ -14,8 +14,11 @@ import org.hl.wirtualnyregalbackend.common.review.ReviewMapper;
 import org.hl.wirtualnyregalbackend.common.review.ReviewRequest;
 import org.hl.wirtualnyregalbackend.common.review.ReviewResponse;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Locale;
 
 @Service
 @AllArgsConstructor(access = lombok.AccessLevel.PACKAGE)
@@ -39,7 +42,8 @@ class AuthorReviewCommandService {
         repository.save(authorReview);
         log.info("AuthorReview created: {}", authorReview);
         eventPublisher.publishEvent(AuthorReviewCreatedOrUpdatedEvent.from(authorReview));
-        return ReviewMapper.toReviewResponse(authorReview);
+        Locale locale = LocaleContextHolder.getLocale();
+        return ReviewMapper.toReviewResponse(authorReview, locale);
     }
 
     @Transactional
@@ -55,7 +59,8 @@ class AuthorReviewCommandService {
         }
 
         eventPublisher.publishEvent(AuthorReviewCreatedOrUpdatedEvent.from(authorReview));
-        return ReviewMapper.toReviewResponse(authorReview);
+        Locale locale = LocaleContextHolder.getLocale();
+        return ReviewMapper.toReviewResponse(authorReview, locale);
     }
 
     @Transactional

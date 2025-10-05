@@ -10,6 +10,8 @@ import org.hl.wirtualnyregalbackend.common.review.ReviewMapper;
 import org.hl.wirtualnyregalbackend.common.review.ReviewResponse;
 import org.springframework.lang.Nullable;
 
+import java.util.Locale;
+
 public class AuthorMapper {
 
     private AuthorMapper() {
@@ -25,8 +27,10 @@ public class AuthorMapper {
         );
     }
 
-    public static AuthorDetailsResponse toAuthorDetailsResponse(Author author, @Nullable AuthorReview review) {
-        ReviewResponse reviewResponse = review != null ? ReviewMapper.toReviewResponse(review) : null;
+    public static AuthorDetailsResponse toAuthorDetailsResponse(Author author,
+                                                                @Nullable AuthorReview review,
+                                                                Locale locale) {
+        ReviewResponse reviewResponse = review != null ? ReviewMapper.toReviewResponse(review, locale) : null;
         return new AuthorDetailsResponse(
             author.getId(),
             author.getFullName(),

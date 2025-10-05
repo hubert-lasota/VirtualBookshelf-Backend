@@ -7,6 +7,7 @@ import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.user.dto.UserPageResponse;
 import org.hl.wirtualnyregalbackend.user.exception.UserNotFoundException;
 import org.hl.wirtualnyregalbackend.user.model.UserFilter;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,7 +37,8 @@ public class UserQueryService implements UserDetailsService {
 
     UserPageResponse findUsers(UserFilter filter, Pageable pageable) {
         var spec = UserSpecification.byFilter(filter);
-        var page = repository.findAll(spec, pageable).map(UserMapper::toUserResponse);
+        var locale = LocaleContextHolder.getLocale();
+        var page = repository.findAll(spec, pageable).map((user) -> UserMapper.toUserResponse(user, locale));
         return UserPageResponse.from(page);
     }
 

@@ -7,10 +7,12 @@ import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.challenge_participant.dto.ChallengeParticipantPageResponse;
 import org.hl.wirtualnyregalbackend.challenge_participant.entity.ChallengeParticipant;
 import org.hl.wirtualnyregalbackend.challenge_participant.exception.ChallengeParticipantNotFoundException;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,9 +26,10 @@ public class ChallengeParticipantQueryService {
 
 
     public ChallengeParticipantPageResponse findParticipantsByChallengeId(Long challengeId, Pageable pageable) {
+        Locale locale = LocaleContextHolder.getLocale();
         var page = repository
             .findByChallengeId(challengeId, pageable)
-            .map(ChallengeParticipantMapper::toChallengeParticipantResponse);
+            .map(participant -> ChallengeParticipantMapper.toChallengeParticipantResponse(participant, locale));
         return ChallengeParticipantPageResponse.from(page);
     }
 
