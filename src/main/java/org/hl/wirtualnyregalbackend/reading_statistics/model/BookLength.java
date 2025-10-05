@@ -1,4 +1,4 @@
-package org.hl.wirtualnyregalbackend.reading_statistics.entity;
+package org.hl.wirtualnyregalbackend.reading_statistics.model;
 
 import lombok.AllArgsConstructor;
 

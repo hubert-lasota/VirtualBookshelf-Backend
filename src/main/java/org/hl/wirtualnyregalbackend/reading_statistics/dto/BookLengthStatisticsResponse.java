@@ -1,10 +1,10 @@
 package org.hl.wirtualnyregalbackend.reading_statistics.dto;
 
-import org.hl.wirtualnyregalbackend.reading_statistics.entity.BookLength;
+import org.hl.wirtualnyregalbackend.reading_statistics.model.BookLength;
 
 public record BookLengthStatisticsResponse(
     BookLength length,
-    Long bookCount,
-    Long readBookCount
+    long bookCount,
+    long readBookCount
 ) {
 }

@@ -5,9 +5,12 @@ import org.hl.wirtualnyregalbackend.genre.dto.GenreResponse;
 import org.hl.wirtualnyregalbackend.reading_statistics.dto.BookLengthStatisticsResponse;
 import org.hl.wirtualnyregalbackend.reading_statistics.dto.GenreStatisticsResponse;
 import org.hl.wirtualnyregalbackend.reading_statistics.dto.MonthlyStatisticsResponse;
+import org.hl.wirtualnyregalbackend.reading_statistics.dto.StatisticsSummaryResponse;
 import org.hl.wirtualnyregalbackend.reading_statistics.entity.BookLengthStatistics;
 import org.hl.wirtualnyregalbackend.reading_statistics.entity.GenreStatistics;
 import org.hl.wirtualnyregalbackend.reading_statistics.entity.UserReadingStatistics;
+import org.hl.wirtualnyregalbackend.reading_statistics.model.GenreStatsSum;
+import org.hl.wirtualnyregalbackend.reading_statistics.model.UserStatsSum;
 
 import java.time.YearMonth;
 import java.util.List;
@@ -18,6 +21,33 @@ class ReadingStatisticsMapper {
     private ReadingStatisticsMapper() {
     }
 
+
+    public static StatisticsSummaryResponse toStatisticsSummaryResponse(UserStatsSum userStatsSum,
+                                                                        List<GenreStatsSum> genreStatsSumList,
+                                                                        List<BookLengthStatisticsResponse> bookLenStatsSum,
+                                                                        Locale locale) {
+        List<GenreStatisticsResponse> genreStatsResponse = genreStatsSumList
+            .stream()
+            .map(gs -> {
+                GenreResponse genre = GenreMapper.toGenreResponse(gs.genre(), locale);
+                return new GenreStatisticsResponse(
+                    gs.bookCount(),
+                    gs.readBookCount(),
+                    genre
+                );
+            })
+            .toList();
+        return new StatisticsSummaryResponse(
+            userStatsSum.readBookCount(),
+            userStatsSum.readPageCount(),
+            userStatsSum.readMinuteCount(),
+            userStatsSum.mostPagesReadInSession(),
+            userStatsSum.currentReadingStreak(),
+            userStatsSum.longestReadingStreak(),
+            genreStatsResponse,
+            bookLenStatsSum
+        );
+    }
 
     public static List<MonthlyStatisticsResponse> toMonthlyStatisticsResponse(List<UserReadingStatistics> userStats,
                                                                               List<GenreStatistics> genreStats,

@@ -4,11 +4,11 @@ import java.time.YearMonth;
 import java.util.List;
 
 public record MonthlyStatisticsResponse(
-    Long readBookCount,
-    Long readPageCount,
-    Integer mostPagesReadInSession,
-    Long readMinuteCount,
-    Integer longestReadMinutes,
+    long readBookCount,
+    long readPageCount,
+    int mostPagesReadInSession,
+    long readMinuteCount,
+    int longestReadMinutes,
     List<GenreStatisticsResponse> genreStatistics,
     List<BookLengthStatisticsResponse> bookLengthStatistics,
     YearMonth yearMonth

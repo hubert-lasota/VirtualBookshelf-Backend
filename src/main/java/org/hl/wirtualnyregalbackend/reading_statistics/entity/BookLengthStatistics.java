@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
 import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
+import org.hl.wirtualnyregalbackend.reading_statistics.model.BookLength;
 
 import java.time.YearMonth;
 

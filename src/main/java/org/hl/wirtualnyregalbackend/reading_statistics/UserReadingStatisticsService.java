@@ -2,7 +2,11 @@ package org.hl.wirtualnyregalbackend.reading_statistics;
 
 import lombok.AllArgsConstructor;
 import org.hl.wirtualnyregalbackend.auth.entity.User;
+import org.hl.wirtualnyregalbackend.reading_statistics.dto.YearListResponse;
 import org.hl.wirtualnyregalbackend.reading_statistics.entity.UserReadingStatistics;
+import org.hl.wirtualnyregalbackend.reading_statistics.model.UserStatsSum;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -16,26 +20,26 @@ import java.util.Optional;
 @AllArgsConstructor
 class UserReadingStatisticsService {
 
-    private final UserReadingStatisticsRepository userStatsRepository;
+    private final UserReadingStatisticsRepository repository;
     private final Clock clock;
 
     public void updateTotalReadPagesAndMinutes(Integer readPages, Integer readMinutes, User user) {
         UserReadingStatistics stats = findOrCreateUserReadingStatistics(user);
         stats.addReadPages(readPages);
         stats.addReadMinutes(readMinutes);
-        userStatsRepository.save(stats);
+        repository.save(stats);
     }
 
     public void incrementReadBookCount(User user) {
         UserReadingStatistics stats = findOrCreateUserReadingStatistics(user);
         stats.incrementReadBookCount();
-        userStatsRepository.save(stats);
+        repository.save(stats);
     }
 
     public void decrementReadBookCount(User user) {
         UserReadingStatistics stats = findOrCreateUserReadingStatistics(user);
         stats.decrementReadBookCount();
-        userStatsRepository.save(stats);
+        repository.save(stats);
     }
 
     public void updateReadingStreak(Instant lastReadAt, User user) {
@@ -46,16 +50,29 @@ class UserReadingStatisticsService {
             stats.resetCurrentReadingStreak();
         }
         stats.incrementCurrentReadingStreak();
-        userStatsRepository.save(stats);
+        repository.save(stats);
     }
 
-    public List<UserReadingStatistics> findUserReadingStatistics(User user) {
-        return userStatsRepository.findByUser(user);
+    public List<UserReadingStatistics> findReadingStatistics(User user, @Nullable Integer year) {
+        Specification<UserReadingStatistics> spec = StatisticsSpecification.byUserId(user.getId());
+        if (year != null) {
+            spec = spec.and(StatisticsSpecification.byYear(year));
+        }
+        return repository.findAll(spec);
+    }
+
+    public YearListResponse findAvailableYearsByUser(User user) {
+        List<Integer> years = repository.findDistinctYearsByUser(user);
+        return new YearListResponse(years);
+    }
+
+    public UserStatsSum findStatisticsSummaryByUser(User user) {
+        return repository.findStatisticsSummaryByUser(user);
     }
 
     private UserReadingStatistics findOrCreateUserReadingStatistics(User user) {
         YearMonth yearMonth = YearMonth.now(clock);
-        Optional<UserReadingStatistics> statsOpt = userStatsRepository.findByUserAndYearMonth(user, yearMonth);
+        Optional<UserReadingStatistics> statsOpt = repository.findByUserAndYearMonth(user, yearMonth);
         return statsOpt.orElseGet(() -> new UserReadingStatistics(user, yearMonth));
     }
 
