@@ -18,25 +18,25 @@ import java.time.YearMonth;
 public class UserReadingStatistics extends BaseEntity {
 
     @Column(name = "total_read_books")
-    private Long readBookCount;
+    private long readBookCount;
 
     @Column(name = "total_read_pages")
-    private Long readPageCount;
+    private long readPageCount;
 
     @Column(name = "most_pages_read_in_session")
-    private Integer mostPagesReadInSession;
+    private int mostPagesReadInSession;
 
     @Column(name = "total_read_minutes")
-    private Long readMinuteCount;
+    private long readMinuteCount;
 
     @Column(name = "longest_read_minutes")
-    private Integer longestReadMinutes;
+    private int longestReadMinutes;
 
     @Column(name = "current_reading_streak")
-    private Integer currentReadingStreak;
+    private int currentReadingStreak;
 
     @Column(name = "longest_reading_streak")
-    private Integer longestReadingStreak;
+    private int longestReadingStreak;
 
     @Column(name = "year_month")
     private YearMonth yearMonth;

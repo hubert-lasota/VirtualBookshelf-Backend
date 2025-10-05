@@ -36,17 +36,17 @@ public class Book extends BaseEntity {
     private Locale language;
 
     @Column(name = "page_count")
-    private Integer pageCount;
+    private int pageCount;
 
     @Column
     private String description;
 
     @Column(name = "total_reviews")
     @Setter(AccessLevel.NONE)
-    private Integer totalReviews;
+    private int totalReviews;
 
     @Column(name = "average_rating")
-    private Double averageRating;
+    private double averageRating;
 
     @OneToOne(mappedBy = "book", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private BookCover cover;

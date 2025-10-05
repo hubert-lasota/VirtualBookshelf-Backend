@@ -31,7 +31,7 @@ public class Bookshelf extends BaseEntity {
 
     @Column(name = "total_books")
     @Setter(AccessLevel.NONE)
-    private Long totalBooks;
+    private long totalBooks;
 
     public Bookshelf(String name, BookshelfType type, String description, User user) {
         this.name = name;

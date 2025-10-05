@@ -22,7 +22,7 @@ import java.math.RoundingMode;
 public class ChallengeParticipant extends BaseEntity {
 
     @Column
-    private Integer currentGoalValue;
+    private int currentGoalValue;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -42,7 +42,7 @@ public class ChallengeParticipant extends BaseEntity {
 
 
     public Float calculateProgressPercentage() {
-        if (currentGoalValue.equals(0)) {
+        if (currentGoalValue == 0) {
             return 0F;
         }
         float value = ((float) currentGoalValue) / challenge.getGoalValue() * 100F;
@@ -61,7 +61,7 @@ public class ChallengeParticipant extends BaseEntity {
         }
     }
 
-    public void addCurrentCount(Integer count) {
+    public void addCurrentCount(int count) {
         Integer goalValue = challenge.getGoalValue();
         if (goalValue.equals(currentGoalValue)) {
             return;

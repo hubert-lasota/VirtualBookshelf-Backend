@@ -38,13 +38,13 @@ public class ReadingBook extends BaseEntity {
     private Book book;
 
     @Column(name = "current_page")
-    private Integer currentPage;
+    private int currentPage;
 
     @Column(name = "total_notes")
-    private Long totalNotes;
+    private long totalNotes;
 
     @Column(name = "total_sessions")
-    private Long totalSessions;
+    private long totalSessions;
 
 
     public ReadingBook(ReadingStatus status, ReadingBookDurationRange durationRange, Bookshelf bookshelf, Book book) {
@@ -54,6 +54,16 @@ public class ReadingBook extends BaseEntity {
         this.currentPage = 0;
         this.totalNotes = 0L;
         this.totalSessions = 0L;
+    }
+
+    public void changeCurrentPage(Integer currentPage) {
+        if (currentPage < 0) {
+            this.currentPage = 0;
+        } else if (currentPage > book.getPageCount()) {
+            this.currentPage = book.getPageCount();
+        } else {
+            this.currentPage = currentPage;
+        }
     }
 
 
@@ -97,7 +107,7 @@ public class ReadingBook extends BaseEntity {
     }
 
     public Float calculateProgressPercentage() {
-        if (currentPage.equals(0)) {
+        if (currentPage == 0) {
             return 0F;
         }
         float value = ((float) currentPage) / book.getPageCount() * 100F;

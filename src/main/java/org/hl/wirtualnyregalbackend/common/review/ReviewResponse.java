@@ -6,7 +6,7 @@ import java.time.Instant;
 
 public record ReviewResponse(
     Long id,
-    Float rating,
+    float rating,
     String content,
     UserResponse user,
     Instant createdAt,

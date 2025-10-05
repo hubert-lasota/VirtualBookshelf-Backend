@@ -7,10 +7,10 @@ import org.hl.wirtualnyregalbackend.reading_book.model.ReadingStatus;
 
 public record ReadingBookResponse(
     Long id,
-    Float progressPercentage,
-    Integer currentPage,
-    Long totalNotes,
-    Long totalSessions,
+    float progressPercentage,
+    int currentPage,
+    long totalNotes,
+    long totalSessions,
     ReadingBookDurationRange durationRange,
     ReadingStatus status,
     BookResponse book,

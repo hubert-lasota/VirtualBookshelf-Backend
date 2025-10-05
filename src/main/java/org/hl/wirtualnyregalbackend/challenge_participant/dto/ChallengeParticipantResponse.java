@@ -6,8 +6,8 @@ import org.hl.wirtualnyregalbackend.user.dto.UserResponse;
 
 public record ChallengeParticipantResponse(
     Long id,
-    Integer currentGoalValue,
-    Float progressPercentage,
+    int currentGoalValue,
+    float progressPercentage,
     ChallengeParticipantStatus status,
     ChallengeParticipantDurationRange durationRange,
     UserResponse user,

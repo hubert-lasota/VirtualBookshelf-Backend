@@ -21,10 +21,10 @@ public class Author extends BaseEntity {
 
     @Column(name = "total_reviews")
     @Setter(AccessLevel.NONE)
-    private Integer totalReviews;
+    private int totalReviews;
 
     @Column(name = "average_rating")
-    private Double averageRating;
+    private double averageRating;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "author_profile_picture_id")

@@ -13,8 +13,8 @@ public record BookResponse(
     List<AuthorResponse> authors,
     List<GenreResponse> genres,
     String coverUrl,
-    Integer pageCount,
-    Integer totalReviews,
-    Double averageRating
+    int pageCount,
+    int totalReviews,
+    double averageRating
 ) {
 }

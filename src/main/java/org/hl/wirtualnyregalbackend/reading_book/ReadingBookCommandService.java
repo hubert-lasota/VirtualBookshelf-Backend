@@ -65,6 +65,11 @@ public class ReadingBookCommandService {
             readingBook.changeStatus(status, rbdr);
         }
 
+        Integer currentPage = readingBookRequest.currentPage();
+        if (currentPage != null) {
+            readingBook.changeCurrentPage(currentPage);
+        }
+
         log.info("Updated Reading Book: {}", readingBook);
         Locale locale = LocaleContextHolder.getLocale();
         return ReadingBookMapper.toReadingBookResponse(readingBook, locale);

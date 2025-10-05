@@ -8,7 +8,7 @@ public record BookshelfResponse(
     String name,
     BookshelfType type,
     String description,
-    Long totalBooks
+    long totalBooks
 ) {
 }
 

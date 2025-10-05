@@ -24,7 +24,7 @@ public class Genre extends BaseEntity {
     private List<GenreTranslation> translations = new ArrayList<>();
 
     @Column(name = "total_books")
-    private Integer totalBooks;
+    private int totalBooks;
 
     public Genre(TranslatedName translatedName) {
         GenreTranslation genreTranslation = new GenreTranslation(translatedName, this);

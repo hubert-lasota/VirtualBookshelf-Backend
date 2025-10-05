@@ -5,8 +5,8 @@ import org.hl.wirtualnyregalbackend.challenge_participant.model.ChallengePartici
 
 public record ChallengeParticipation(
     boolean participates,
-    Integer currentGoalValue,
-    Float progressPercentage,
+    int currentGoalValue,
+    float progressPercentage,
     ChallengeParticipantStatus status,
     ChallengeParticipantDurationRange durationRange
 ) {

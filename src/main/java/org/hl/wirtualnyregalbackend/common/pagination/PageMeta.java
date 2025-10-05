@@ -6,7 +6,8 @@ public record PageMeta(
     int count,
     long totalCount,
     int page,
-    int totalPages
+    int totalPages,
+    boolean hasNext
 ) {
 
     public static PageMeta from(Page<?> page) {
@@ -14,7 +15,8 @@ public record PageMeta(
             page.getNumberOfElements(),
             page.getTotalElements(),
             page.getNumber(),
-            page.getTotalPages()
+            page.getTotalPages(),
+            page.hasNext()
         );
     }
 

@@ -29,7 +29,7 @@ public class Challenge extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ChallengeType type;
 
-    private Integer goalValue;
+    private int goalValue;
 
     @ManyToOne
     @JoinColumn(name = "genre_id")
@@ -42,7 +42,7 @@ public class Challenge extends BaseEntity {
 
     @Setter(AccessLevel.NONE)
     @Column(name = "total_participants")
-    private Long totalParticipants;
+    private long totalParticipants;
 
 
     public Challenge(String title,

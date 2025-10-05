@@ -17,7 +17,7 @@ import org.hl.wirtualnyregalbackend.common.jpa.BaseEntity;
 public abstract class Review extends BaseEntity {
 
     @Column
-    protected Float rating;
+    protected float rating;
 
     @Column
     protected String content;

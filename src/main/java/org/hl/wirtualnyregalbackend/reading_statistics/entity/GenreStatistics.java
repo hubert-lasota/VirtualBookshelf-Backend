@@ -21,10 +21,10 @@ public class GenreStatistics extends BaseEntity {
     private Genre genre;
 
     @Column(name = "book_count")
-    private Long bookCount;
+    private long bookCount;
 
     @Column(name = "read_book_count")
-    private Long readBookCount;
+    private long readBookCount;
 
     @Column(name = "year_month")
     private YearMonth yearMonth;

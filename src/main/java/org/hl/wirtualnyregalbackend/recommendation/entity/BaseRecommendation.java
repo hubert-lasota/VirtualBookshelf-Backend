@@ -24,7 +24,7 @@ public class BaseRecommendation extends BaseEntity {
     private User user;
 
     @Column
-    private Float score;
+    private float score;
 
 
     public void boostScore() {
