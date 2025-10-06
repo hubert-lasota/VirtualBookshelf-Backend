@@ -1,6 +1,13 @@
 -- USER GENRE PREFERENCES
 INSERT INTO user_genre_preferences(user_id, genre_id, created_at)
 VALUES (1, 1, now()),
+       (1, 2, now()),
+       (1,3, now()),
+       (1,4, now()),
+       (1, 3, now()),
+       (1, 4, now()),
+       (1, 51, now()),
+       (2, 1, now()),
        (2, 2, now()),
        (3, 3, now()),
        (4, 4, now()),

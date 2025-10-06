@@ -8,7 +8,7 @@ ALTER TABLE reading_book
 insert into bookshelf(user_id, name, type, description, created_at)
 values (1, 'Do przeczytania', 'TO_READ', 'Regał przeznaczony do gromadzenia książek do przeczytania.', now()),
        (1, 'W trakcie czytania', 'READING', 'Regał przeznaczony do gromadzenia książek w trakcie czytania.', now()),
-       (1, 'Przeczytanie', 'READ', 'Regał przeznaczony do gromadzenia książek przeczytanych.', now());
+       (1, 'Przeczytane', 'READ', 'Regał przeznaczony do gromadzenia książek przeczytanych.', now());
 
 -- READING BOOK START-ID=1
 INSERT INTO reading_book (bookshelf_id, book_id, status, current_page, total_notes, total_sessions, started_reading_at,
@@ -519,6 +519,30 @@ VALUES
 (48, 101, 150, '2024-09-05 08:00:00', '2024-09-05 09:00:00', 'Trzecia sesja', now());
 
 
+insert into user_reading_statistics(user_id,
+                                    total_read_books,
+                                    total_read_pages,
+                                    total_read_minutes,
+                                    most_pages_read_in_session,
+                                    current_reading_streak,
+                                    longest_reading_streak,
+                                    longest_read_minutes,
+                                    year_month,
+                                    created_at
+                                    )
+values (
+        1,
+        3,
+        800,
+        1800,
+        50,
+        6,
+        15,
+        180,
+        '2025-10',
+        now()
+       );
+
 update reading_book
 set total_notes    = COALESCE((select count(*) from reading_note where reading_book.id = reading_note.reading_book_id),
                               0),
@@ -529,6 +553,14 @@ update reading_book as rb
 set current_page = (select b.page_count from book as b where b.id = rb.book_id)
 where status = 'READ';
 
+update reading_book rb
+set current_page = (select b.page_count from book as b where b.id = rb.book_id),
+    status = 'READ',
+    started_reading_at =  now() - INTERVAL '60days',
+    finished_reading_at = now()
+from book b
+where b.id = rb.book_id and rb.current_page >= b.page_count;
+
 update bookshelf
 set total_books = COALESCE((select count(*) from reading_book where bookshelf.id = reading_book.bookshelf_id), 0);
 
@@ -538,3 +570,5 @@ ALTER TABLE bookshelf
 ALTER TABLE reading_book
     ALTER COLUMN total_notes DROP DEFAULT,
     ALTER COLUMN total_sessions DROP DEFAULT;
+
+select * from bookshelf;

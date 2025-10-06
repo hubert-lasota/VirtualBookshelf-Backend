@@ -395,4 +395,11 @@ VALUES
 
 
 update challenge as c
-set total_participants = (coalesce((select count(*) from challenge_participant cp where cp.challenge_id = c.id), 0))
+set total_participants = (coalesce((select count(*) from challenge_participant cp where cp.challenge_id = c.id), 0));
+
+update challenge_participant cp
+set current_goal_value = (select c.goal_value from challenge c where c.id = cp.challenge_id),
+    status = 'COMPLETED',
+    finished_at = now()
+from challenge c
+where c.id = cp.challenge_id and cp.current_goal_value >= c.goal_value;

@@ -18,7 +18,7 @@ public class BookWithIdDto {
     private Long id;
 
     @JsonUnwrapped
-    @Valid
+    // TODO fix later @Valid
     private BookRequest bookRequest;
 
     @AssertTrue(message = "Provide either book ID or book details.")

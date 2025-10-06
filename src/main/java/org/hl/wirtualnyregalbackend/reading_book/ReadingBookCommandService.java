@@ -51,6 +51,7 @@ public class ReadingBookCommandService {
         eventPublisher.publishEvent(ReadingBookCreatedEvent.from(readingBook));
         log.info("Created Reading Book: {}", readingBook);
         Locale locale = LocaleContextHolder.getLocale();
+        repository.save(readingBook);
         return ReadingBookMapper.toReadingBookResponse(readingBook, locale);
     }
 
@@ -64,7 +65,7 @@ public class ReadingBookCommandService {
             ReadingBookDurationRange rbdr = ReadingBookDurationRange.merge(readingBook.getDurationRange(), readingBookRequest.durationRange());
             readingBook.changeStatus(status, rbdr);
         }
-
+// TODO  Add event - needs to update challenges
         Integer currentPage = readingBookRequest.currentPage();
         if (currentPage != null) {
             readingBook.changeCurrentPage(currentPage);
@@ -75,6 +76,7 @@ public class ReadingBookCommandService {
         return ReadingBookMapper.toReadingBookResponse(readingBook, locale);
     }
 
+    // TODO increment, decrement total books
     public ReadingBookResponse moveReadingBook(Long readingBookId, Long bookshelfId) {
         Bookshelf bookshelf = bookshelfQuery.findBookshelfById(bookshelfId);
         ReadingBook readingBook = readingBookQuery.findReadingBookById(readingBookId);

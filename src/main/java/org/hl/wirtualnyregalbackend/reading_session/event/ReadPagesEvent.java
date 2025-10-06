@@ -8,6 +8,7 @@ import org.springframework.lang.Nullable;
 
 import java.util.Objects;
 
+// TODO should not set currentPage in ReadingBook -> delete addReadPages, setCurrentPage is valid -> session should change currentPage if session.pageRange.to > currentPage
 public record ReadPagesEvent(
     Integer readPages,
     Integer readMinutes,

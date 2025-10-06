@@ -107,7 +107,7 @@ VALUES (1, 'USER', now()),
        (50, 'USER', now());
 
 INSERT INTO user_profile_picture (id, user_profile_picture_binary_id, url, created_at, updated_at)
-VALUES (1, NULL, 'https://randomuser.me/api/portraits/women/1.jpg', now(), NULL),
+VALUES (1, NULL, 'https://randomuser.me/api/portraits/men/1.jpg', now(), NULL),
        (2, NULL, 'https://randomuser.me/api/portraits/men/2.jpg', now(), NULL),
        (3, NULL, 'https://randomuser.me/api/portraits/women/3.jpg', now(), NULL),
        (4, NULL, 'https://randomuser.me/api/portraits/men/4.jpg', now(), NULL),
@@ -159,7 +159,7 @@ VALUES (1, NULL, 'https://randomuser.me/api/portraits/women/1.jpg', now(), NULL)
        (50, NULL, 'https://randomuser.me/api/portraits/men/50.jpg', now(), NULL);
 
 INSERT INTO user_profile (user_id, user_profile_picture_id, first_name, last_name, description, created_at, updated_at)
-VALUES (1, 1, 'Anna', 'Kowalska', 'Miłośniczka literatury fantasy i kawy.', now() - INTERVAL '200 days', NULL),
+VALUES (1, 1, 'Jakub', 'Kowalski', 'Uwielbia kryminały i thrillery.', now() - INTERVAL '200 days', NULL),
        (2, 2, 'Piotr', 'Nowak', 'Uwielbia kryminały skandynawskie.', now() - INTERVAL '198 days', NULL),
        (3, 3, 'Maria', 'Wiśniewska', 'Czyta głównie biografie i książki historyczne.', now() - INTERVAL '196 days',
         NULL),
